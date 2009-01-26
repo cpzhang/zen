@@ -59,7 +59,8 @@ bool MemoryFileWriter::write(void* b, size_t s)
 {
 	if (isOverFlow(s))
 	{
-		if (!reallocate(s * 2))
+		size_t ns = s*10;
+		if (!reallocate(_length > ns ? _length : ns))
 		{
 			return false;
 		}

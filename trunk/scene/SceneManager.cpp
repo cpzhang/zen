@@ -444,6 +444,15 @@ void SceneManager::getChunks( ChunkVec& cs, QuadNode* n, RectangleT& rc )
 
 void SceneManager::save(const tstring& path)
 {
+	std::string resId(path);
+	if (!FileSystem::isDirExist(resId))
+	{
+		resId = FileSystem::getDataDirectory() + path;
+		if (!FileSystem::isDirExist(resId))
+		{
+			return;
+		}
+	}
 	name_ = FileSystem::removeParent(path);
 	//============================================================================
 	tinyxml2::XMLDocument doc;
@@ -467,30 +476,31 @@ void SceneManager::save(const tstring& path)
 	//
 	{
 		tinyxml2::XMLElement* e = doc.NewElement("material");
-		e->SetAttribute("fx", terrainCurrent_->getFXFileName().c_str());
+		std::string tn(terrainCurrent_->getFXFileName());
+		tn = FileSystem::cutDataPath(tn);
+		e->SetAttribute("fx", tn.c_str());
 		ele->LinkEndChild(e);
 	}
 	//
-	tstring sf = path + "/setting.xml";
+	tstring sf = resId + "\\setting.xml";
 	doc.SaveFile(sf.c_str());
 	//
 	{
-		terrainCurrent_->save(path + "/");
+		terrainCurrent_->save(resId + "\\");
 	}
 }
 
-void SceneManager::open( const tstring& resID )
+void SceneManager::open( const tstring& dir )
 {
-	std::string resId(resID);
-	if (!FileSystem::isFileExist(resId))
+	std::string resId(dir);
+	if (!FileSystem::isDirExist(resId))
 	{
-		resId = FileSystem::getDataDirectory() + "\\" + resId;
-		if (!FileSystem::isFileExist(resId))
+		resId = FileSystem::getDataDirectory() + dir;
+		if (!FileSystem::isDirExist(resId))
 		{
-			//return;
+			return;
 		}
 	}
-
 
 	tinyxml2::XMLDocument doc;
 	tstring settingFile(resId + "/setting.xml");

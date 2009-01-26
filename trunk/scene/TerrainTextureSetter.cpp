@@ -15,6 +15,10 @@ TerrainTextureSetter::~TerrainTextureSetter()
 void TerrainTextureSetter::setDxEffect( Fx* f)
 {
 	pEffect_ = f->getDxEffect();
+	if (NULL == pEffect_)
+	{
+		return;
+	}
 	handles_.clear();
 	handles_.push_back( pEffect_->GetParameterByName(NULL,"gLayer0") );
 	handles_.push_back( pEffect_->GetParameterByName(NULL,"gLayer1") );
@@ -23,6 +27,10 @@ void TerrainTextureSetter::setDxEffect( Fx* f)
 
 void TerrainTextureSetter::apply( Chunk* ck )
 {
+	if (handles_.size() < eTerrainLayer_Size)
+	{
+		return;
+	}
 	for ( u32 i=0; i < eTerrainLayer_Size; i++ )		
 	{
 		pEffect_->SetTexture(handles_[i], ck->getLayer((eTerrainLayer)i)->getDxTexture());

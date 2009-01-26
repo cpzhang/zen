@@ -295,7 +295,7 @@ void Terrain::renderDecal( Decal* dc )
 		{
 			ef->SetMatrix(p, &getRenderContex()->getProjectionMatrix());
 		}
-		getRenderContex()->setVertexDeclaration(sVDT_Position::getType());
+		//getRenderContex()->setVertexDeclaration(sVDT_Position::getType());
 		//
 		Texture* tex = getTextureManager()->getTexture(dc->getTextureFile());
 		if (tex)
@@ -476,7 +476,7 @@ void Terrain::open( const tstring& path )
 		for (size_t i = 0; i != chunks_.size(); ++i)
 		{
 			std::stringstream ss;
-			ss<<path<<"/"<<chunks_[i]->getNumberX()<<"_"<<chunks_[i]->getNumberZ()<<".xml";
+			ss<<path<<"\\"<<chunks_[i]->getNumberX()<<"_"<<chunks_[i]->getNumberZ()<<".xml";
 			chunks_[i]->open(ss.str());
 			chunks_[i]->refreshHeight();
 		}

@@ -148,8 +148,9 @@ LRESULT FrameWindow::OnOpenscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWnd
 
 LRESULT FrameWindow::OnTest( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
-	getSceneManager()->open(TEXT(FileSystem::getDataDirectory() + "\\scene\\bornland"));
-	std::string resId(TEXT(FileSystem::getDataDirectory() + "\\model\\Character_1015\\Character_1015.entity"));
+	scenePath_ = TEXT("\\scene\\bornland");
+	getSceneManager()->open(scenePath_);
+	std::string resId(TEXT("\\model\\Character_1015\\Character_1015.entity"));
 	getGlobal()->setHero(resId.c_str());
 	return 0;
 }

@@ -6,7 +6,7 @@ class ApiRender_ Decal
 public:
 	Decal()
 	{
-
+		center_ = Vector4::Zero;
 	}
 	~Decal()
 	{

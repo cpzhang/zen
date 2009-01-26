@@ -123,9 +123,9 @@ void Global::clear_()
 bool Global::createBrushDecal()
 {
 	brushDecal_ = getSceneManager()->createDecal(TEXT("HeightBrush"));
-	brushDecal_->setFxFile(TEXT("shader/PositionDecal.fx"));
-	brushDecal_->setTexture(TEXT("brush/heighttool.dds"));
-	brushDecal_->setRadius(100.0f);
+	brushDecal_->setFxFile(TEXT("\\shader\\PositionDecal.fx"));
+	brushDecal_->setTexture(TEXT("\\brush\\heighttool.dds"));
+	brushDecal_->setRadius(3.0f);
 	return true;
 }
 
@@ -134,19 +134,6 @@ Decal* Global::getBrushDecal()
 	return brushDecal_;
 }
 
-
-void HeroController::apply( OrbitCamera& camera_, float delta)
-{
-	camera_.setCenter(getPosition() + Vector3(0, 2, 0));
-	float cameraHeight = 0.0f;
-	if (getSceneManager() && getSceneManager()->getTerrain())
-	{
-		cameraHeight = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(camera_.lastPos_.x, camera_.lastPos_.z);
-	}
-	camera_.update(delta, cameraHeight);
-	setCameraAngleY(camera_.angleXZ_);
-	getRenderContex()->setViewMatrix(camera_.view_);
-}
 
 void Global::update(float delta)
 {
@@ -342,17 +329,17 @@ std::string decode(const std::string& name)
 	//
 	{
 		//
-			skeletonPath = exportPath + "/" + fileFinalName + ".skeleton";
+			skeletonPath = exportPath + "\\" + fileFinalName + ".skeleton";
 			FileSystem::createFolder(skeletonPath);
 			tM.saveSkeleton(skeletonPath);
 			//
-			std::string materialPath = exportPath + "/";
+			std::string materialPath = exportPath + "\\";
 			FileSystem::createFolder(materialPath);
 			materialPath = FileSystem::standardFilePath(materialPath);
 			tM.saveMaterial(materialPath);
 			//
 			{
-				std::string animationsPath = exportPath + "/";
+				std::string animationsPath = exportPath + "\\";
 				FileSystem::createFolder(animationsPath);
 				animationsPath += fileFinalName;
 				animationsPath += ".animation";
@@ -361,13 +348,13 @@ std::string decode(const std::string& name)
 			}
 			//
 			{
-				std::string animationsPath = exportPath + "/";
+				std::string animationsPath = exportPath + "\\";
 				FileSystem::createFolder(animationsPath);
 				tM.saveSubEntity(animationsPath);
 			}
 			//
 			{
-				skinPath = exportPath + "/";
+				skinPath = exportPath + "\\";
 				FileSystem::createFolder(skinPath);
 				tM.saveSkin(skinPath);
 			}
@@ -375,10 +362,10 @@ std::string decode(const std::string& name)
 	for (int i = 0; i < tM.getSubMeshNumber(); ++i)
 	{
 		tM.create(i, &m);
-		std::string path = exportPath + "/" + tM.getSubMeshName(i) + ".mesh";
+		std::string path = exportPath + "\\" + tM.getSubMeshName(i) + ".mesh";
 		FileSystem::createFolder(path);
 		m.save(path);
-		std::string bmPath = exportPath + "/" + tM.getSubMeshName(i) + ".boneMapping";
+		std::string bmPath = exportPath + "\\" + tM.getSubMeshName(i) + ".boneMapping";
 		FileSystem::createFolder(bmPath);
 		m.saveBoneMapping(bmPath, &tM);
 
@@ -435,7 +422,7 @@ std::string decode(const std::string& name)
 		}
 		doc.LinkEndChild(ele);
 		//
-		std::string path = exportPath + "/" + fileFinalName + ".entity";
+		std::string path = exportPath + "\\" + fileFinalName + ".entity";
 		FileSystem::createFolder(path);
 		doc.SaveFile(path.c_str());
 		return path;
@@ -621,7 +608,7 @@ std::string Global::selectedFilePart( const tstring& name)
 	//
 	std::string path;
 	{
-		path = FileSystem::getParent(name) + "/" + partName + "_t.entity";
+		path = FileSystem::getParent(name) + "\\" + partName + "_t.entity";
 	}
 	doc.SaveFile(path.c_str());
 	
@@ -651,9 +638,9 @@ std::string Global::selectedFileParticle( const tstring& name )
 	}
 	doc.LinkEndChild(ele);
 	//
-	std::string path;// = exportPath + "/" + fileFinalName + ".entity";
+	std::string path;// = exportPath + "\\" + fileFinalName + ".entity";
 	{
-		path = FileSystem::getParent(name) + "/" + partName + "_t.entity";
+		path = FileSystem::getParent(name) + "\\" + partName + "_t.entity";
 	}
 	//FileSystem::createFolder(path);
 	doc.SaveFile(path.c_str());
@@ -748,6 +735,19 @@ void HeroController::update(float delta)
 		FontManager::getPointer()->getFont()->render(Vector2(10, 30), Vector4(1, 0, 0, 1), ss.str());
 	}
 }
+void HeroController::apply( OrbitCamera& camera_, float delta)
+{
+	camera_.setCenter(getPosition() + Vector3(0, 2, 0));
+	float cameraHeight = 0.0f;
+	if (getSceneManager() && getSceneManager()->getTerrain())
+	{
+		cameraHeight = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(camera_.lastPos_.x, camera_.lastPos_.z);
+	}
+	camera_.update(delta, cameraHeight);
+	setCameraAngleY(camera_.angleXZ_);
+	getRenderContex()->setViewMatrix(camera_.view_);
+}
+
 
 void HeroController::apply( IMovable* m )
 {

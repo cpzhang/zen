@@ -286,9 +286,9 @@ bool OrbitCamera::isDirty_()
 void OrbitCamera::onMouseWheel( float d )
 {
 	//根据距离调整移动速度，距离越远，速度越快；反之，越慢
-	float r = distance_ / 1000.0f;
+	float r = distance_ / 10.0f;
 	float a = r * MATH_PI_Half;
-	d = d * speed_ * sin(a);
+	d = d * speed_ * sin(a) * 10;
 	distance_ += d;
 	setDirty(true);
 }

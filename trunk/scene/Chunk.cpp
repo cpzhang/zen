@@ -1,4 +1,5 @@
 #include "Chunk.h"
+#include "misc/FileSystem.h"
 #include "scene/SceneManager.h"
 #include "render/rendercontext.h"
 #include "render/BufferLocker.h"
@@ -252,7 +253,9 @@ void Chunk::save( const tstring& path )
 		if (layers_[i] && !layers_[i]->getFileName().empty())
 		{
 			tinyxml2::XMLElement* e = doc.NewElement("layer");
-			e->SetAttribute("texture", layers_[i]->getFileName().c_str());
+			std::string tn(layers_[i]->getFileName());
+			tn = FileSystem::cutDataPath(tn);
+			e->SetAttribute("texture", tn.c_str());
 			ele->LinkEndChild(e);		
 		}
 	}	

@@ -58,3 +58,82 @@ private:
 public:
 	static std::string tEvent_Dirty;
 };
+
+class ApiRender_ HeroCamera
+{
+public:
+	HeroCamera()
+	{
+		camera_.setSpeed(0.05f);
+		Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
+		Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
+		camera_.limit_ =  BoundingBox( minBound, maxBound );
+		camera_.create(10, MATH_PI*0.75f, MATH_PI_Half*0.5f);
+		angleY_ = 0.0f;
+	}
+public:
+	void onKeyDown(char c)
+	{
+		bool moved = true;
+		switch(c)
+		{
+		case 'W':
+			{
+				angleY_ = camera_.angleXZ_ + MATH_PI;
+			}break;
+		case 'S':
+			{
+				angleY_ = camera_.angleXZ_; 
+			}break;
+		case 'A':
+			{
+				angleY_ = camera_.angleXZ_ + MATH_PI_Half;
+			}break;
+		case 'D':
+			{
+				angleY_ = camera_.angleXZ_ - MATH_PI_Half;
+			}break;
+		default:
+			{
+				moved = false;
+			}break;
+		}
+		if (moved)
+		{
+			Vector3 v(sin(angleY_), 0.0f, cos(angleY_));
+			v = v * camera_.getSpeed();
+			camera_.setCenter(camera_.getCenter() + v);
+		}
+	}
+	void update( float dTime, float ch)
+	{
+		camera_.update(dTime, ch);
+	}
+	Matrix getViewMatrix()
+	{
+		return camera_.view_;
+	}
+	bool onMouseMove()
+	{
+		return camera_.onMouseMove();
+	}
+	Vector3 getCenter()
+	{
+		return camera_.getCenter();
+	}
+	void setCenter(const Vector3& p)
+	{
+		camera_.setCenter(p);
+	}
+	float getAngleY()
+	{
+		return angleY_;
+	}
+	void onMouseWheel(float d)
+	{
+		camera_.onMouseWheel(d);
+	}
+private:
+	OrbitCamera camera_;
+	float angleY_;
+};

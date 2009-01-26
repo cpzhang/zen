@@ -172,6 +172,11 @@ public:
 	virtual void create(HWND h){};
 	virtual void apply() = 0;
 	virtual HRESULT present() = 0;
+public:
+	Matrix						projectionMatrix_;
+	Matrix						viewMatrix_;
+	Matrix						viewProjectionMatrix_;
+	Matrix						viewMatrixInverse_;
 };
 
 class ApiRender_ RenderContext: public Singleton<RenderContext>
@@ -300,10 +305,10 @@ private:
 	IDirect3DVertexDeclaration9* vertexDeclaration_;
 	u32 fvf_;
 	std::stack<Matrix> worldMatrices_;
-	Matrix						projectionMatrix_;
+	/*Matrix						projectionMatrix_;
 	Matrix						viewMatrix_;
 	Matrix						viewProjectionMatrix_;
-	Matrix						viewMatrixInverse_;
+	Matrix						viewMatrixInverse_;*/
 	Camera						camera_;
 	bool						changingMode_;
 	u32						backBufferWidthOverride_;

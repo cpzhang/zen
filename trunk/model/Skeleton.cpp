@@ -275,7 +275,7 @@ bool Skeleton::decodeSkinAnimationXML( const std::string& fileName )
 		sSkinAnimation sa;
 		sa.name = mat->Attribute("name");
 		sa.skinFilePath = FileSystem::getParent(fileName);
-		sa.skinFilePath = sa.skinFilePath + "/" + mat->Attribute("skin");
+		sa.skinFilePath = sa.skinFilePath + "\\" + mat->Attribute("skin");
 		sa.duration = mat->FloatAttribute("duration");
 		SkinAnimations_.push_back(sa);
 		mat = mat->NextSiblingElement("animation");

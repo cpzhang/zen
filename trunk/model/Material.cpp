@@ -35,7 +35,7 @@ bool Material::create( const std::string& fileName )
 		textureFileName = mat->Attribute("file");
 		FileSystem::standardFilePath(textureFileName);
 		std::string imagePath = FileSystem::getParent(fileName);
-		imagePath += "/";
+		imagePath += "\\";
 		if (textureFileName.find('.') != std::string::npos)
 		{
 			TextureFileName_ = imagePath + textureFileName;

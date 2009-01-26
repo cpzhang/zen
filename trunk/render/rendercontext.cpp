@@ -469,7 +469,7 @@ bool RenderContext::createDevice( HWND hWnd, u32 deviceIndex, u32 modeIndex, boo
 	setGammaCorrection();
 	u32 availTexMem = Direct3DDevice9_->GetAvailableTextureMem();
 	updateDeviceInfo();
-	updateProjectionMatrix();
+	//updateProjectionMatrix();
 	initRenderStates();
 	if (mixedVertexProcessing_)
 	{
@@ -521,8 +521,8 @@ void RenderContext::resetWorldMatricesStack()
 
 void RenderContext::updateViewProjectionMatrix()
 {
-	viewProjectionMatrix_.multiply(viewMatrix_, projectionMatrix_);
-	viewMatrixInverse_.invert(viewMatrix_);
+	currentRenderTarget_->viewProjectionMatrix_.multiply(currentRenderTarget_->viewMatrix_, currentRenderTarget_->projectionMatrix_);
+	currentRenderTarget_->viewMatrixInverse_.invert(currentRenderTarget_->viewMatrix_);
 }
 
 void RenderContext::updateProjectionMatrix()
@@ -535,27 +535,27 @@ void RenderContext::updateProjectionMatrix()
 	{
 		camera_.setAspectRatio( float( backBufferDesc_.Width ) / float( backBufferDesc_.Height ) );
 	}
-	projectionMatrix_.perspectiveProjection( camera_.getFov(), camera_.getAspectRatio(), camera_.getNearPlane(), camera_.getFarPlane() );
+	currentRenderTarget_->projectionMatrix_.perspectiveProjection( camera_.getFov(), camera_.getAspectRatio(), camera_.getNearPlane(), camera_.getFarPlane() );
 }
 
 const Matrix& RenderContext::getViewMatrix() const
 {
-	return viewMatrix_;
+	return currentRenderTarget_->viewMatrix_;
 }
 
 Matrix& RenderContext::getViewMatrix()
 {
-	return viewMatrix_;
+	return currentRenderTarget_->viewMatrix_;
 }
 
 const Matrix& RenderContext::getProjectionMatrix() const
 {
-	return projectionMatrix_;
+	return currentRenderTarget_->projectionMatrix_;
 }
 
 Matrix& RenderContext::getProjectionMatrix()
 {
-	return projectionMatrix_;
+	return currentRenderTarget_->projectionMatrix_;
 }
 
 bool RenderContext::checkDevice( bool& reset )
@@ -849,7 +849,7 @@ bool RenderContext::isInitialized()
 
 Matrix& RenderContext::getViewProjectionMatrix()
 {
-	return viewProjectionMatrix_;
+	return currentRenderTarget_->viewProjectionMatrix_;
 }
 
 u32 RenderContext::drawIndexedPrimitive( D3DPRIMITIVETYPE type, INT baseVertexIndex, u32 minIndex, u32 numVertices, u32 startIndex, u32 primitiveCount )
@@ -996,7 +996,7 @@ void RenderContext::initVertexDeclarations_()
 
 void RenderContext::setViewMatrix( const Matrix& m )
 {
-	viewMatrix_ = m;
+	currentRenderTarget_->viewMatrix_ = m;
 	updateViewProjectionMatrix();
 }
 
@@ -1018,17 +1018,17 @@ Ray RenderContext::getPickingRay()
 	::ScreenToClient( windowHandle_, &ptCursor );
 	// Compute the vector of the pick ray in screen space
 	D3DXVECTOR3 v;
-	v.x = ( ( ( 2.0f * ptCursor.x ) / getRenderContex()->getScreenWidth() ) - 1 ) / projectionMatrix_._11;
-	v.y = -( ( ( 2.0f * ptCursor.y ) / getRenderContex()->getScreenHeight() ) - 1 ) / projectionMatrix_._22;
+	v.x = ( ( ( 2.0f * ptCursor.x ) / getRenderContex()->getScreenWidth() ) - 1 ) / currentRenderTarget_->projectionMatrix_._11;
+	v.y = -( ( ( 2.0f * ptCursor.y ) / getRenderContex()->getScreenHeight() ) - 1 ) / currentRenderTarget_->projectionMatrix_._22;
 	v.z = 1.0f;
 
 	// Get the inverse view matrix
 	const Matrix matView = getRenderContex()->getViewMatrix();
-	const Matrix matWorld = Matrix::Identity;
-	Matrix mWorldView = matWorld;
-	mWorldView.postMultiply(matView);
+	//const Matrix matWorld = Matrix::Identity;
+	//Matrix mWorldView = matWorld;
+	//mWorldView.postMultiply(matView);
 	Matrix m;
-	m.invert(mWorldView);
+	m.invert(matView);
 
 	// Transform the screen space pick ray into 3D space
 	Ray r;
@@ -1058,12 +1058,12 @@ HRESULT RenderContext::SetTransform( D3DTRANSFORMSTATETYPE State, const D3DMATRI
 
 HRESULT RenderContext::applyViewMatrix()
 {
-	return Direct3DDevice9_->SetTransform(D3DTS_VIEW, &viewMatrix_);
+	return Direct3DDevice9_->SetTransform(D3DTS_VIEW, &currentRenderTarget_->viewMatrix_);
 }
 
 HRESULT RenderContext::applyProjectionMatrix()
 {
-	return Direct3DDevice9_->SetTransform(D3DTS_PROJECTION, &projectionMatrix_);
+	return Direct3DDevice9_->SetTransform(D3DTS_PROJECTION, &currentRenderTarget_->projectionMatrix_);
 }
 
 HRESULT RenderContext::LightEnable( DWORD LightIndex, BOOL bEnable )

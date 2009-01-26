@@ -193,7 +193,7 @@ void Mz::loadMzI( const std::string& fileName )
 		p = fileName.find_last_of('/');
 		if (p != std::string::npos)
 		{
-			std::string fn = fileName.substr(0, p) + "/" + fbFileNames_[i];
+			std::string fn = fileName.substr(0, p) + "\\" + fbFileNames_[i];
 			loadFb(fn);
 		}
 	}
@@ -307,9 +307,9 @@ void Mz::saveMaterial( const std::string& fileName )
 	for (size_t i = 0; i != mMaterials.size(); ++i)
 	{
 		sMat& s = mMaterials[i];
-		std::string path = fileName + "/" + s.mName + ".material";
-		std::string imagePathOld = parentPathOld + "/" + s.mTextureName;
-		std::string imagePathNew = parentPath + "/" + s.mTextureName;
+		std::string path = fileName + "\\" + s.mName + ".material";
+		std::string imagePathOld = parentPathOld + "\\" + s.mTextureName;
+		std::string imagePathNew = parentPath + "\\" + s.mTextureName;
 		FileSystem::createFolder(imagePathNew);
 		CopyFile(imagePathOld.c_str(), imagePathNew.c_str(), false);
 		//============================================================================
@@ -329,7 +329,7 @@ void Mz::saveMaterial( const std::string& fileName )
 			tinyxml2::XMLElement* a = doc.NewElement("Texture");
 			a->SetAttribute("name", "g_Texture0");
 			std::string fileName;//("image");
-			//fileName += "/";
+			//fileName += "\\";
 			fileName = s.mTextureName;
 			a->SetAttribute("file", fileName.c_str());
 			ele->LinkEndChild(a);
@@ -463,7 +463,7 @@ void Mz::saveSubEntity( const std::string& fileName )
 	for (size_t i = 0; i != mSubmeshes.size(); ++i)
 	{
 		sSubMeshWithName& mesh = mSubmeshes[i];
-		std::string path = fileName + "/" + mesh.name + ".part";
+		std::string path = fileName + "\\" + mesh.name + ".part";
 		//============================================================================
 		tinyxml2::XMLDocument doc;
 		// 
@@ -475,7 +475,7 @@ void Mz::saveSubEntity( const std::string& fileName )
 		{
 			tinyxml2::XMLElement* a = doc.NewElement("mesh");
 			std::string meshPath;
-			//meshPath = "/";
+			//meshPath = "\\";
 			meshPath += mesh.name;
 			meshPath += ".mesh";
 			a->SetAttribute("file", meshPath.c_str());
@@ -484,7 +484,7 @@ void Mz::saveSubEntity( const std::string& fileName )
 		{
 			tinyxml2::XMLElement* a = doc.NewElement("material");
 			std::string meshPath;
-			//meshPath = "/";
+			//meshPath = "\\";
 			meshPath += mMaterials[mesh.matId].mName;
 			meshPath += ".material";
 			a->SetAttribute("file", meshPath.c_str());
@@ -493,7 +493,7 @@ void Mz::saveSubEntity( const std::string& fileName )
 		if(0){
 			tinyxml2::XMLElement* a = doc.NewElement("boneMapping");
 			std::string meshPath;
-			//meshPath = "/";
+			//meshPath = "\\";
 			meshPath += mesh.name;
 			meshPath += ".boneMapping";
 			a->SetAttribute("file", meshPath.c_str());
@@ -502,7 +502,7 @@ void Mz::saveSubEntity( const std::string& fileName )
 		if(0){
 			tinyxml2::XMLElement* a = doc.NewElement("skeleton");
 			std::string meshPath;
-			meshPath = "/";
+			meshPath = "\\";
 			std::string fileFinalName = FileSystem::removeParent(mzFileName_);
 			fileFinalName = FileSystem::removeFileExtension(fileFinalName);
 			meshPath += fileFinalName;
@@ -513,7 +513,7 @@ void Mz::saveSubEntity( const std::string& fileName )
 		if(0){
 			tinyxml2::XMLElement* a = doc.NewElement("animation");
 			std::string meshPath;
-			meshPath = "/";
+			meshPath = "\\";
 			std::string fileFinalName = FileSystem::removeParent(mzFileName_);
 			fileFinalName = FileSystem::removeFileExtension(fileFinalName);
 			meshPath += fileFinalName;
@@ -871,7 +871,7 @@ void Mz::saveSkin( const std::string& fileName )
 	}
 	for (size_t i = 0; i != mSkins.size(); ++i)
 	{
-		std::string path = fileName + "/" + mAnimations[i].name + ".skin";
+		std::string path = fileName + "\\" + mAnimations[i].name + ".skin";
 		Skin& s = mSkins[i];
 		//============================================================================
 		// 开始写入数据 

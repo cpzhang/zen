@@ -24,7 +24,7 @@ bool Part::create( const std::string& fileName )
 	}
 	std::string parentPath = FileSystem::getParent(fileName);
 	//parentPath = FileSystem::getParent(parentPath);
-	parentPath += "/";
+	parentPath += "\\";
 	Name_ = r->Attribute("name");
 	{
 		tinyxml2::XMLElement* mes = r->FirstChildElement("mesh");

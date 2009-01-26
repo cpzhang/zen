@@ -270,7 +270,7 @@ void Mesh::saveSkin( const std::string& fileName )
 	Mz* mz;
 	for (size_t i = 0; i != mz->mSkins.size(); ++i)
 	{
-		std::string path = fileName + "/" + mz->mAnimations[i].name + ".skin";
+		std::string path = fileName + "\\" + mz->mAnimations[i].name + ".skin";
 		Skin& s = mz->mSkins[i];
 		//============================================================================
 		// 开始写入数据

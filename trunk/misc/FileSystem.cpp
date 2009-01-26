@@ -22,6 +22,13 @@ tstring FileSystem::getDataDirectory()
 {
 	return dataPath_;
 }
+bool FileSystem::isDirExist( const tstring& fileName )
+{
+	DWORD fileAttr = GetFileAttributes(fileName.c_str());
+	//存在，且为文件夹
+	return (INVALID_FILE_ATTRIBUTES != fileAttr) && 
+		(fileAttr & FILE_ATTRIBUTE_DIRECTORY);
+}
 
 bool FileSystem::isFileExist(const tstring& fileName )
 {
@@ -43,11 +50,11 @@ tstring FileSystem::getBinDirectory( )
 tstring FileSystem::getParent( const tstring& dir )
 {
 	tstring path(standardFilePath(dir));
-	if (path[path.size() -1] == '/')
+	if (path[path.size() -1] == '\\')
 	{
 		path = path.substr(0, path.size() - 1);
 	}
-	size_t pos = path.find_last_of('/');
+	size_t pos = path.find_last_of('\\');
 	if (pos != tstring::npos)
 	{
 		return path.substr(0, pos);
@@ -68,7 +75,7 @@ tstring FileSystem::getFileExtension( const tstring& fileName )
 tstring FileSystem::removeParent( const tstring& dir )
 {
 	tstring path(standardFilePath(dir));
-	size_t pos = path.find_last_of('/');
+	size_t pos = path.find_last_of('\\');
 	
 	if (pos != tstring::npos)
 	{
@@ -103,9 +110,9 @@ tstring FileSystem::standardFilePath(const tstring& p)
 	tstring path(p);
 	for (size_t i = 0; i != path.size(); ++i)
 	{
-		if (path[i] == '\\')
+		if (path[i] == '/')
 		{
-			path[i] = '/';
+			path[i] = '\\';
 		}
 	}
 	return path;
@@ -113,31 +120,50 @@ tstring FileSystem::standardFilePath(const tstring& p)
 void FileSystem::createFolder(tstring& path)
 {
 	tstring folder = standardFilePath(path);
-	size_t pos = folder.find_first_of(TEXT("/"));
+	size_t pos = folder.find_first_of(TEXT("\\"));
 	while(pos != tstring::npos)
 	{
 		tstring f = folder.substr(0, pos);
 		CreateDirectory(f.c_str(), NULL);
-		pos = folder.find_first_of(TEXT("/"), pos + 1);
+		pos = folder.find_first_of(TEXT("\\"), pos + 1);
 	}
 }
 
 void FileSystem::setDataDirectory( const tstring& dir )
 {
+	//最后带'\'
 	dataPath_ = standardFilePath(dir);
 }
 
 tstring FileSystem::cutDataPath( const tstring& path )
 {
-	return path.substr(dataPath_.size(), path.size() - dataPath_.size());
+	return path.substr(dataPath_.size() + 1, path.size() - dataPath_.size() - 1);
 }
 
 tstring FileSystem::guessDataDirectory()
 {
 	tstring d = getBinDirectory();
 	d = getParent(d);
-	return d + "/data";
+	return d + "\\data";
 }
+
+tstring FileSystem::addDataDir( const tstring& path )
+{
+	std::string p;
+	if (!path.empty())
+	{
+		if (path[0] == '\\')
+		{
+			p = getDataDirectory() + path;
+		}
+		else
+		{
+			p = getDataDirectory() + "\\" + path;
+		}
+	}
+	return p;
+}
+
 
 tstring FileSystem::dataPath_;
 

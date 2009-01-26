@@ -32,7 +32,7 @@ bool Entity::create( const tstring& resourceId )
 	tinyxml2::XMLElement* tex= r->FirstChildElement("part");
 	std::string parentPath = FileSystem::standardFilePath(FileName_);
 	parentPath = FileSystem::getParent(parentPath);
-	parentPath += "/";
+	parentPath += "\\";
 	while (tex)
 	{
 		std::string subEntityFileName = tex->Attribute("file");
@@ -53,7 +53,7 @@ bool Entity::create( const tstring& resourceId )
 	while (tex)
 	{
 		std::string subEntityFileName = tex->Attribute("file");
-		NameParticles_.push_back(FileSystem::getDataDirectory() + "/" + subEntityFileName);
+		NameParticles_.push_back(FileSystem::getDataDirectory() + "\\" + subEntityFileName);
 		//
 		{
 			const char* n = tex->Attribute("bone");

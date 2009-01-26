@@ -53,7 +53,7 @@ LRESULT SceneNewDlg::OnBnClickedOk( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*h
 		Terrain* tn = SceneManager::getInstancePtr()->getTerrain();
 		if (tn)
 		{
-			tn->setFileName(mPath + TEXT("/") + getSceneName());
+			tn->setFileName(mPath + TEXT("\\") + getSceneName());
 			tstring fxName(TEXT("shader/Terrain.fx"));
 			tn->setFX(fxName);
 		}

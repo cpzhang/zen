@@ -78,7 +78,7 @@ LRESULT StrengthTrackBarCtrl::OnNMThemeChangedSlider( UINT uMsg, WPARAM wParam, 
 	}
 	if (bHandled)
 	{
-		getGlobal()->setBrushStrength(nPercent);
+		getGlobal()->setBrushStrength(nPercent * 0.01f);
 	}
 	return bHandled;
 }

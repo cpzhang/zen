@@ -428,7 +428,7 @@ void FreeType::onInvalidateDevice()
 
 void FreeType::onRestoreDevice()
 {
-	_fx = getFxManager()->getFx("shader\\Freetype.fx");
+	_fx = getFxManager()->getFx("\\shader\\Freetype.fx");
 }
 
 const unsigned int FreeType::_TEXTURE_SIZE(256);

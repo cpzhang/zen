@@ -1,20 +1,37 @@
 #pragma once
 #include <windows.h>
 #include "resource.h"
+#include "misc/windowsHead.h"
+#include "misc/Logger.h"
 #include "misc/FileSystem.h"
+//
 #include "render/rendercontext.h"
-#include "scene/SceneManager.h"
 #include "render/FxManager.h"
 #include "render/TextureManager.h"
 #include "render/OrbitCamera.h"
+//
+#include "model/EntityInstance.h"
+//
+#include "scene/Node.h"
+#include "scene/Terrain.h"
+#include "scene/SceneManager.h"
 const LPCTSTR APP_NAME = TEXT("Game");
 const LPCTSTR APP_TITLE = TEXT("Game Client");
 HWND			_hwnd;
-OrbitCamera camera_;
+HeroCamera camera_;
+Node* Hero_ = NULL;
+EntityInstance* HeroInstance_ = NULL;
+void setHero( const char* resID )
+{
+	HeroInstance_ = getSceneManager()->createEntityInstance(resID);
+	Hero_ = NodeManager::getInstancePtr()->createNode("Hero");
+	Hero_->attach(HeroInstance_);
+	HeroInstance_->setAnimation("Run");
+}
 bool adjustClientArea()
 {
 	//800
-	RECT rect = {0, 0, 600, 800};
+	RECT rect = {0, 0, 600, 600};
 	if (!AdjustWindowRect(&rect, 
 		GetWindowLong(_hwnd, GWL_STYLE), GetMenu(_hwnd) != NULL))
 	{
@@ -29,8 +46,8 @@ bool adjustClientArea()
 	RECT rectWin;
 	GetWindowRect(_hwnd, &rectWin);
 
-	double x = (width - (rectWin.right - rectWin.left)) * 0.5;
-	double y = (height - (rectWin.bottom - rectWin.top)) * 0.5;
+	double x = (width - (rect.right - rect.left)) * 0.5;
+	double y = (height - (rect.bottom - rect.top)) * 0.5;
 	//
 	if (!MoveWindow(_hwnd, (unsigned int)x, (unsigned int)y,
 		rect.right - rect.left,
@@ -53,6 +70,41 @@ LRESULT CALLBACK _wndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
 			::PostQuitMessage(0);
 		}
 		break;
+	case WM_MOUSEMOVE:
+		{
+			//camera_.onMouseMove();
+		}
+		break;
+	case WM_MOUSEWHEEL:
+		{
+			float delta = ( short )HIWORD( wParam );
+			delta /= 120.0f;
+			camera_.onMouseWheel(delta);
+		}
+	case WM_SIZE:
+		{
+			return 1;
+		}break;
+	case WM_KEYDOWN:
+		{
+			switch(wParam)
+			{
+				// Destroy the window and Send the WM_DESTROY message
+			case VK_ESCAPE:
+				{
+					::DestroyWindow((HWND)hWnd);
+				}
+				break;
+			case 'W':
+			case 'S':
+			case 'A':
+			case 'D':
+				{
+					camera_.onKeyDown(wParam);
+				}break;
+			}
+		}
+		break;
 	default:
 		{
 		}
@@ -61,12 +113,18 @@ LRESULT CALLBACK _wndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
 	// Forward any other messages we didn't handle above to the default window procedure
 	return ::DefWindowProc(hWnd, message, wParam, lParam);
 }
-bool play()
+bool play(const float delta)
 {
 	//
-	camera_.update(1, 0);
-	getRenderContex()->setViewMatrix(camera_.view_);
-	getSceneManager()->update(1);
+	camera_.update(delta, 0);
+	getRenderContex()->setViewMatrix(camera_.getViewMatrix());
+	getSceneManager()->update(delta);
+	Hero_->update(delta);
+	//拾取高度
+	Vector3 position_ = camera_.getCenter();
+	position_.y = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(position_.x, position_.z);
+	HeroInstance_->setPosition(position_);
+	HeroInstance_->rotateY(camera_.getAngleY() + MATH_PI);
 	//
 	u32 clearFlags = D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER;
 	if ( getRenderContex()->isStencilAvailable() )
@@ -74,12 +132,13 @@ bool play()
 	static Vector4 scc(0.0f,0.0f,0.0f, 0.0f);
 	getRenderContex()->getDxDevice()->Clear( 0, NULL, clearFlags, scc.getARGB(), 1, 0 );
 	getRenderContex()->beginScene();
-	//poem();
+	//
 	if (getSceneManager())
 	{
-		//画地表
+		//画场景
 		getSceneManager()->render();
 	}
+	Hero_->render();
 	getRenderContex()->endScene();
 	getRenderContex()->present();
 
@@ -87,6 +146,8 @@ bool play()
 }
 void postPlay()
 {
+	HeroInstance_->release();
+	Hero_->release();
 	destroySceneManager();
 	destroyFxManager();
 	destroyTextureManager();
@@ -128,8 +189,12 @@ int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	// Update the window
 	::UpdateWindow(_hwnd);
 
+	MessageBox(NULL, "远程连接后点击确定", "测试", MB_OK);
 	//
-	//adjustClientArea();
+	adjustClientArea();
+	//
+	Error("游戏客户端log");
+	//
 	createRenderContex();
 	int index = 0;
 	bool pf = false;
@@ -148,22 +213,23 @@ int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	createTextureManager();
 	createFxManager();
 	createSceneManager();
-	camera_.setSpeed(5.0f);
-	Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
-	Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
-	camera_.limit_ =  BoundingBox( minBound, maxBound );
-	camera_.create(10, MATH_PI, MATH_PI_Half);
 	//
 	Camera c = getRenderContex()->getCamera();
 	c.setFarPlane(10000.0f);
 	getRenderContex()->setCamera(c);
-
+	getRenderContex()->updateProjectionMatrix();
 	FileSystem::setDataDirectory(FileSystem::guessDataDirectory());
-	getSceneManager()->open("scene\\bornland");
+	getSceneManager()->open("\\scene\\bornland");
+	setHero(TEXT("\\model\\Character_1015\\Character_1015.entity"));
+	//
+	camera_.setCenter(Vector3(30, 0.0, 35));
 	// Message Structure
 	MSG msg;
 	::ZeroMemory(&msg, sizeof(msg));
 	// Loop until getting a WM_QUIT message
+	float lastTick = GetTickCount();
+	float currentTick = 0.0f;
+	float delta = 0.0f;
 	while(true)
 	{
 		if (::PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
@@ -177,12 +243,19 @@ int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		}
 		else
 		{
-			if (!play())
+			currentTick = GetTickCount();
+			delta = currentTick - lastTick;
+			if (delta >= 30.0f)
 			{
-				break;
+				if (!play(delta))
+				{
+					break;
+				}
+				lastTick = currentTick;
 			}
 		}
 	}
 	// clean up
 	postPlay();
+	Error("==end");
 }
