@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<scene name="BornLand">
+<scene name="bornland">
     <terrain XChunkNumber="6" ZChunkNumber="6" Lod="5" ChunkSize="30.000000"/>
-    <material fx="D:/work/zen/data/shader/Terrain.fx"/>
+    <material fx="shader\Terrain.fx"/>
 </scene>
