@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<part name="Character_1001_01_03">
+    <mesh file="mesh/Character_1001_01_03.mesh"/>
+    <material file="material/Character_1001_03_M.material"/>
+    <boneMapping file="mesh/Character_1001_01_03.boneMapping"/>
+    <skeleton file="skeleton/Character_1001_01_03.skeleton"/>
+    <animation file="animation/Character_1001_01_03.animation"/>
+</part>

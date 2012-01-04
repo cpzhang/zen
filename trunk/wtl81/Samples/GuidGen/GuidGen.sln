@@ -1,0 +1,17 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GuidGen", "GuidGen.vcxproj", "{80C31EC1-03F8-B6EA-EFBD-61D1664431EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{80C31EC1-03F8-B6EA-EFBD-61D1664431EC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{80C31EC1-03F8-B6EA-EFBD-61D1664431EC}.Release|Win32.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

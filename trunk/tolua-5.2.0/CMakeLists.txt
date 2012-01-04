@@ -1,0 +1,2 @@
+add_subdirectory(toLuaLibrary)
+add_subdirectory(toLuaExecute)

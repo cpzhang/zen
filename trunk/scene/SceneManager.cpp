@@ -1,0 +1,445 @@
+#include "SceneManager.h"
+#include "Terrain.h"
+#include "render/vector3.h"
+#include "QuadNode.h"
+SceneManager::SceneManager()
+{
+	clear_();
+}
+
+SceneManager::~SceneManager()
+{
+	clear_();
+}
+
+void SceneManager::createTerrain( int xChunks, int zChunks, int n)
+{
+	lod_.destroy();
+	lod_.setN(n);
+	lod_.create();
+	destroyTerrain_();
+	destroyTerrainQuadTree();
+	terrainCurrent_ = new Terrain;
+	terrainCurrent_->create(xChunks, zChunks);
+	constructTerrainQuadTree(xChunks, zChunks);
+}
+
+void SceneManager::clear_()
+{
+	terrainQuadTreeRoot_ = NULL;
+	allChunksVisible_ = true;
+	runType_ = eRunType_Game;
+	hero_ = NULL;
+	terrainCurrent_ = NULL;
+}
+
+Terrain* SceneManager::getTerrain()
+{
+	return terrainCurrent_;
+}
+
+void SceneManager::destroy()
+{
+	//
+	lod_.destroy();
+	//
+	destroyTerrain_();
+	//
+	destroyTerrainQuadTree();
+}
+
+void SceneManager::render()
+{
+	if (terrainCurrent_)
+	{
+		terrainCurrent_->render();
+		for (DecalMap::iterator it = decals_.begin(); it != decals_.end(); ++it)
+		{
+			Decal* d = it->second;
+			if (d)
+			{
+				terrainCurrent_->renderDecal(d);
+			}
+		}
+	}
+}
+
+LOD* SceneManager::getLOD()
+{
+	return &lod_;
+}
+
+void SceneManager::destroyTerrain_()
+{
+	if (terrainCurrent_)
+	{
+		terrainCurrent_->destroy();
+		delete terrainCurrent_;
+		terrainCurrent_ = NULL;
+	}
+}
+
+Hero* SceneManager::getHero()
+{
+	return hero_;
+}
+
+void SceneManager::setHero( Hero* h )
+{
+	hero_ = h;
+}
+
+void SceneManager::update()
+{
+	if (hero_ && terrainCurrent_ && !allChunksVisible_)
+	{
+	//	Vector3 p = hero_->getPosition();
+	//	terrainCurrent_->updateVisibleChunks(p.x, p.z);
+	}
+	if (terrainCurrent_)
+	{
+		terrainCurrent_->clearSelected();
+	}
+}
+
+void SceneManager::setRunType( eRunType rt )
+{
+	runType_ = rt;
+}
+
+eRunType SceneManager::getRunType()
+{
+	return runType_;
+}
+
+bool SceneManager::IsAllChunksVisible()
+{
+	return allChunksVisible_;
+}
+
+void SceneManager::setAllChunksVisible( bool b )
+{
+	allChunksVisible_ = b;
+}
+
+Decal* SceneManager::createDecal(const tstring& name)
+{
+	Decal* d = new Decal;
+	d->setName(name);
+	decals_[name] = d;
+	return d;
+}
+
+void SceneManager::destroyDecals()
+{
+	for (DecalMap::iterator it = decals_.begin(); it != decals_.end(); ++it)
+	{
+		Decal* d = it->second;
+		if (d)
+		{
+			d->destroy();
+			delete d;
+		}
+	}
+	decals_.clear();
+}
+typedef void createLeafImp_(QuadNode* parent, eQuadNode e, int x, int z);
+void constructTerrainQuadTreeImp_(QuadNode* parent, int xChunksBegin, int xChunksEnd, int zChunksBegin, int zChunksEnd, createLeafImp_* cf, bool outSide = true);
+//
+RectangleT gRC;
+int gX;
+int gZ;
+void constructQuadTreeInsideChunk(QuadNode* parent, eQuadNode e, int x, int z)
+{
+	QuadNode* n = QuadNode::create();
+	parent->children_[e] = n;
+	n->leaf_ = true;
+	n->insideChunk_ = true;
+	n->xNumber_ = gX;
+	n->zNumber_ = gZ;
+	n->x_ = x;
+	n->z_ = z;
+	int s = getSceneManager()->getLOD()->getScale();
+	n->rect_.left_ = x * s + gRC.left_;
+	n->rect_.right_ = n->rect_.left_ + s;
+	n->rect_.bottom_ = z * s + gRC.bottom_;
+	n->rect_.top_ = n->rect_.bottom_ + s;
+	//
+	Chunk* ck = getSceneManager()->getTerrain()->getChunkFromTopology(gX, gZ);
+	Vector2 p = ck->getMaxMinHeightFromTopology(x, x+1, z, z+1);
+	n->boundingBox_.max_ = Vector3(n->rect_.right_, p.x, n->rect_.top_);
+	n->boundingBox_.min_ = Vector3(n->rect_.left_, p.y, n->rect_.bottom_);
+}
+//
+void createLeaf(QuadNode* parent, eQuadNode e, int x, int z)
+{
+	parent->children_[e] = QuadNode::create();
+	parent->children_[e]->leaf_ = true;
+	parent->children_[e]->xNumber_ = x;
+	parent->children_[e]->zNumber_ = z;
+	gX = x;
+	gZ = z;
+	parent->children_[e]->rect_ = getSceneManager()->getTerrain()->getChunkFromTopology(x, z)->getRect();
+	gRC = parent->children_[e]->rect_;
+	constructTerrainQuadTreeImp_(parent->children_[e], 0, getSceneManager()->getLOD()->getVerticesNumberOneSide() - 2, 0, getSceneManager()->getLOD()->getVerticesNumberOneSide() - 2, &constructQuadTreeInsideChunk, false);
+}
+//±ÕÇø¼ä
+void constructTerrainQuadTreeImp_(QuadNode* parent, int xChunksBegin, int xChunksEnd, int zChunksBegin, int zChunksEnd, createLeafImp_* cf, bool outSide /*= true*/)
+{
+	if (xChunksEnd < xChunksBegin || zChunksEnd < zChunksBegin)
+	{
+		return;
+	}
+	eQuadNode e = eQuadNode_Size;
+	QuadNode* n = NULL;
+	if (xChunksEnd - xChunksBegin == 0)
+	{
+		if (zChunksEnd - zChunksBegin == 0)
+		{
+			cf(parent, eQuadNode_LeftBottom, xChunksBegin, zChunksBegin);
+			return;
+		}
+		if (zChunksEnd - zChunksBegin == 1)
+		{
+			//
+			cf(parent, eQuadNode_LeftBottom, xChunksBegin, zChunksBegin);
+			//
+			cf(parent, eQuadNode_LeftTop, xChunksBegin, zChunksEnd);
+			return;
+		}
+	}
+	if (xChunksEnd - xChunksBegin == 1)
+	{
+		if (zChunksEnd - zChunksBegin == 0)
+		{
+			cf(parent, eQuadNode_LeftBottom, xChunksBegin, zChunksBegin);
+			cf(parent, eQuadNode_RightBottom, xChunksEnd, zChunksBegin);
+			return;
+		}
+		if (zChunksEnd - zChunksBegin == 1)
+		{
+			//
+			cf(parent, eQuadNode_LeftBottom, xChunksBegin, zChunksBegin);
+			//
+			cf(parent, eQuadNode_LeftTop, xChunksBegin, zChunksEnd);
+			//
+			cf(parent, eQuadNode_RightBottom, xChunksEnd, zChunksBegin);
+			//
+			cf(parent, eQuadNode_RightTop, xChunksEnd, zChunksEnd);
+			return;
+		}
+	}
+	//
+	{
+		int s = 0;
+		if (outSide)
+		{
+			s = getSceneManager()->getLOD()->getLengthOneSide();
+		}
+		else
+		{
+			s = getSceneManager()->getLOD()->getScale();
+		}
+		//
+		{
+			int x0 = xChunksBegin;
+			int x1 = xChunksBegin + (xChunksEnd - xChunksBegin)/2;
+			int z0 = zChunksBegin;
+			int z1 = zChunksBegin + (zChunksEnd - zChunksBegin)/2;
+			if (x0 <= x1 && z0 <= z1)
+			{
+				e = eQuadNode_LeftBottom;
+				parent->children_[e] = QuadNode::create();
+				parent->children_[e]->leaf_ = false;
+				n = parent->children_[e];
+				n->rect_.left_ = x0*s;
+				n->rect_.right_ = (x1 + 1)*s;
+				n->rect_.bottom_ = z0*s;
+				n->rect_.top_ = (z1 + 1)*s;
+				if (!outSide)
+				{
+					n->rect_.left_ += gRC.left_;
+					n->rect_.right_ += gRC.left_;
+					n->rect_.bottom_ += gRC.bottom_;
+					n->rect_.top_ += gRC.bottom_;
+				}
+				if (!outSide)
+				{
+					Chunk* ck = getSceneManager()->getTerrain()->getChunkFromTopology(gX, gZ);
+					Vector2 p = ck->getMaxMinHeightFromTopology(x0, x1, z0, z1);
+					n->boundingBox_.max_ = Vector3(n->rect_.right_, p.x, n->rect_.top_);
+					n->boundingBox_.min_ = Vector3(n->rect_.left_, p.y, n->rect_.bottom_);
+				}
+				constructTerrainQuadTreeImp_(n, x0, x1, z0, z1, cf, outSide);
+			}
+		}
+		{
+			int x0 = xChunksBegin + (xChunksEnd - xChunksBegin)/2 + 1;
+			int x1 = xChunksEnd;
+			int z0 = zChunksBegin;
+			int z1 = zChunksBegin + (zChunksEnd - zChunksBegin)/2;
+			if (x0 <= x1 && z0 <= z1)
+			{
+				e = eQuadNode_RightBottom;
+				parent->children_[e] = QuadNode::create();
+				parent->children_[e]->leaf_ = false;
+				n = parent->children_[e];
+				n->rect_.left_ = x0*s;
+				n->rect_.right_ = (x1 + 1)*s;
+				n->rect_.bottom_ = z0*s;
+				n->rect_.top_ = (z1 + 1)*s;
+				if (!outSide)
+				{
+					n->rect_.left_ += gRC.left_;
+					n->rect_.right_ += gRC.left_;
+					n->rect_.bottom_ += gRC.bottom_;
+					n->rect_.top_ += gRC.bottom_;
+				}
+				if (!outSide)
+				{
+					Chunk* ck = getSceneManager()->getTerrain()->getChunkFromTopology(gX, gZ);
+					Vector2 p = ck->getMaxMinHeightFromTopology(x0, x1, z0, z1);
+					n->boundingBox_.max_ = Vector3(n->rect_.right_, p.x, n->rect_.top_);
+					n->boundingBox_.min_ = Vector3(n->rect_.left_, p.y, n->rect_.bottom_);
+				}
+				constructTerrainQuadTreeImp_(n, x0, x1, z0, z1, cf, outSide);
+			}
+		}
+		{
+			int x0 = xChunksBegin;
+			int x1 = xChunksBegin + (xChunksEnd - xChunksBegin)/2;
+			int z0 = zChunksBegin + (zChunksEnd - zChunksBegin)/2 + 1;
+			int z1 = zChunksEnd;
+			if (x0 <= x1 && z0 <= z1)
+			{
+				e = eQuadNode_LeftTop;
+				parent->children_[e] = QuadNode::create();
+				parent->children_[e]->leaf_ = false;
+				n = parent->children_[e];
+				n->rect_.left_ = x0*s;
+				n->rect_.right_ = (x1 + 1)*s;
+				n->rect_.bottom_ = z0*s;
+				n->rect_.top_ = (z1 + 1)*s;
+				if (!outSide)
+				{
+					n->rect_.left_ += gRC.left_;
+					n->rect_.right_ += gRC.left_;
+					n->rect_.bottom_ += gRC.bottom_;
+					n->rect_.top_ += gRC.bottom_;
+				}
+				if (!outSide)
+				{
+					Chunk* ck = getSceneManager()->getTerrain()->getChunkFromTopology(gX, gZ);
+					Vector2 p = ck->getMaxMinHeightFromTopology(x0, x1, z0, z1);
+					n->boundingBox_.max_ = Vector3(n->rect_.right_, p.x, n->rect_.top_);
+					n->boundingBox_.min_ = Vector3(n->rect_.left_, p.y, n->rect_.bottom_);
+				}
+				constructTerrainQuadTreeImp_(n, x0, x1, z0, z1, cf, outSide);
+			}
+		}
+		{
+			int x0 = xChunksBegin + (xChunksEnd - xChunksBegin)/2 + 1;
+			int x1 = xChunksEnd;
+			int z0 = zChunksBegin + (zChunksEnd - zChunksBegin)/2 + 1;
+			int z1 = zChunksEnd;
+			if (x0 <= x1 && z0 <= z1)
+			{
+				e = eQuadNode_RightTop;
+				parent->children_[e] = QuadNode::create();
+				parent->children_[e]->leaf_ = false;
+				n = parent->children_[e];
+				n->rect_.left_ = x0*s;
+				n->rect_.right_ = (x1 + 1)*s;
+				n->rect_.bottom_ = z0*s;
+				n->rect_.top_ = (z1 + 1)*s;
+				if (!outSide)
+				{
+					n->rect_.left_ += gRC.left_;
+					n->rect_.right_ += gRC.left_;
+					n->rect_.bottom_ += gRC.bottom_;
+					n->rect_.top_ += gRC.bottom_;
+				}
+				if (!outSide)
+				{
+					Chunk* ck = getSceneManager()->getTerrain()->getChunkFromTopology(gX, gZ);
+					Vector2 p = ck->getMaxMinHeightFromTopology(x0, x1, z0, z1);
+					n->boundingBox_.max_ = Vector3(n->rect_.right_, p.x, n->rect_.top_);
+					n->boundingBox_.min_ = Vector3(n->rect_.left_, p.y, n->rect_.bottom_);
+				}
+				constructTerrainQuadTreeImp_(n, x0, x1, z0, z1, cf, outSide);
+			}
+		}
+	}
+}
+void SceneManager::constructTerrainQuadTree(int xChunks, int zChunks )
+{
+	terrainQuadTreeRoot_ = QuadNode::create(true);
+	terrainQuadTreeRoot_->leaf_ = false;
+	terrainQuadTreeRoot_->rect_.left_ = 0;
+	terrainQuadTreeRoot_->rect_.right_ = lod_.getLengthOneSide() * xChunks;
+	terrainQuadTreeRoot_->rect_.bottom_ = 0;
+	terrainQuadTreeRoot_->rect_.top_ = lod_.getLengthOneSide() * zChunks;
+	constructTerrainQuadTreeImp_(terrainQuadTreeRoot_, 0, xChunks-1, 0, zChunks-1, createLeaf);
+	//
+	//QuadNode::calculateRect(terrainQuadTreeRoot_);
+	//
+	QuadNode::calculateBoundingBox(terrainQuadTreeRoot_);
+}
+
+void SceneManager::destroyTerrainQuadTree()
+{
+	if (terrainQuadTreeRoot_)
+	{
+		terrainQuadTreeRoot_->release();
+	}
+}
+
+QuadNode* SceneManager::getTerrainQuadTreeRoot()
+{
+	return terrainQuadTreeRoot_;
+}
+
+void SceneManager::getChunks( ChunkVec& cs, QuadNode* n, RectangleT& rc )
+{
+	if (NULL == n)
+	{
+		return;
+	}
+	if (!rc.isIntersected(&n->rect_))
+	{
+		return;
+	}
+	if (n->leaf_)
+	{
+		cs.push_back(terrainCurrent_->getChunkFromTopology(n->xNumber_, n->zNumber_));
+		return;
+	}
+	for (int i = eQuadNode_LeftBottom; i != eQuadNode_Size; ++i)
+	{
+		QuadNode* c = n->children_[i];
+		if (c)
+		{
+			getChunks(cs, c, rc);
+		}
+	}
+}
+
+ApiScene_ SceneManager* createSceneManager()
+{
+	new SceneManager;
+	return SceneManager::getInstancePtr();
+}
+
+ApiScene_ void destroySceneManager()
+{
+	if (SceneManager::getInstancePtr())
+	{
+		SceneManager::getInstancePtr()->destroy();
+		delete SceneManager::getInstancePtr();
+	}
+}
+
+ApiScene_ SceneManager* getSceneManager()
+{
+	return SceneManager::getInstancePtr();
+}
