@@ -104,7 +104,7 @@ void FilePart::update( const std::string& fn, CPropertyListCtrl* pl , bool reset
 	if (m)
 	{
 		CCategoryProperty* pCategory = NULL;
-		HPROPERTY c = pl->AddItem( PropCreateCategory(_T("Mesh")) );
+		HPROPERTY c = pl->AddItem( PropCreateCategory(_T("Mesh")), ct);
 		if (!reset)
 		{
 			pCategory = (CCategoryProperty*)(c);
@@ -122,7 +122,7 @@ void FilePart::update( const std::string& fn, CPropertyListCtrl* pl , bool reset
 	Material* t = p->getMaterial();
 	if (t)
 	{
-		HPROPERTY c = pl->AddItem( PropCreateCategory(_T("Material")));
+		HPROPERTY c = pl->AddItem( PropCreateCategory(_T("Material")), ct);
 		CCategoryProperty* pCategory = NULL;
 		if (!reset)
 		{
@@ -159,7 +159,7 @@ void FileEntity::update( const std::string& fn, CPropertyListCtrl* pl , bool res
 			Part* pt = pi->getPart();
 			if (pt)
 			{
-				HPROPERTY c = pl->AddItem( PropCreateCategory(pt->getFilePath().c_str()) );
+				HPROPERTY c = pl->AddItem( PropCreateCategory(pt->getFilePath().c_str()), NULL);
 				CCategoryProperty* pCategory = (CCategoryProperty*)(c);
 				pCategory->SetLevel(0);
 				pCategory->setCategory(NULL);

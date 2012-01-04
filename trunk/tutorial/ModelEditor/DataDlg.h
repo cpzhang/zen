@@ -110,10 +110,10 @@ public:
 		properties_.SubclassWindow(GetDlgItem(IDC_LIST_Options));
 		properties_.SetExtendedListStyle(PLS_EX_CATEGORIZED);
 		//
-		HPROPERTY hBehaviour = properties_.AddItem( PropCreateCategory(_T("渲染管道")) );
+		HPROPERTY hBehaviour = properties_.AddItem( PropCreateCategory(_T("渲染管道")), NULL );
 		//类型
 		LPCTSTR list[] = { _T("0 - 固定管道"), _T("1 - Shader2.0"), NULL};
-		properties_.AddItem( PropCreateList(_T("ShaderModel"), list, 0), hBehaviour);
+		properties_.AddItem( PropCreateList(_T("ShaderModel"), list, 0), (CCategoryProperty*)hBehaviour);
 		return bHandled;
 	}
 	LRESULT OnItemChanged( int /*idCtrl*/, LPNMHDR pnmh, BOOL& /*bHandled*/ );
