@@ -17,6 +17,7 @@
 #include "model/Mesh.h"
 #include "model/Material.h"
 #include "model/Mz.h"
+#include "model/Skeleton.h"
 #include "misc/FileSystem.h"
 #include "tinyXML2/tinyxml2.h"
 extern int tolua_LuaAPI_open (lua_State* tolua_S);
@@ -34,11 +35,14 @@ bool Global::create()
 {
 	createLuaScript();
 	tolua_LuaAPI_open(getLuaScript()->getLuaState());
+	tstring d = FileSystem::guessDataDirectory();
+	FileSystem::setDataDirectory(d);
 	refreshDataRoot();
 	//
 	createStateManager();
 	createFxManager();
 	createTextureManager();
+	createSkeletonManager();
 	createSceneManager();
 	if (!createBrushDecal())
 	{
@@ -54,6 +58,7 @@ bool Global::create()
 
 void Global::destroy()
 {
+	destroySkeletonManager();
 	destroyEntityManager();
 	destroyPartInstanceManager();
 	destroyMeshManager();
@@ -401,7 +406,7 @@ void Global::render()
 void Global::refreshDataRoot()
 {
 	//从lua脚本，初始化参数
-	//getLuaScript()->doFile("e:/zen/data/lua/SceneEditor.lua");
+	getLuaScript()->doFile("lua/SceneEditor.lua");
 	{
 		NameIdleHandlerMap::iterator it = nameHandlers_.begin();
 		for (; it != nameHandlers_.end(); ++it)

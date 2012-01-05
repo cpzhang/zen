@@ -1,5 +1,6 @@
 #include "LuaScript.h"
 #include "lua/src/lua.hpp"
+#include "misc/FileSystem.h"
 //extern int tolua_LuaScript_open (lua_State* tolua_S);
 LuaScript::LuaScript()
 {
@@ -13,14 +14,23 @@ LuaScript::~LuaScript()
 	
 }
 
-void LuaScript::doString( const std::string& s )
+void LuaScript::doString( const tstring& s )
 {
 	luaL_dostring(state_, s.c_str());
 }
 
-void LuaScript::doFile( const std::string& s )
+void LuaScript::doFile( const tstring& s )
 {
-	luaL_dofile(state_, s.c_str());
+	tstring fp(s);
+	if (!FileSystem::isFileExist(fp))
+	{
+		fp = FileSystem::getDataDirectory() + s;
+		if (!FileSystem::isFileExist(fp))
+		{
+			return;
+		}
+	}
+	luaL_dofile(state_, fp.c_str());
 }
 
 void LuaScript::destroy()

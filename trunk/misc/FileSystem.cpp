@@ -1,21 +1,21 @@
 #include "FileSystem.h"
 #include "windowsHead.h"
 //
-void FileSystem::getWindowDirectory( tstring& dir )
+tstring FileSystem::getWindowDirectory()
 {
+	tstring dir;
 	dir.resize(Max_Path);
 	::GetWindowsDirectory((LPTSTR)dir.c_str(), Max_Path);
+	return dir;
 }
 
-void FileSystem::getModuleFileName( tstring& file )
+tstring FileSystem::getModuleFileName()
 {
+	tstring file;
 	file.resize(Max_Path);
+	// If this parameter is NULL, GetModuleFileName retrieves the path of the executable file of the current process.
 	::GetModuleFileName(NULL, (LPTSTR)(file.c_str()), Max_Path);
-}
-
-void FileSystem::getDataDirectory( tstring& dir )
-{
-	dir = dataPath_;
+	return file;
 }
 
 tstring FileSystem::getDataDirectory()
@@ -23,48 +23,31 @@ tstring FileSystem::getDataDirectory()
 	return dataPath_;
 }
 
-bool FileSystem::isFileExist( tstring& fileName )
+bool FileSystem::isFileExist(const tstring& fileName )
 {
-	bool exist = false;
-	std::ifstream f(fileName.c_str(), std::ios_base::binary);
-
-	//
-	if (f.good())
-	{
-		exist = true;
-	}
-	
-	//
-	f.close();
-
-	//
-	return exist;
+	DWORD fileAttr = GetFileAttributes(fileName.c_str());
+	//存在，且不为文件夹
+	return (INVALID_FILE_ATTRIBUTES != fileAttr) && 
+		!(fileAttr & FILE_ATTRIBUTE_DIRECTORY);
 }
 
-void FileSystem::getBinDirectory( tstring& dir )
+tstring FileSystem::getBinDirectory( )
 {
-	getModuleFileName(dir);
-	
-	size_t pos = dir.find_last_of('\\');
-	if (pos != tstring::npos)
-	{
-		dir = dir.substr(0, pos);
-	}
+	tstring dir = getModuleFileName();
+	dir = standardFilePath(dir);
+	dir = getParent(dir);
+	dir = getParent(dir);
+	return dir;
 }
 
 tstring FileSystem::getParent( const tstring& dir )
 {
-	tstring path(dir);
+	tstring path(standardFilePath(dir));
 	if (path[path.size() -1] == '/')
 	{
 		path = path.substr(0, path.size() - 1);
 	}
-	size_t pos = path.find_last_of('\\');
-	if (pos == tstring::npos)
-	{
-		pos = path.find_last_of('/');
-	}
-
+	size_t pos = path.find_last_of('/');
 	if (pos != tstring::npos)
 	{
 		return path.substr(0, pos);
@@ -84,15 +67,12 @@ tstring FileSystem::getFileExtension( const tstring& fileName )
 
 tstring FileSystem::removeParent( const tstring& dir )
 {
-	size_t pos = dir.find_last_of('\\');
-	if (pos == tstring::npos)
-	{
-		pos = dir.find_last_of('/');
-	}
+	tstring path(standardFilePath(dir));
+	size_t pos = path.find_last_of('/');
 	
 	if (pos != tstring::npos)
 	{
-		return dir.substr(pos + 1, dir.size() - pos - 1);
+		return path.substr(pos + 1, path.size() - pos - 1);
 	}
 	return dir;
 }
@@ -107,8 +87,9 @@ tstring FileSystem::removeFileExtension( const tstring& fileName )
 	return fileName;
 }
 
-tstring FileSystem::standardFilePath(tstring& path)
+tstring FileSystem::standardFilePath(const tstring& p)
 {
+	tstring path(p);
 	for (size_t i = 0; i != path.size(); ++i)
 	{
 		if (path[i] == '\\')
@@ -138,6 +119,13 @@ void FileSystem::setDataDirectory( const tstring& dir )
 tstring FileSystem::cutDataPath( const tstring& path )
 {
 	return path.substr(dataPath_.size(), path.size() - dataPath_.size());
+}
+
+tstring FileSystem::guessDataDirectory()
+{
+	tstring d = getBinDirectory();
+	d = getParent(d);
+	return d + "/data/";
 }
 
 tstring FileSystem::dataPath_;

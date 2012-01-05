@@ -6,6 +6,7 @@
 #include "model/Mesh.h"
 #include "model/Material.h"
 #include "model/Entity.h"
+#include "model/Skeleton.h"
 #include "model/PartInstance.h"
 LRESULT DataDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled )
 {
@@ -24,7 +25,7 @@ LRESULT DataDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 	//
 	properties_.SubclassWindow(GetDlgItem(IDC_LIST_DataProperty));
 	properties_.SetExtendedListStyle(PLS_EX_CATEGORIZED);
-
+	//properties_.AddItem( PropCreateSimpleInt(_T("动画"), 0), CCategoryProperty::getNullObject());
 	//
 	return bHandled;
 }
@@ -100,6 +101,11 @@ void FilePart::update( const std::string& fn, CPropertyListCtrl* pl , bool reset
 	{
 		return;
 	}
+	if (ct == NULL)
+	{
+		ct = CCategoryProperty::getNullObject();
+	}
+	//Mesh
 	Mesh* m = p->getMesh();
 	if (m)
 	{
@@ -115,7 +121,6 @@ void FilePart::update( const std::string& fn, CPropertyListCtrl* pl , bool reset
 		pl->AddItem( PropCreateSimpleInt(_T("版本"), m->getVersion()), pCategory);
 		pl->AddItem( PropCreateSimpleInt(_T("面数"), m->getFaceNumber()), pCategory);
 		pl->AddItem( PropCreateSimpleInt(_T("顶点"), m->getVertexNumber()), pCategory);
-		pl->AddItem( PropCreateSimpleInt(_T("骨骼"), 0), pCategory);
 		pl->AddItem( PropCreateSimpleInt(_T("动画"), 0), pCategory);
 	}
 	//材质
@@ -124,11 +129,11 @@ void FilePart::update( const std::string& fn, CPropertyListCtrl* pl , bool reset
 	{
 		HPROPERTY c = pl->AddItem( PropCreateCategory(_T("Material")), ct);
 		CCategoryProperty* pCategory = NULL;
+		pCategory = (CCategoryProperty*)(c);
+		pCategory->setCategory(ct);
 		if (!reset)
 		{
-			pCategory = (CCategoryProperty*)(c);
 			pCategory->SetLevel(1);
-			pCategory->setCategory(ct);
 		}
 		pl->AddItem( PropCreateSimpleString(_T("文件"), FileSystem::cutDataPath(t->getFilePath()).c_str()), pCategory);
 		Fx* f = t->getFx();
@@ -136,6 +141,22 @@ void FilePart::update( const std::string& fn, CPropertyListCtrl* pl , bool reset
 		{
 			pl->AddItem( PropCreateSimpleString(_T("FX"), FileSystem::cutDataPath(f->getFilePath()).c_str()), pCategory);
 		}
+	}
+	//Skeleton
+	Skeleton* st = p->getSkeleton();
+	if (st)
+	{
+		HPROPERTY c = pl->AddItem( PropCreateCategory(_T("Skeleton")), ct);
+		CCategoryProperty* pCategory = NULL;
+		pCategory = (CCategoryProperty*)(c);
+		pCategory->setCategory(ct);
+		if (!reset)
+		{
+			pCategory->SetLevel(1);
+		}
+		pl->AddItem( PropCreateSimpleString(_T("文件"), FileSystem::cutDataPath(st->getFilePath()).c_str()), pCategory);
+		pl->AddItem( PropCreateSimpleInt(_T("骨骼"), st->getNumBoneNodes()), pCategory);
+
 	}
 }
 void FileEntity::update( const std::string& fn, CPropertyListCtrl* pl , bool reset /*= true*/, CCategoryProperty* ct /*= NULL*/)
@@ -151,6 +172,10 @@ void FileEntity::update( const std::string& fn, CPropertyListCtrl* pl , bool res
 	{
 		return;
 	}
+	if (ct == NULL)
+	{
+		ct = CCategoryProperty::getNullObject();
+	}
 	for (size_t i = 0; i != p->getPartInstanceNumber(); ++i)
 	{
 		PartInstance* pi = p->getPartInstance(i);
@@ -159,10 +184,10 @@ void FileEntity::update( const std::string& fn, CPropertyListCtrl* pl , bool res
 			Part* pt = pi->getPart();
 			if (pt)
 			{
-				HPROPERTY c = pl->AddItem( PropCreateCategory(pt->getFilePath().c_str()), NULL);
+				HPROPERTY c = pl->AddItem( PropCreateCategory(pt->getFilePath().c_str()), ct);
 				CCategoryProperty* pCategory = (CCategoryProperty*)(c);
 				pCategory->SetLevel(0);
-				pCategory->setCategory(NULL);
+				//pCategory->setCategory(NULL);
 				IFileManager::getFile(eFile_Part)->update(pt->getFilePath(), pl, false, pCategory);
 			}
 		}

@@ -16,6 +16,7 @@ public:
 	void destroy();
 	Mesh* getMesh();
 	Material* getMaterial();
+	Skeleton* getSkeleton();
 	tstring getFilePath();
 public:
 	static Part* getNullObject()
@@ -27,10 +28,10 @@ private:
 	void clear_();
 private:
 	tstring FilePath_;
-	std::string mName;
-	Mesh* mesh_;
-	Material* material_;
-	Skeleton* skeleton_;
+	std::string Name_;
+	Mesh* Mesh_;
+	Material* Material_;
+	Skeleton* Skeleton_;
 };
 
 Create_Singleton_Declaration(PartManager, Part, ApiModel_)

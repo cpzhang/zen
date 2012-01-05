@@ -71,9 +71,9 @@ public:
 	int m_level;//层次，从0开始递增
    CSimpleArray<IProperty*> m_arrItems;
    bool m_fExpanded;
-   CCategoryProperty(LPCTSTR pstrName, LPARAM lParam) : CProperty(pstrName, lParam), m_fExpanded(true)
+   CCategoryProperty(LPCTSTR pstrName, LPARAM lParam, int l = 0) : CProperty(pstrName, lParam), m_fExpanded(true), m_level(l)
    {
-	   m_level = 0;
+	   //m_level = 0;
    }
 
    virtual ~CCategoryProperty()
@@ -81,7 +81,11 @@ public:
       // Need to delete hidden items too
       for( int i = 0; i < m_arrItems.GetSize(); i++ ) delete m_arrItems[i];
    }
-
+	static CCategoryProperty* getNullObject()
+	{
+		static CCategoryProperty cc(TEXT("dumy"), 0, -1);
+		return &cc;
+	}
    int GetLevel()
    {
 	   return m_level;
@@ -174,9 +178,16 @@ public:
          ATLASSERT(prop);
 		 //类属性仍然可以包含多级子类属性，所以把下面的判断机制关闭
          //遇到类属性，止
-		 //if( prop->GetKind() == PROPKIND_CATEGORY ) break;
+		 if (prop->GetKind() == PROPKIND_CATEGORY)
+		 {
+				 CCategoryProperty* cp = (CCategoryProperty*)prop;
+				 if (cp->GetLevel() <= GetLevel())
+				 {
+					 break;
+				 }
+		 }
          ctrl.SetItemData(idx, 0L); // Clear data now, so WM_DELETEITEM doesn't delete
-                                    // the IProperty in the DeleteString() call below
+		 // the IProperty in the DeleteString() call below
          ctrl.DeleteString(idx);
          m_arrItems.Add(prop);
       }
@@ -544,7 +555,7 @@ public:
    {
       GetItemRect(idx, &rc);
       if( (m_dwExtStyle & PLS_EX_CATEGORIZED) != 0 ) rc.left += CATEGORY_INDENT;
-      rc.left += m_iMiddle + 1;
+      //rc.left += m_iMiddle + 1;
    }
 
    BOOL _SpawnInplaceWindow(IProperty* prop, int idx)
@@ -559,6 +570,10 @@ public:
       RECT rcValue = { 0 };
       _GetInPlaceRect(idx, rcValue);
       ::InflateRect(&rcValue, 0, -1);
+	  if (prop->getCategory()->GetLevel() >= 0)
+	  {
+		  rcValue.left += m_iMiddle + 1;
+	  }
       m_hwndInplace = prop->CreateInplaceControl(m_hWnd, rcValue);
       if( m_hwndInplace != NULL ) {
          // Activate the new editor window
@@ -784,7 +799,7 @@ public:
          NMPROPERTYITEM nmh = { m_hWnd, GetDlgCtrlID(), PIN_CLICK, prop };
          if( ::SendMessage(GetParent(), WM_NOTIFY, nmh.hdr.idFrom, (LPARAM) &nmh) == 0 ) {
             // Translate into action
-            if( (m_dwExtStyle & PLS_EX_CATEGORIZED) != 0/* && GET_X_LPARAM(lParam) < CATEGORY_INDENT */) {
+            if( (m_dwExtStyle & PLS_EX_CATEGORIZED) != 0 && GET_X_LPARAM(lParam) < CATEGORY_INDENT ) {
                prop->Activate(PACT_EXPAND, 0);
             }
             else {

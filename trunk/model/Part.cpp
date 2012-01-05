@@ -24,16 +24,16 @@ bool Part::create( const std::string& fileName )
 	std::string parentPath = FileSystem::getParent(fileName);
 	parentPath = FileSystem::getParent(parentPath);
 	parentPath += "/";
-	mName = r->Attribute("name");
+	Name_ = r->Attribute("name");
 	{
 		tinyxml2::XMLElement* mes = r->FirstChildElement("mesh");
-		mesh_ = getMeshManager()->get(FileSystem::standardFilePath(parentPath + mes->Attribute("file")));
+		Mesh_ = getMeshManager()->get(FileSystem::standardFilePath(parentPath + mes->Attribute("file")));
 	}
 
 	//
 	{
 		tinyxml2::XMLElement* mat = r->FirstChildElement("material");
-		material_ = getMaterialManager()->get(FileSystem::standardFilePath(parentPath + mat->Attribute("file")));
+		Material_ = getMaterialManager()->get(FileSystem::standardFilePath(parentPath + mat->Attribute("file")));
 	}
 	//
 	{
@@ -41,7 +41,7 @@ bool Part::create( const std::string& fileName )
 		if (mat)
 		{
 			std::string skeleton = mat->Attribute("file");
-//			skeleton_ = getSkeletonManager()->get(parentPath + skeleton);
+			Skeleton_ = getSkeletonManager()->get(parentPath + skeleton);
 		}
 	}
 	//
@@ -67,11 +67,11 @@ bool Part::create( const std::string& fileName )
 
 void Part::render()
 {
-	if (NULL == material_ || NULL == material_->getFx())
+	if (NULL == Material_ || NULL == Material_->getFx())
 	{
 		return;
 	}
-	ID3DXEffect* ef = material_->getFx()->getDxEffect();
+	ID3DXEffect* ef = Material_->getFx()->getDxEffect();
 	if (NULL == ef)
 	{
 		return;
@@ -112,12 +112,12 @@ void Part::render()
 			m.setScale(0.01f, 0.01f, 0.01f);
 			ef->SetMatrix(w, &m);
 		}
-		material_->apply();
+		Material_->apply();
 		ef->CommitChanges();
 		for (int p = 0; p != passes; ++p)
 		{
 			ef->BeginPass(p);
-			mesh_->render();
+			Mesh_->render();
 			ef->EndPass();
 		}
 	}
@@ -126,10 +126,10 @@ void Part::render()
 
 void Part::clear_()
 {
-	mName.clear();
-	mesh_ = NULL;
-	material_ = NULL;
-	skeleton_ = NULL;
+	Name_.clear();
+	Mesh_ = NULL;
+	Material_ = NULL;
+	Skeleton_ = NULL;
 }
 
 Part::Part()
@@ -144,17 +144,22 @@ void Part::destroy()
 
 Mesh* Part::getMesh()
 {
-	return mesh_;
+	return Mesh_;
 }
 
 Material* Part::getMaterial()
 {
-	return material_;
+	return Material_;
 }
 
 tstring Part::getFilePath()
 {
 	return FilePath_;
+}
+
+Skeleton* Part::getSkeleton()
+{
+	return Skeleton_;
 }
 
 Create_Singleton_Imp(PartManager, ApiModel_)

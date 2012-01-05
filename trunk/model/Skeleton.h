@@ -22,7 +22,7 @@ public:
 	void reset();
 	void render();
 	BoneNodeMapIterator	getCommandMapIterator(void) const;
-	
+	tstring getFilePath();
 public:
 	Skeleton();
 	~Skeleton();
@@ -41,29 +41,11 @@ protected:
 	BoneNodeMap		_boneNodes;
 	char			_version;
 	std::vector<std::string> _roots;
+	tstring FilePath_;
 public:
 	std::vector<Matrix> _matrices;
 	std::vector<Matrix> _matricesFull;
 	friend class BoneNode;
 };
-// typedef stdext::hash_map<std::string, Skeleton*> NameSkeletonMap;
-// class SkeletonManager : public Singleton<SkeletonManager>, public IManager
-// {
-// public:
-// 	virtual bool create()
-// 	{
-// 		return true;
-// 	}
-// 	virtual void destroy();
-// public:
-// 	Skeleton* getSkeleton(const tstring& name);
-// private:
-// private:
-// 	Skeleton* find_( const tstring & resourceID );
-// 	Skeleton* create_( const tstring & resourceID );
-// 	void add_( Skeleton* pMesh, tstring resourceID );
-// private:
-// 	NameSkeletonMap skeletons_;
-// };
-Create_Singleton_Declaration(SkeletonManager, Skeleton)
+Create_Singleton_Declaration(SkeletonManager, Skeleton, ApiModel_)
 

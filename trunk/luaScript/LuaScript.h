@@ -9,8 +9,8 @@ public:
 	LuaScript();
 	~LuaScript();
 public:
-	void doString(const std::string& s);
-	void doFile(const std::string& s);
+	void doString(const tstring& s);
+	void doFile(const tstring& s);
 	void destroy();
 	lua_State* getLuaState();
 private:

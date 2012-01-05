@@ -32,6 +32,7 @@ else()
     )
     target_link_libraries(${ItemName}
 		lua_library
+		misc
 	)
 endif(StaticLibrary_)
 

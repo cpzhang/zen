@@ -133,6 +133,7 @@ public:
 	{
 		mHasMiddleLine = b;
 	}
+	//反所有属性，皆有类别
 	void setCategory(CCategoryProperty* c)
 	{
 		m_pCategory = c;

@@ -26,6 +26,7 @@ Skeleton::~Skeleton()
 
 bool Skeleton::create(const std::string& fileName)
 {
+	FilePath_ = fileName;
 	//
 	std::ifstream f(fileName.c_str(), std::ios::binary);
 	if (!f.good())
@@ -255,7 +256,12 @@ BoneNodeMapIterator Skeleton::getCommandMapIterator( void ) const
 	return BoneNodeMapIterator(_boneNodes.begin(), _boneNodes.end());
 }
 
-Create_Singleton_Imp(SkeletonManager)
+tstring Skeleton::getFilePath()
+{
+	return FilePath_;
+}
+
+Create_Singleton_Imp(SkeletonManager, ApiModel_)
 
 // void SkeletonManager::destroy()
 // {

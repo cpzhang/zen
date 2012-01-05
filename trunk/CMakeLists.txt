@@ -29,7 +29,7 @@ endif(StaticLibrary_)
 # project name
 project(Zen)
 
-set(vBinDir "e:/zen/bin")
+set(vBinDir "f:/zen/bin")
 SET(EXECUTABLE_OUTPUT_PATH ${vBinDir})
 SET(LIBRARY_OUTPUT_PATH ${vBinDir})
 
