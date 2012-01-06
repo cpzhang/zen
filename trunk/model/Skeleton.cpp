@@ -1,7 +1,9 @@
-#include <cctype>
+//#include <cctype>
 #include "Skeleton.h"
 #include "BoneNode.h"
 #include "MZ.h"
+#include "misc/FileSystem.h"
+#include "tinyxml2/tinyxml2.h"
 BoneNode* Skeleton::createBoneNode( const std::string& name )
 {
 	BoneNode* b = new BoneNode(this, name);
@@ -116,6 +118,12 @@ bool Skeleton::create(const std::string& fileName)
 			}break;
 		}
 	}
+	//
+	{
+		tstring fn = FileSystem::removeFileExtension(fileName);
+		fn += ".animation";
+		decodeSkinAnimationXML(fn);
+	}
 	return true;
 }
 
@@ -132,7 +140,13 @@ void Skeleton::destroy()
 			delete r;
 		}
 	}
-	
+	for (NameSkinMap::iterator it = NameSkins_.begin(); it != NameSkins_.end(); ++it)
+	{
+		Skin* k = it->second;
+		delete k;
+	}
+	NameSkins_.clear();
+		
 	_clear();
 }
 
@@ -259,6 +273,68 @@ BoneNodeMapIterator Skeleton::getCommandMapIterator( void ) const
 tstring Skeleton::getFilePath()
 {
 	return FilePath_;
+}
+
+bool Skeleton::decodeSkinAnimationXML( const std::string& fileName )
+{
+	SkinAnimationXMLFilePath_ = fileName;
+	tinyxml2::XMLDocument doc;
+	if (tinyxml2::XML_SUCCESS != doc.LoadFile(fileName.c_str()))
+	{
+		return false;
+	}
+	tinyxml2::XMLElement* r = doc.RootElement();
+	if (NULL == r)
+	{
+		return false;
+	}
+	tinyxml2::XMLElement* mat = r->FirstChildElement("animation");
+	while(mat)
+	{
+		sSkinAnimation sa;
+		sa.name = mat->Attribute("name");
+		sa.skinFilePath = FileSystem::getParent(fileName);
+		sa.skinFilePath = FileSystem::getParent(sa.skinFilePath) + "/" + mat->Attribute("skin");
+		sa.duration = mat->FloatAttribute("duration");
+		SkinAnimations_.push_back(sa);
+		mat = mat->NextSiblingElement("animation");
+	}
+	return true;
+}
+
+int Skeleton::getSkinAnimationNumber()
+{
+	return SkinAnimations_.size();
+}
+
+sSkinAnimation* Skeleton::getSkinAnimation( int index )
+{
+	return &SkinAnimations_[index];
+}
+
+Skin* Skeleton::getSkin( const tstring& skinAnimationName )
+{
+	sSkinAnimation* a = NULL;
+	for (int i = 0; i != SkinAnimations_.size(); ++i)
+	{
+		if (SkinAnimations_[i].name == skinAnimationName)
+		{
+			a = &SkinAnimations_[i];
+			break;
+		}
+	}
+	if (NULL == a)
+	{
+		return NULL;
+	}
+	NameSkinMap::iterator it = NameSkins_.find(skinAnimationName);
+	if (it == NameSkins_.end())
+	{
+		Skin* k = new Skin;
+		k->create(a->skinFilePath);
+		NameSkins_[skinAnimationName] = k;
+	}	
+	return NameSkins_[skinAnimationName];
 }
 
 Create_Singleton_Imp(SkeletonManager, ApiModel_)

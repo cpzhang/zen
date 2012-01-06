@@ -2,6 +2,7 @@
 #include "misc/FileSystem.h"
 #include "tinyXML2/tinyxml2.h"
 #include "Material.h"
+#include "Skin.h"
 bool Mz::load( const std::string& fileName )
 {
 	//

@@ -111,11 +111,11 @@ void FilePart::update( const std::string& fn, CPropertyListCtrl* pl , bool reset
 	{
 		CCategoryProperty* pCategory = NULL;
 		HPROPERTY c = pl->AddItem( PropCreateCategory(_T("Mesh")), ct);
+		pCategory = (CCategoryProperty*)(c);
+		pCategory->setCategory(ct);
 		if (!reset)
 		{
-			pCategory = (CCategoryProperty*)(c);
 			pCategory->SetLevel(1);
-			pCategory->setCategory(ct);
 		}
 		pl->AddItem( PropCreateSimpleString(_T("文件"), FileSystem::cutDataPath(m->getFilePath()).c_str()), pCategory);
 		pl->AddItem( PropCreateSimpleInt(_T("版本"), m->getVersion()), pCategory);
@@ -156,6 +156,15 @@ void FilePart::update( const std::string& fn, CPropertyListCtrl* pl , bool reset
 		}
 		pl->AddItem( PropCreateSimpleString(_T("文件"), FileSystem::cutDataPath(st->getFilePath()).c_str()), pCategory);
 		pl->AddItem( PropCreateSimpleInt(_T("骨骼"), st->getNumBoneNodes()), pCategory);
+		pl->AddItem( PropCreateSimpleInt(_T("蒙皮"), st->getSkinAnimationNumber()), pCategory);
+		for (int i = 0; i != st->getSkinAnimationNumber(); ++i)
+		{
+			sSkinAnimation* a = st->getSkinAnimation(i);
+			if (a)
+			{
+				pl->AddItem( PropCreateSimpleString(a->name.c_str(), a->skinFilePath.c_str()), pCategory);
+			}
+		}
 
 	}
 }

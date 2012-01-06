@@ -1,6 +1,5 @@
 // 3ds max effect file
-#include "std.fxh"
-// This is used by 3dsmax to load the correct parser
+#include "std.fxh"// This is used by 3dsmax to load the correct parser
 string ParamID = "0x0001";
 struct VS_INPUT
 {
@@ -10,7 +9,7 @@ struct VS_INPUT
   float4 weights  : BLENDWEIGHT;
   float4 Color : COLOR0;
   float3 Nor : NORMAL;
-};
+};
 struct VS_OUTPUT
 {
   float4 Pos  : POSITION;
@@ -18,12 +17,21 @@ struct VS_OUTPUT
   //float4 Color : COLOR0;
   //float4 LightColor : COLOR1;
   //float4 vPosLight : TEXCOORD1;
-};
+};
+
 VS_OUTPUT VS(VS_INPUT ip)
 {
-	VS_OUTPUT op = (VS_OUTPUT)0;
-	float4 p = mul(ip.Pos, gWorld);
+	float4 p = 0;
+    for(int i = 0; i != 4; i++)
+	{
+		float w = ip.weights[i];
+		if(w > 0.00001f)
+			p += mul(ip.Pos, gSkinPalette[ip.boneIndices[i]]) * ip.weights[i];
+	}
+    p.w = 1;
+	p = mul(p, gWorld);
 	p = mul(p, gView);
+	VS_OUTPUT op;
 	op.Pos = mul(p, gProjection);
 	op.Tex  = ip.Tex;
 	return op;

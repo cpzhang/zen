@@ -232,7 +232,7 @@ public:
    CPen m_BorderPen;
    int m_iPrevious;
    int m_iPrevXGhostBar;
-   int m_iMiddle;
+   int m_iMiddle;//中线，划分name/value处，可拖拽
    bool m_bColumnFixed;
 
    CPropertyListImpl() : 
@@ -551,11 +551,18 @@ public:
       SendMessage(WM_SETTINGCHANGE);
    }
 
-   void _GetInPlaceRect(int idx, RECT& rc) const
+   void _GetInPlaceRect(int idx, RECT& rc, IProperty* prop = NULL) const
    {
       GetItemRect(idx, &rc);
-      if( (m_dwExtStyle & PLS_EX_CATEGORIZED) != 0 ) rc.left += CATEGORY_INDENT;
-      //rc.left += m_iMiddle + 1;
+	  if (prop && prop->getCategory())
+	  {
+		  rc.left += CATEGORY_INDENT * prop->getCategory()->GetLevel();
+	  }
+	  else
+	  {
+		  if( (m_dwExtStyle & PLS_EX_CATEGORIZED) != 0 ) rc.left += CATEGORY_INDENT;
+	  }
+	  rc.left += m_iMiddle + 1;
    }
 
    BOOL _SpawnInplaceWindow(IProperty* prop, int idx)
@@ -568,12 +575,8 @@ public:
       if( !prop->IsEnabled() ) return FALSE;
       // Create a new editor window
       RECT rcValue = { 0 };
-      _GetInPlaceRect(idx, rcValue);
+      _GetInPlaceRect(idx, rcValue, prop);
       ::InflateRect(&rcValue, 0, -1);
-	  if (prop->getCategory()->GetLevel() >= 0)
-	  {
-		  rcValue.left += m_iMiddle + 1;
-	  }
       m_hwndInplace = prop->CreateInplaceControl(m_hWnd, rcValue);
       if( m_hwndInplace != NULL ) {
          // Activate the new editor window
@@ -799,10 +802,21 @@ public:
          NMPROPERTYITEM nmh = { m_hWnd, GetDlgCtrlID(), PIN_CLICK, prop };
          if( ::SendMessage(GetParent(), WM_NOTIFY, nmh.hdr.idFrom, (LPARAM) &nmh) == 0 ) {
             // Translate into action
-            if( (m_dwExtStyle & PLS_EX_CATEGORIZED) != 0 && GET_X_LPARAM(lParam) < CATEGORY_INDENT ) {
+			 int offset = 0;
+			 if (prop->getCategory())
+			 {
+				 offset = CATEGORY_INDENT * (prop->getCategory()->GetLevel() + 2);
+			 }
+			 else
+			 {
+				 offset = CATEGORY_INDENT;
+			 }
+            if( (m_dwExtStyle & PLS_EX_CATEGORIZED) != 0 && GET_X_LPARAM(lParam) < offset )
+			{
                prop->Activate(PACT_EXPAND, 0);
             }
-            else {
+            else 
+			{
                if( prop->IsEnabled() ) prop->Activate(PACT_CLICK, lParam);
             }
          }

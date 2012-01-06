@@ -8,6 +8,14 @@ class BoneNode;
 class Skin;
 typedef stdext::hash_map<std::string, BoneNode*> BoneNodeMap;
 typedef	ConstBaseIterator<BoneNodeMap>	BoneNodeMapIterator;
+struct sSkinAnimation
+{
+	tstring name;
+	float duration;
+	tstring skinFilePath;
+};
+typedef std::vector<sSkinAnimation> SkinAnimationVec;
+typedef std::map<tstring, Skin*> NameSkinMap;
 class ApiModel_ Skeleton
 {
 public:
@@ -18,9 +26,14 @@ public:
 public:
 	bool create(const std::string& fileName);
 	void destroy();
+	//
+	bool decodeSkinAnimationXML(const std::string& fileName);
+	int getSkinAnimationNumber();
+	sSkinAnimation* getSkinAnimation(int index);
+	//
+	Skin* getSkin(const tstring& skinAnimationName);
+	//
 	void update(const AnimationTime& at, Skin* s);
-	void reset();
-	void render();
 	BoneNodeMapIterator	getCommandMapIterator(void) const;
 	tstring getFilePath();
 public:
@@ -42,6 +55,9 @@ protected:
 	char			_version;
 	std::vector<std::string> _roots;
 	tstring FilePath_;
+	SkinAnimationVec SkinAnimations_;
+	tstring SkinAnimationXMLFilePath_;
+	NameSkinMap NameSkins_;
 public:
 	std::vector<Matrix> _matrices;
 	std::vector<Matrix> _matricesFull;

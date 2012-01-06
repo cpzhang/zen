@@ -8,6 +8,7 @@
 #include "Material.h"
 #include "render/Fx.h"
 #include "render/FxManager.h"
+#include "Skin.h"
 bool Part::create( const std::string& fileName )
 {
 	FilePath_ = fileName;
@@ -111,6 +112,19 @@ void Part::render()
 // 			m[2][0] = v[2][0];m[2][1] = v[2][1];m[2][2] = v[2][2];
 			m.setScale(0.01f, 0.01f, 0.01f);
 			ef->SetMatrix(w, &m);
+		}
+		if (Skeleton_)
+		{
+			static AnimationTime at;
+			Skin* k = Skeleton_->getSkin(TEXT("Run"));
+			at.end = 1999;
+			at.current++;
+			if (at.current > at.end)
+			{
+				at.current = at.start;
+			}
+			Skeleton_->update(at, k);
+			ef->SetMatrixArray("gSkinPalette", &Skeleton_->_matrices[0], Skeleton_->_matrices.size());
 		}
 		Material_->apply();
 		ef->CommitChanges();

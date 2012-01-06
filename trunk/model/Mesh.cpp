@@ -3,6 +3,7 @@
 #include "misc/stdHead.h"
 #include "tinyXML2/tinyxml2.h"
 #include "render/BufferLocker.h"
+#include "Skin.h"
 //
 Mesh::Mesh()
 {
@@ -41,7 +42,7 @@ bool Mesh::createFromMZ(size_t sub, Mz* mz)
 		_vertices[i].color_ARGB_ = c.getARGB();
 		for(size_t k = 0; k != 4; ++k)
 		{
-			//_vertices[i].bones[k] = mz->mVertices[i+ vStart].bones[k];
+			_vertices[i].bones_[k] = mz->mVertices[i+ vStart].bones[k];
 			u8 id = mz->mVertices[i+ vStart].bones[k];
 			//if (id < 255)
 			{
@@ -57,7 +58,7 @@ bool Mesh::createFromMZ(size_t sub, Mz* mz)
 		{
 			u8 id = mz->mVertices[i+ vStart].bones[k];
 			//
-			_vertices[i].bones_[k] = std::distance(_bones.begin(), _bones.find(id));
+			//_vertices[i].bones_[k] = std::distance(_bones.begin(), _bones.find(id));
 		}
 	}
 	//
@@ -94,51 +95,25 @@ void Mesh::clear()
 
 bool Mesh::initBuffer_()
 {
-// 	if (vdt_ == eVertexDeclarationType_PositionTexture)
-// 	{
-// 		vertexBuffer_.create(_verticesPT.size() * vdt->getSize(),D3DUSAGE_WRITEONLY, 0, D3DPOOL_MANAGED);
-// 		void* data = vertexBuffer_->lock(0, 0, 0);
-// 		memcpy(data, &_verticesPT[0], _verticesPT.size() * vdt->getSize());
-// 		vertexBuffer_->unLock();
-// 	} 
-// 	else if(vdt_ == eVertexDeclarationType_PositionTextureBoneWeightColorNormal)
- 	{
-		vertexBuffer_.create(_vertices.size() * sVDT_PositionTextureBoneWeightColorNormal::getSize(),D3DUSAGE_WRITEONLY, 0, D3DPOOL_MANAGED);
-		BufferLocker<VertexBuffer, sVDT_PositionTextureBoneWeightColorNormal> vl(vertexBuffer_);
-		vl.fill(&_vertices[0], _vertices.size()*sVDT_PositionTextureBoneWeightColorNormal::getSize());
- 	}
-// 	else
-// 	{
-// 		return false;
-// 	}
-// 
-// 	//
- 	{
- 		indexBuffer_.create(_faces.size() * sizeof(sFace), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED);
+	vertexBuffer_.create(_vertices.size() * sVDT_PositionTextureBoneWeightColorNormal::getSize(),D3DUSAGE_WRITEONLY, 0, D3DPOOL_MANAGED);
+	BufferLocker<VertexBuffer, sVDT_PositionTextureBoneWeightColorNormal> vl(vertexBuffer_);
+	vl.fill(&_vertices[0], _vertices.size()*sVDT_PositionTextureBoneWeightColorNormal::getSize());
+	//
+	{
+		indexBuffer_.create(_faces.size() * sizeof(sFace), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED);
 		BufferLocker<IndexBuffer, u16> vl(indexBuffer_);
 		vl.fill(&_faces[0], _faces.size()*sizeof(sFace));
- 	}
+	}
 
 	return true;
 }
 
 void Mesh::render()
 {
-	vertexBuffer_.apply(0, 0, sizeof(sVDT_PositionTextureBoneWeightColorNormal));
+	vertexBuffer_.apply(0, 0, sVDT_PositionTextureBoneWeightColorNormal::getSize());
 	indexBuffer_.apply();
  	getRenderContex()->setVertexDeclaration(vdt_);
-// 	if (vdt_ == eVertexDeclarationType_PositionTexture)
-// 	{
-// 		getRenderContex()->drawIndexedPrimitive(ePrimitive_TriangleList, 0, 0, _verticesPT.size(), 0, _faces.size());
-// 	} 
-// 	else if(vdt_ == eVertexDeclarationType_PositionTextureBoneWeightColorNormal)
-// 	{
- 		getRenderContex()->drawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, _vertices.size(), 0, _faces.size());
-// 	}
-// 	else
-// 	{
-// 
-// 	}
+	getRenderContex()->drawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, _vertices.size(), 0, _faces.size());
 }
 
 int Mesh::getFaceNumber()
@@ -339,24 +314,6 @@ bool Mesh::create( const std::string& fileName )
 			{
 
  				vdt_ = eVertexDeclarationType_PositionTextureBoneWeightColorNormal;
-				/*{
-					std::vector<sV> vs; 
-					vs.resize(s / sizeof(sV));
-					f.read((char*)&vs[0], s);
-					_vertices.resize(vs.size());
-					for (int i = 0; i != vs.size(); ++i)
-					{
-						_vertices[i].position_ = vs[i].position_;
-						_vertices[i].texcoord_ = vs[i].texcoord_;
-						_vertices[i].bones_[0] = vs[i].bones_.x;
-						_vertices[i].bones_[1] = vs[i].bones_.y;
-						_vertices[i].bones_[2] = vs[i].bones_.z;
-						_vertices[i].bones_[3] = vs[i].bones_.w;
-						_vertices[i].weights_ = vs[i].weights_;
-						_vertices[i].color_ARGB_ = vs[i].color_ARGB_;
-						_vertices[i].normal_ = vs[i].normal_;
-					}
-				}*/
 				_vertices.resize(s / sVDT_PositionTextureBoneWeightColorNormal::getSize());
  				f.read((char*)&_vertices[0], s);
 			}

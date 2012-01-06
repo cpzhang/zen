@@ -23,6 +23,8 @@ float4x4 gProjection=
 0,0,1,0,
 0,0,0,1
 };	// Projection matrix
+//√…∆§æÿ’Û
+float4x4 gSkinPalette[50];
 
 int     gMipFilter     : MipFilter = 2;
 int     gMinMagFilter  : MinMagFilter = 2;
@@ -42,3 +44,5 @@ sampler_state\
 	MAXMIPLEVEL = 0;\
 	MIPMAPLODBIAS = 0;\
 };
+
+//

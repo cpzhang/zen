@@ -1,7 +1,7 @@
 #include "BoneNode.h"
 #include "misc/stdHead.h"
 #include "Skeleton.h"
-
+#include "Skin.h"
 BoneNode::BoneNode( Skeleton* ske, const std::string& name )
 	: _bone(NULL), _skeleton(ske), _name(name), _parent(NULL)
 {

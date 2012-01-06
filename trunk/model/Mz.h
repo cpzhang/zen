@@ -9,6 +9,7 @@
 #include "Mesh.h"
 #include "ParticleEmitter.h"
 #include "BoneNode.h"
+#include "Skin.h"
 class Mesh;
 struct sSubMesh
 {
