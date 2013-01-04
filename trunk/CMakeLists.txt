@@ -29,7 +29,7 @@ endif(StaticLibrary_)
 # project name
 project(Zen)
 
-set(vBinDir "f:/zen/bin")
+set(vBinDir "e:/zen/bin")
 SET(EXECUTABLE_OUTPUT_PATH ${vBinDir})
 SET(LIBRARY_OUTPUT_PATH ${vBinDir})
 
@@ -40,9 +40,9 @@ add_subdirectory("misc")
 set(RenderName "render")
 add_subdirectory(render)
 
-#add_subdirectory(lua)
+add_subdirectory(lua)
 #add_subdirectory(tolua++-1.0.93)
-#add_subdirectory(tolua-5.2.0)
+add_subdirectory(tolua-5.2.0)
 add_subdirectory(luaScript)
 #add_subdirectory(luaAPI)
 # add_subdirectory("terrain")

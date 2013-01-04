@@ -401,7 +401,7 @@ void Global::render()
 void Global::refreshDataRoot()
 {
 	//从lua脚本，初始化参数
-	getLuaScript()->doFile("e:/zenbin/data/lua/SceneEditor.lua");
+	//getLuaScript()->doFile("e:/zen/data/lua/SceneEditor.lua");
 	{
 		NameIdleHandlerMap::iterator it = nameHandlers_.begin();
 		for (; it != nameHandlers_.end(); ++it)

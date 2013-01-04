@@ -1,5 +1,5 @@
 function go()
    -- createGlobal();
-   getGlobal():setDataRootDirectory("e:\\ZenBin\\data");
+   getGlobal():setDataRootDirectory("e:\\Zen\\data");
 end
 go();

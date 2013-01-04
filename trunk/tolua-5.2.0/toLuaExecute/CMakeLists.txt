@@ -12,10 +12,10 @@ link_directories(
   ${EXECUTABLE_OUTPUT_PATH}
   )
 
-#target_link_libraries(${ItemName}
- #   lua_library.lib
-  #  toLuaLibrary.lib	
-  #)
+target_link_libraries(${ItemName}
+    lua_library.lib
+    toLuaLibrary.lib	
+  )
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/lua/src

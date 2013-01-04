@@ -31,4 +31,5 @@ endif(StaticLibrary_)
 
 include_directories(
   ${CMAKE_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/dependence/directx/include
 )

@@ -8,6 +8,9 @@ FILE(GLOB HDRS
   *.h
 )
 
+link_directories(
+  ${CMAKE_SOURCE_DIR}/dependence/directx/lib/x86
+  )
 if (StaticLibrary_)
   add_library(${ItemName} STATIC
     ${SRCS} 

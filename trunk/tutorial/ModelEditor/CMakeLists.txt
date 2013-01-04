@@ -21,7 +21,9 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/tolua-5.2.0/include
   ${CMAKE_SOURCE_DIR}/lua/src
 )
-
+link_directories(
+  ${CMAKE_SOURCE_DIR}/dependence/directx/lib/x86
+)
 add_executable(${ItemName} WIN32
   ${SRCS}
   ${HDRS}

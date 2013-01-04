@@ -7,7 +7,12 @@ FILE(GLOB SRCS
 FILE(GLOB HDRS
   *.h
 )
-
+include_directories(
+  ${CMAKE_SOURCE_DIR}
+)
+link_directories(
+  ${CMAKE_SOURCE_DIR}/dependence/directx/lib/x86
+  )
 if (StaticLibrary_)
   add_library(${ItemName} STATIC
     ${SRCS} 
@@ -32,6 +37,3 @@ endif(StaticLibrary_)
 
 # Add dependent external Libraries
 
-include_directories(
-  ${CMAKE_SOURCE_DIR}
-)
