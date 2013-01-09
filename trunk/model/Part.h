@@ -18,6 +18,7 @@ public:
 	Material* getMaterial();
 	Skeleton* getSkeleton();
 	tstring getFilePath();
+	void renderSkeleton();
 public:
 	static Part* getNullObject()
 	{

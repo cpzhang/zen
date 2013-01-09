@@ -312,7 +312,7 @@ sSkinAnimation* Skeleton::getSkinAnimation( int index )
 	return &SkinAnimations_[index];
 }
 
-Skin* Skeleton::getSkin( const tstring& skinAnimationName )
+Skin* Skeleton::getSkin( const tstring& skinAnimationName, AnimationTime& at)
 {
 	sSkinAnimation* a = NULL;
 	for (int i = 0; i != SkinAnimations_.size(); ++i)
@@ -323,10 +323,16 @@ Skin* Skeleton::getSkin( const tstring& skinAnimationName )
 			break;
 		}
 	}
+	if (NULL == a && !SkinAnimations_.empty())
+	{
+		a = &SkinAnimations_[0];
+	}
 	if (NULL == a)
 	{
 		return NULL;
 	}
+	at.end = a->duration;
+
 	NameSkinMap::iterator it = NameSkins_.find(skinAnimationName);
 	if (it == NameSkins_.end())
 	{

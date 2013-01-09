@@ -53,4 +53,6 @@ add_subdirectory("model")
 
 # add_subdirectory(tool)
 
+#add_subdirectory(3dmax2012)
+
 add_subdirectory(tutorial)

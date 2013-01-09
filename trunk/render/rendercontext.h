@@ -28,6 +28,8 @@ enum eVertexDeclarationType
 	eVertexDeclarationType_PositionTextureNormalIndex,
 	eVertexDeclarationType_Size,
 };
+#pragma pack( push)
+#pragma pack( 1 )
 
 struct sVDT_Position
 {
@@ -108,16 +110,11 @@ struct sVDT_PositionTextureBoneWeightColorNormal
 
 	//
 	Vector3	position_;
-	//
-	Vector2	texcoord_;
-	//
-	u8	bones_[4];
-	//
-	Vector4    weights_;
-	//
-	u32		color_ARGB_;
-
 	Vector3	normal_;
+	Vector2	texcoord_;
+	u32		color_ARGB_;
+	u8		bones_[4];
+	Vector4    weights_;
 	static eVertexDeclarationType getType()
 	{
 		return eVertexDeclarationType_PositionTextureBoneWeightColorNormal;
@@ -127,7 +124,7 @@ struct sVDT_PositionTextureBoneWeightColorNormal
 		return sizeof(sVDT_PositionTextureBoneWeightColorNormal);
 	}
 };
-
+#pragma pack( pop )
 enum eCompatibilityFlag
 {
 	eCompatibilityFlag_NOOVERWRITE =	1 << 0,

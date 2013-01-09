@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include "Mz.h"
 #include "misc/stdHead.h"
+#include "misc/FileSystem.h"
 #include "tinyXML2/tinyxml2.h"
 #include "render/BufferLocker.h"
 #include "Skin.h"
@@ -42,12 +43,12 @@ bool Mesh::createFromMZ(size_t sub, Mz* mz)
 		_vertices[i].color_ARGB_ = c.getARGB();
 		for(size_t k = 0; k != 4; ++k)
 		{
-			_vertices[i].bones_[k] = mz->mVertices[i+ vStart].bones[k];
 			u8 id = mz->mVertices[i+ vStart].bones[k];
-			//if (id < 255)
+			if (id < 255)
 			{
 				++_bones[id];
 			}
+			//_vertices[i].bones_[k] = id;
 		}
 		memcpy(&_vertices[i].weights_[0], mz->mVertices[i+ vStart].weights, sizeof(mz->mVertices[i].weights));
 	}
@@ -58,7 +59,12 @@ bool Mesh::createFromMZ(size_t sub, Mz* mz)
 		{
 			u8 id = mz->mVertices[i+ vStart].bones[k];
 			//
-			//_vertices[i].bones_[k] = std::distance(_bones.begin(), _bones.find(id));
+			if (_bones.find(id) == _bones.end())
+			{
+				break;
+			}
+			size_t d = std::distance(_bones.begin(), _bones.find(id));
+			_vertices[i].bones_[k] = d;
 		}
 	}
 	//
@@ -95,9 +101,11 @@ void Mesh::clear()
 
 bool Mesh::initBuffer_()
 {
-	vertexBuffer_.create(_vertices.size() * sVDT_PositionTextureBoneWeightColorNormal::getSize(),D3DUSAGE_WRITEONLY, 0, D3DPOOL_MANAGED);
-	BufferLocker<VertexBuffer, sVDT_PositionTextureBoneWeightColorNormal> vl(vertexBuffer_);
-	vl.fill(&_vertices[0], _vertices.size()*sVDT_PositionTextureBoneWeightColorNormal::getSize());
+	{
+		vertexBuffer_.create(_vertices.size() * sVDT_PositionTextureBoneWeightColorNormal::getSize(),0, 0, D3DPOOL_MANAGED);
+		BufferLocker<VertexBuffer, sVDT_PositionTextureBoneWeightColorNormal> vl(vertexBuffer_);
+		vl.fill(&_vertices[0], _vertices.size()*sVDT_PositionTextureBoneWeightColorNormal::getSize());
+	}
 	//
 	{
 		indexBuffer_.create(_faces.size() * sizeof(sFace), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED);
@@ -328,6 +336,9 @@ bool Mesh::create( const std::string& fileName )
 	}
 
 	initBuffer_();
+	//
+	tstring bm = FileSystem::removeFileExtension(filePath_) + ".boneMapping";
+	loadBoneMapping(bm);
 	onLoaded_();
 	return true;
 }
@@ -365,7 +376,7 @@ void Mesh::saveBoneMapping( const std::string& fileName, Mz* mz)
 	cs.save(fileName);
 }
 
-void Mesh::loadBoneMapping( const std::string& fileName )
+void Mesh::loadBoneMapping( const tstring& fileName )
 {
 	std::ifstream f(fileName.c_str(), std::ios::binary);
 	if (!f.good())

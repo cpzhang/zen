@@ -24,14 +24,14 @@ D3DXHANDLE Fx::getCurrentTechnique() const
 
 bool Fx::create( const tstring& effectResource )
 {
-	if (SUCCEEDED(D3DXCreateEffectFromFile(getRenderContex()->getDxDevice(), effectResource.c_str(), NULL, NULL, D3DXSHADER_DEBUG, NULL, &pEffect_, NULL)))
+	if (SUCCEEDED(D3DXCreateEffectFromFile(getRenderContex()->getDxDevice(), effectResource.c_str(), NULL, NULL, D3DXSHADER_DEBUG|D3DXSHADER_SKIPOPTIMIZATION, NULL, &pEffect_, NULL)))
 	{
 		resourceID_ = effectResource;
 	}
 	else
 	{
 		tstring ts = FileSystem::getDataDirectory() + effectResource;
-		if (SUCCEEDED(D3DXCreateEffectFromFile(getRenderContex()->getDxDevice(), ts.c_str(), NULL, NULL, D3DXSHADER_DEBUG, NULL, &pEffect_, NULL)))
+		if (SUCCEEDED(D3DXCreateEffectFromFile(getRenderContex()->getDxDevice(), ts.c_str(), NULL, NULL, D3DXSHADER_DEBUG|D3DXSHADER_SKIPOPTIMIZATION, NULL, &pEffect_, NULL)))
 		{
 			resourceID_ = ts;
 		}

@@ -115,6 +115,7 @@ void Material::apply()
 			dx->SetTextureStageState(tss.stage_, tss.type_, tss.value_);
 		}
 	}
+	dx->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 }
 
 Material::Material()

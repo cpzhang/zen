@@ -33,7 +33,7 @@ public:
 	void saveSkeleton(const std::string& fileName);
 	void saveBoneMapping(const std::string& fileName, Mz* mz);
 	void saveMaterial(const std::string& fileName);
-	void loadBoneMapping(const std::string& fileName);
+	void loadBoneMapping(const tstring& fileName);
 	BoundingBox* getAABB();
 private:
 	bool initBuffer_();

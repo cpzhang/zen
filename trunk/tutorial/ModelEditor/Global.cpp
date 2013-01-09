@@ -306,7 +306,7 @@ void decode(const std::string& name)
 			tM.saveMaterial(materialPath);
 			//
 			{
-				std::string animationsPath = exportPath + "/animation/";
+				std::string animationsPath = exportPath + "/skeleton/";
 				FileSystem::createFolder(animationsPath);
 				animationsPath += fileFinalName;
 				animationsPath += ".animation";

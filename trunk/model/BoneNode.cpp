@@ -39,43 +39,25 @@ void BoneNode::update( const AnimationTime& at , Skin* sk)
 		sBoneKFs& b = sk->boneKFs[_bone->id];
 		//translation
 		Vector3 t = b.translationKFs.getFrame(&at);
-
 		//rotation
-		Quaternion q = b.rotationKFs.getFrame(-1, &at);
-
+		Quaternion q = b.rotationKFs.getFrame(-1, &at);		
 		//scale
 		Vector3 s = b.scaleKFs.getFrame(-1, &at);
 
 		Matrix dynamicMtx = Matrix::Identity;
 		dynamicMtx.make(t, s, q);
 		//
-		if(0)
-		{
-			Matrix tM;
-			tM.setTranslate(t);
-			Matrix tQ;
-			tQ.setRotate(&q);
-			dynamicMtx = tM * tQ;
-		}
-
-		//
 		if (_parent)
 		{
-			_mtxTransform =  _parent->_fullMatrix * dynamicMtx;
+			_fullMatrix =  dynamicMtx * _parent->_fullMatrix;
 		}
 		else
 		{
-			_mtxTransform = dynamicMtx;
+			_fullMatrix = dynamicMtx;
 		}
-		_fullMatrix = _mtxTransform;
-
 		//
-		_skeleton->_matricesFull[_bone->id] = _mtxTransform;
-		Matrix mt = _bone->initialMatrix;
-		mt.invert();
-		_mtxTransform = _fullMatrix * mt;
-		//
-		_skeleton->_matrices[_bone->id] = _mtxTransform;
+		_skeleton->_matricesFull[_bone->id] = _fullMatrix;
+		_skeleton->_matrices[_bone->id] = _bone->initialMatrix.getInverse() * _fullMatrix;
 	}
 	
 	NameNodeMap::iterator it = _children.begin();
@@ -92,6 +74,7 @@ void BoneNode::_clear()
 	_skeleton = NULL;
 	_name.clear();
 	_parent = NULL;
+	_fullMatrix = Matrix::Identity;
 }
 
 void BoneNode::addChild( BoneNode* node )

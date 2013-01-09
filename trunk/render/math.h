@@ -26,3 +26,8 @@ inline float DEG_TO_RAD( float angle )
 {
 	return angle * MATH_PI / 180.f; 
 }
+
+ApiRender_ inline DWORD F2DW( FLOAT f ) 
+{
+	return *((DWORD*)&f); 
+}

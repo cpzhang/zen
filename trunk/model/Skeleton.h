@@ -31,7 +31,7 @@ public:
 	int getSkinAnimationNumber();
 	sSkinAnimation* getSkinAnimation(int index);
 	//
-	Skin* getSkin(const tstring& skinAnimationName);
+	Skin* getSkin(const tstring& skinAnimationName, AnimationTime& at);
 	//
 	void update(const AnimationTime& at, Skin* s);
 	BoneNodeMapIterator	getCommandMapIterator(void) const;

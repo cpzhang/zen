@@ -21,6 +21,6 @@ Matrix::Matrix( const Vector4& v0, const Vector4& v1, const Vector4& v2, const V
 ApiRender_ Matrix operator*( const Matrix& a, const Matrix& b )
 {
 	Matrix r(a);
-	r.preMultiply(b);
+	r.postMultiply(b);
 	return r;
 }

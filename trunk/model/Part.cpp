@@ -9,6 +9,8 @@
 #include "render/Fx.h"
 #include "render/FxManager.h"
 #include "Skin.h"
+#include "BoneNode.h"
+#include "render/math.h"
 bool Part::create( const std::string& fileName )
 {
 	FilePath_ = fileName;
@@ -65,7 +67,63 @@ bool Part::create( const std::string& fileName )
 	}
 	return true;
 }
-
+void Part::renderSkeleton()
+{
+	if (NULL == Skeleton_)
+	{
+		return;
+	}
+	IDirect3DDevice9* dx = getRenderContex()->getDxDevice();
+	dx->SetRenderState(D3DRS_POINTSIZE, F2DW(8));
+	BoneNodeMapIterator it = Skeleton_->getCommandMapIterator();
+	while(!it.isAtEnd())
+	{
+		BoneNode* n = it.getCurrentValue();
+		BoneNode* p = n->getParentNode();
+		if (NULL != p)
+		{
+			Bone* b = n->getBone();
+			Bone* f = p->getBone();
+			//
+			Vector3 pt[2];
+			pt[0] = Skeleton_->_matricesFull[b->id].applyVector(Vector3::Zero);
+			pt[1] = Skeleton_->_matricesFull[f->id].applyVector(Vector3::Zero);
+			dx->DrawPrimitiveUP(D3DPT_LINELIST, 1, pt, sizeof(Vector3));
+			dx->DrawPrimitiveUP(D3DPT_POINTLIST, 2, pt, sizeof(Vector3));
+		}
+		else
+		{
+			Bone* b = n->getBone();
+			Vector3 pt[2];
+			pt[0] = Skeleton_->_matricesFull[b->id].applyVector(Vector3::Zero);
+			dx->DrawPrimitiveUP(D3DPT_POINTLIST, 1, pt, sizeof(Vector3));
+		}
+		//
+		++it;
+	}
+	//
+	it.toStart();
+	//
+	//Mat4 vm, pm;
+	//fx->getMatrix("gView", &vm);
+	//fx->getMatrix("gProjection", &pm);
+	//while(!it.isAtEnd())
+	//{
+	//	BoneNode* n = it.getCurrentValue();
+	//	{
+	//		Bone* b = n->getBone();
+	//		//
+	//		Vector3 p;
+	//		RenderEngineImp::getInstancePtr()->getRenderEngine()->getRenderSystem()->objectSpace2ScreenSpace(&p, &p, NULL, &pm, &vm, &mSkeleton->_matricesFull[b->id]);
+	//		//
+	//		{
+	//			RenderEngineImp::getInstancePtr()->getRenderEngine()->getFontManager()->getFont("freeNormal")->render(p, Vec3(1, 0, 0), Zen::Color::Red, b->name);
+	//		}
+	//	}
+	//	//
+	//	++it;
+	//}
+}
 void Part::render()
 {
 	if (NULL == Material_ || NULL == Material_->getFx())
@@ -116,15 +174,20 @@ void Part::render()
 		if (Skeleton_)
 		{
 			static AnimationTime at;
-			Skin* k = Skeleton_->getSkin(TEXT("Run"));
-			at.end = 1999;
+			Skin* k = Skeleton_->getSkin(TEXT("Run"), at);
 			at.current++;
 			if (at.current > at.end)
 			{
 				at.current = at.start;
 			}
 			Skeleton_->update(at, k);
-			ef->SetMatrixArray("gSkinPalette", &Skeleton_->_matrices[0], Skeleton_->_matrices.size());
+			//
+			std::vector<Matrix> matrices;
+			for(BoneIDReferenceMap::iterator it = Mesh_->_bones.begin(); it != Mesh_->_bones.end(); ++it)
+			{
+				matrices.push_back(Skeleton_->_matrices[it->first]);
+			}
+			ef->SetMatrixArray("gSkinPalette", &matrices[0], matrices.size());
 		}
 		Material_->apply();
 		ef->CommitChanges();
@@ -136,6 +199,9 @@ void Part::render()
 		}
 	}
 	ef->End();
+	//
+	//
+	//renderSkeleton();
 }
 
 void Part::clear_()

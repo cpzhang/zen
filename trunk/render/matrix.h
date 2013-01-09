@@ -22,10 +22,13 @@ public:
 	{
 		D3DXMatrixMultiply( this, this , &m);
 	}
-
+	//
 	void setTranslate( const float x, const float y, const float z )
 	{
-		D3DXMatrixTranslation( this, x, y, z );
+		//D3DXMatrixTranslation( this, x, y, z );
+		_41 = x;
+		_42 = y;
+		_43 = z;
 	}
 	void setTranslate( const Vector3 & pos )
 	{
@@ -115,7 +118,7 @@ public:
 	{
 		setScale( scale.x, scale.y, scale.z );
 	}
-	void	setRotate( Quaternion* q )
+	void	setRotate(const Quaternion* q )
 	{
 		D3DXMatrixRotationQuaternion( this, (const D3DXQUATERNION *)q );
 	}
@@ -128,9 +131,9 @@ public:
 	}
 	Vector3 applyVector( const Vector3& v2 ) const
 	{
-		Vector3 vout;
-		D3DXVec3TransformNormal( &vout, &v2, this );
-		return vout;
+		Vector4 vout;
+		D3DXVec3Transform( &vout, &v2, this );
+		return Vector3(vout.x, vout.y, vout.z);
 	}
 
 public:

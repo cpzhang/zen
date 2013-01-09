@@ -37,6 +37,17 @@ LRESULT DataDlg::OnFileItemSelected( UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
 	getGlobal()->setCurrentLayer(FileName);
 	//
 	IFileManager::getFile(FileName)->update(FileName, &properties_);
+	//
+	{
+		std::locale loc = std::locale::global(std::locale("")); //要打开的文件路径含中文，设置全局locale为本地环境 
+		std::ifstream f(FileName);
+		if (!f.good())
+		{
+			return false;
+		}
+		f.close();
+		std::locale::global(loc);//恢复全局locale 
+	}
 	return TRUE;
 }
 

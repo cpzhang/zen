@@ -3,6 +3,37 @@
 #include "tinyXML2/tinyxml2.h"
 #include "Material.h"
 #include "Skin.h"
+#include "render/Vector3.h"
+Matrix getBasisMatrix()
+{
+	Matrix m;
+	m.setIdentity();
+	m.setRow(0, Vector4(1, 0, 0, 0));
+	m.setRow(1, Vector4(0, 1, 0, 0));
+	m.setRow(2, Vector4(0, 0, -1, 0));
+	return m;
+}
+Matrix getBasisMatrixInvese()
+{
+	Matrix m = getBasisMatrix();
+	return m.getInverse();
+}
+Matrix yz2dx(const Matrix& m)
+{
+	return getBasisMatrixInvese() * m * getBasisMatrix();
+}
+Vector3 yz2dx(const Vector3& m)
+{
+	return getBasisMatrix().applyVector(m);
+}
+Quaternion yz2dx(const Quaternion& m)
+{
+	Matrix t;
+	t.setRotate(&m);
+	t = yz2dx(t);
+	Quaternion q(t);
+	return q;
+}
 bool Mz::load( const std::string& fileName )
 {
 	//
@@ -10,6 +41,7 @@ bool Mz::load( const std::string& fileName )
 
 	mzFileName_ = fileName;
 	std::string mziFileName(fileName + "i");
+	mziFileName = FileSystem::standardFilePath(mziFileName);
 	loadMzI(mziFileName);
 	//
 	std::ifstream f(fileName.c_str(), std::ios::binary);
@@ -144,13 +176,11 @@ void Mz::loadMzI( const std::string& fileName )
 		}
 		mAnimationNames.push_back(fbFileNames_[i].substr(p, q - p));
 		//
+		p = fileName.find_last_of('/');
+		if (p != std::string::npos)
 		{
-			size_t p = fileName.find_last_of('/');
-			if (p != std::string::npos)
-			{
-				std::string fn = fileName.substr(0, p) + "/" + fbFileNames_[i];
-				loadFb(fn);
-			}
+			std::string fn = fileName.substr(0, p) + "/" + fbFileNames_[i];
+			loadFb(fn);
 		}
 	}
 }
@@ -460,13 +490,16 @@ void Mz::decodeBone( std::ifstream& f, int s )
 			f.read((char*)&tm,sizeof(tm));
 			//此tm是D3D矩阵模式，不需要转置
 			for (int i = 0;i < 4;i++)
-				for (int j = 0;j < 3;j++)
-				{
-					initialMatrix[j][i] = tm.m_mat[i][j];
-				}
-				pivot.x = tm.m_mat[3][0];
-				pivot.y = tm.m_mat[3][1];
-				pivot.z = tm.m_mat[3][2];
+			for (int j = 0;j < 3;j++)
+			{
+				initialMatrix[i][j] = tm.m_mat[i][j];
+			}
+			
+			pivot.x = tm.m_mat[3][0];
+			pivot.y = tm.m_mat[3][1];
+			pivot.z = tm.m_mat[3][2];
+			//
+			initialMatrix = yz2dx(initialMatrix);
 		}
 		//
 		{
@@ -483,6 +516,7 @@ void Mz::decodeBone( std::ifstream& f, int s )
 		{
 			sKeyFrame<Vector3> kf;
 			f.read((char*)&kf,sizeof(kf));
+			kf.v = yz2dx(kf.v);
 			bkf.translationKFs.addKeyFrame(kf);
 		}
 		f.read((char*)&nKeyframes,sizeof(nKeyframes));
@@ -490,6 +524,7 @@ void Mz::decodeBone( std::ifstream& f, int s )
 		{
 			sKeyFrame<Quaternion> kf;
 			f.read((char*)&kf,sizeof(kf));
+			kf.v = yz2dx(kf.v);
 			bkf.rotationKFs.addKeyFrame(kf);
 		}
 		f.read((char*)&nKeyframes,sizeof(nKeyframes));
@@ -497,6 +532,7 @@ void Mz::decodeBone( std::ifstream& f, int s )
 		{
 			sKeyFrame<Vector3> kf;
 			f.read((char*)&kf,sizeof(kf));
+			//kf.v = yz2dx(kf.v);
 			bkf.scaleKFs.addKeyFrame(kf);
 		}
 		bool hasRibbonSystem;
@@ -674,6 +710,7 @@ void Mz::loadFb( const std::string& fileName )
 					{
 						sKeyFrame<Vector3> kf;
 						f.read((char*)&kf,sizeof(kf));
+						kf.v = yz2dx(kf.v);
 						s.translationKFs.addKeyFrame(kf);
 					}
 					// rotate
@@ -682,6 +719,7 @@ void Mz::loadFb( const std::string& fileName )
 					{
 						sKeyFrame<Quaternion> kf;
 						f.read((char*)&kf,sizeof(kf));
+						kf.v = yz2dx(kf.v);
 						s.rotationKFs.addKeyFrame(kf);
 					}
 					//scale
@@ -690,6 +728,7 @@ void Mz::loadFb( const std::string& fileName )
 					{
 						sKeyFrame<Vector3> kf;
 						f.read((char*)&kf,sizeof(kf));
+						//kf.v = yz2dx(kf.v);
 						s.scaleKFs.addKeyFrame(kf);
 					}
 					//
@@ -748,6 +787,10 @@ void Mz::saveSkeleton( const std::string& fileName )
 
 void Mz::saveSkin( const std::string& fileName )
 {
+	if (mAnimations.empty())
+	{
+		return;
+	}
 	for (size_t i = 0; i != mSkins.size(); ++i)
 	{
 		std::string path = fileName + "/" + mAnimations[i].name + ".skin";
@@ -861,6 +904,17 @@ void Mz::decodeSubMesh( std::ifstream& f, int s )
 			++i;
 		}
 	}
+	for(int i = 0; i != mSubmeshes.size(); ++i)
+	{
+		sSubMeshWithName& s = mSubmeshes[i];
+		for(int k = 0; k != 128; ++k)
+		{
+			if(s.name[k] == '|' || s.name[k] == ' ')
+			{
+				s.name[k] = '_';
+			}
+		}
+	}
 }
 
 void Mz::decodeVertices( std::ifstream& f, int s )
@@ -915,6 +969,10 @@ void Mz::decodeVertices( std::ifstream& f, int s )
 		}
 	}
 	mUseVertexColor = useVertexColor;
+	for(size_t i = 0; i != mVertices.size(); ++i)
+	{
+		mVertices[i].pos[2] = -mVertices[i].pos[2];
+	}
 }
 
 void Mz::decodeFaces( std::ifstream& f, int s )
@@ -1274,7 +1332,7 @@ void Mz::saveEntity( const std::string& fileName )
 
 void Mz::clear()
 {
-
+	mLoadFBs = false;
 }
 
 void Mz::decodeParticle( std::ifstream& f, int s )

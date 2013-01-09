@@ -7,7 +7,7 @@ FxManager::FxManager()
 
 void FxManager::clear_()
 {
-	ShaderType_ = eFx_Shader0;
+	ShaderType_ = eFx_Shader2;
 }
 
 Fx* FxManager::find_( const tstring& resourceID )
