@@ -27,16 +27,19 @@ LRESULT FrameWindow::onCreate( UINT, WPARAM, LPARAM, BOOL& )
 	verticalSplitter_.SetSplitterPane(SPLIT_PANE_RIGHT, tabs_);
 	//
 	dlgData_.Create(tabs_);
-	tabs_.AddPage(dlgData_, TEXT("美术资源"));
+	tabs_.AddPage(dlgData_, TEXT("资源"));
 	//
 	dlgTerrainTexture_.Create(tabs_);
-	tabs_.AddPage(dlgTerrainTexture_, TEXT("地表纹理"));
+	tabs_.AddPage(dlgTerrainTexture_, TEXT("纹理"));
 	//
 	dlgChangeHeight_.Create(tabs_);
-	tabs_.AddPage(dlgChangeHeight_, TEXT("地形高度"));
+	tabs_.AddPage(dlgChangeHeight_, TEXT("高度"));
 	//
 	dlgOptions_.Create(tabs_);
 	tabs_.AddPage(dlgOptions_, TEXT("选项"));
+	//
+	dlgAnimation_.Create(tabs_);
+	tabs_.AddPage(dlgAnimation_, TEXT("动画"));
 	//
 	UpdateLayout();
 
@@ -75,10 +78,7 @@ void FrameWindow::onRefreshLuaScript()
 LRESULT FrameWindow::OnToobarChangeHeight( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
 	getStateManager()->gotoState(eState_TerrainHeight);
-	UISetCheck(ID_BUTTON_Data, false);
-	UISetCheck(ID_BUTTON_ChangeHeight, true);
-	UISetCheck(ID_BUTTON_PaintTerrain, false);
-	UISetCheck(ID_BUTTON_Options, false);
+	tabSwitch(ID_BUTTON_ChangeHeight);
 	tabs_.SetActivePage(2);
 	return 0;
 }
@@ -86,10 +86,8 @@ LRESULT FrameWindow::OnToobarChangeHeight( WORD /*wNotifyCode*/, WORD /*wID*/, H
 LRESULT FrameWindow::OnToobarChangeTexture( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
 	getStateManager()->gotoState(eState_TerrainTexture);
-	UISetCheck(ID_BUTTON_Data, false);
 	UISetCheck(ID_BUTTON_PaintTerrain, true);
-	UISetCheck(ID_BUTTON_ChangeHeight, false);
-	UISetCheck(ID_BUTTON_Options, false);
+
 	tabs_.SetActivePage(1);
 	return 0;
 }
@@ -97,10 +95,7 @@ LRESULT FrameWindow::OnToobarChangeTexture( WORD /*wNotifyCode*/, WORD /*wID*/, 
 LRESULT FrameWindow::OnToobarData( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
 	//getStateManager()->gotoState(eState_Data);
-	UISetCheck(ID_BUTTON_Data, true);
-	UISetCheck(ID_BUTTON_PaintTerrain, false);
-	UISetCheck(ID_BUTTON_ChangeHeight, false);
-	UISetCheck(ID_BUTTON_Options, false);
+	tabSwitch(ID_BUTTON_Data);
 	tabs_.SetActivePage(0);
 	return 0;
 }
@@ -108,10 +103,17 @@ LRESULT FrameWindow::OnToobarData( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hW
 LRESULT FrameWindow::OnToobarOptions( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
 	//getStateManager()->gotoState(eState_Data);
-	UISetCheck(ID_BUTTON_Options, true);
+	tabSwitch(ID_BUTTON_Options);
+	tabs_.SetActivePage(3);
+	return 0;
+}
+
+void FrameWindow::tabSwitch(WORD id)
+{
+	UISetCheck(ID_BUTTON_Options, false);
 	UISetCheck(ID_BUTTON_Data, false);
 	UISetCheck(ID_BUTTON_ChangeHeight, false);
 	UISetCheck(ID_BUTTON_PaintTerrain, false);
-	tabs_.SetActivePage(3);
-	return 0;
+	//
+	UISetCheck(id, true);
 }

@@ -10,6 +10,7 @@
 #define IDD_DIALOG_Data                 116
 #define IDD_DIALOG_TerrainTexture       117
 #define IDD_DIALOG_Options              118
+#define IDD_DIALOG_Animation            119
 #define IDC_SceneName                   1000
 #define IDC_ScenePath                   1001
 #define IDC_BUTTON_ScenePath            1002
@@ -33,6 +34,7 @@
 #define IDC_BUTTON_DataRefresh          1017
 #define IDC_LIST1                       1018
 #define IDC_LIST_DataProperty           1018
+#define IDC_LIST_Animation              1019
 #define ID_40001                        40001
 #define ID_40002                        40002
 #define ID_40003                        40003
@@ -59,7 +61,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        118
 #define _APS_NEXT_COMMAND_VALUE         40018
-#define _APS_NEXT_CONTROL_VALUE         1019
+#define _APS_NEXT_CONTROL_VALUE         1020
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

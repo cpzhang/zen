@@ -420,7 +420,7 @@ void Mz::saveSubEntity( const std::string& fileName )
 			a->SetAttribute("file", meshPath.c_str());
 			ele->LinkEndChild(a);
 		}
-		{
+		if(0){
 			tinyxml2::XMLElement* a = doc.NewElement("boneMapping");
 			std::string meshPath;
 			meshPath = "mesh/";
@@ -429,7 +429,7 @@ void Mz::saveSubEntity( const std::string& fileName )
 			a->SetAttribute("file", meshPath.c_str());
 			ele->LinkEndChild(a);
 		}
-		{
+		if(0){
 			tinyxml2::XMLElement* a = doc.NewElement("skeleton");
 			std::string meshPath;
 			meshPath = "skeleton/";
@@ -440,7 +440,7 @@ void Mz::saveSubEntity( const std::string& fileName )
 			a->SetAttribute("file", meshPath.c_str());
 			ele->LinkEndChild(a);
 		}
-		{
+		if(0){
 			tinyxml2::XMLElement* a = doc.NewElement("animation");
 			std::string meshPath;
 			meshPath = "animation/";

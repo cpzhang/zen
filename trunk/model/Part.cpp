@@ -11,6 +11,7 @@
 #include "Skin.h"
 #include "BoneNode.h"
 #include "render/math.h"
+#include "Entity.h"
 bool Part::create( const std::string& fileName )
 {
 	FilePath_ = fileName;
@@ -38,44 +39,18 @@ bool Part::create( const std::string& fileName )
 		tinyxml2::XMLElement* mat = r->FirstChildElement("material");
 		Material_ = getMaterialManager()->get(FileSystem::standardFilePath(parentPath + mat->Attribute("file")));
 	}
-	//
-	{
-		tinyxml2::XMLElement* mat = r->FirstChildElement("skeleton");
-		if (mat)
-		{
-			std::string skeleton = mat->Attribute("file");
-			Skeleton_ = getSkeletonManager()->get(parentPath + skeleton);
-		}
-	}
-	//
-	{
-		tinyxml2::XMLElement* mat = r->FirstChildElement("boneMapping");
-		if (mat)
-		{
-			std::string skeleton = mat->Attribute("file");
-			//mGeometry->setBoneMapping(parentPath + skeleton);
-		}
-	}
-	//
-	{
-		tinyxml2::XMLElement* mat = r->FirstChildElement("animation");
-		if (mat)
-		{
-			std::string skeleton = mat->Attribute("file");
-			//mGeometry->setAnimation(parentPath + skeleton);
-		}
-	}
+	
 	return true;
 }
 void Part::renderSkeleton()
 {
-	if (NULL == Skeleton_)
+	if (NULL == Entity_ || NULL == Entity_->getSkeleton())
 	{
 		return;
 	}
 	IDirect3DDevice9* dx = getRenderContex()->getDxDevice();
 	dx->SetRenderState(D3DRS_POINTSIZE, F2DW(8));
-	BoneNodeMapIterator it = Skeleton_->getCommandMapIterator();
+	BoneNodeMapIterator it = Entity_->getSkeleton()->getCommandMapIterator();
 	while(!it.isAtEnd())
 	{
 		BoneNode* n = it.getCurrentValue();
@@ -86,8 +61,8 @@ void Part::renderSkeleton()
 			Bone* f = p->getBone();
 			//
 			Vector3 pt[2];
-			pt[0] = Skeleton_->_matricesFull[b->id].applyVector(Vector3::Zero);
-			pt[1] = Skeleton_->_matricesFull[f->id].applyVector(Vector3::Zero);
+			pt[0] = Entity_->getSkeleton()->_matricesFull[b->id].applyVector(Vector3::Zero);
+			pt[1] = Entity_->getSkeleton()->_matricesFull[f->id].applyVector(Vector3::Zero);
 			dx->DrawPrimitiveUP(D3DPT_LINELIST, 1, pt, sizeof(Vector3));
 			dx->DrawPrimitiveUP(D3DPT_POINTLIST, 2, pt, sizeof(Vector3));
 		}
@@ -95,7 +70,7 @@ void Part::renderSkeleton()
 		{
 			Bone* b = n->getBone();
 			Vector3 pt[2];
-			pt[0] = Skeleton_->_matricesFull[b->id].applyVector(Vector3::Zero);
+			pt[0] = Entity_->getSkeleton()->_matricesFull[b->id].applyVector(Vector3::Zero);
 			dx->DrawPrimitiveUP(D3DPT_POINTLIST, 1, pt, sizeof(Vector3));
 		}
 		//
@@ -171,24 +146,22 @@ void Part::render()
 			m.setScale(0.01f, 0.01f, 0.01f);
 			ef->SetMatrix(w, &m);
 		}
-		if (Skeleton_)
+		std::vector<Matrix> matrices;
+		if (Entity_ && Entity_->getSkeleton())
 		{
-			static AnimationTime at;
-			Skin* k = Skeleton_->getSkin(TEXT("Run"), at);
-			at.current++;
-			if (at.current > at.end)
-			{
-				at.current = at.start;
-			}
-			Skeleton_->update(at, k);
-			//
-			std::vector<Matrix> matrices;
 			for(BoneIDReferenceMap::iterator it = Mesh_->_bones.begin(); it != Mesh_->_bones.end(); ++it)
 			{
-				matrices.push_back(Skeleton_->_matrices[it->first]);
+				matrices.push_back(Entity_->getSkeleton()->_matrices[it->first]);
 			}
-			ef->SetMatrixArray("gSkinPalette", &matrices[0], matrices.size());
 		}
+		else
+		{
+			for(BoneIDReferenceMap::iterator it = Mesh_->_bones.begin(); it != Mesh_->_bones.end(); ++it)
+			{
+				matrices.push_back(Matrix::Identity);
+			}
+		}
+		ef->SetMatrixArray("gSkinPalette", &matrices[0], matrices.size());
 		Material_->apply();
 		ef->CommitChanges();
 		for (int p = 0; p != passes; ++p)
@@ -209,7 +182,7 @@ void Part::clear_()
 	Name_.clear();
 	Mesh_ = NULL;
 	Material_ = NULL;
-	Skeleton_ = NULL;
+	Entity_ = NULL;
 }
 
 Part::Part()
@@ -236,10 +209,9 @@ tstring Part::getFilePath()
 {
 	return FilePath_;
 }
-
-Skeleton* Part::getSkeleton()
+void Part::setEntity( Entity* e )
 {
-	return Skeleton_;
+	Entity_ = e;
 }
 
 Create_Singleton_Imp(PartManager, ApiModel_)

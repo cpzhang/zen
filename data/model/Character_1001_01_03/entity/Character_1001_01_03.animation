@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<animations name="Character_1001_01_03">
+    <animation name="CombatWound" duration="733" skin="skin/CombatWound.skin"/>
+    <animation name="CombatWound01" duration="666" skin="skin/CombatWound01.skin"/>
+    <animation name="Dead" duration="1099" skin="skin/Dead.skin"/>
+    <animation name="MountStand01" duration="2133" skin="skin/MountStand01.skin"/>
+    <animation name="PhsAttack01" duration="2066" skin="skin/PhsAttack01.skin"/>
+    <animation name="Rest01" duration="1233" skin="skin/Rest01.skin"/>
+    <animation name="Run" duration="1999" skin="skin/Run.skin"/>
+    <animation name="SpAttack01" duration="1299" skin="skin/SpAttack01.skin"/>
+    <animation name="Stand" duration="966" skin="skin/Stand.skin"/>
+</animations>

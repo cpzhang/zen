@@ -11,7 +11,7 @@
 #include "StateManager.h"
 #include "luaScript/LuaScript.h"
 #include "IdleHandler.h"
-#include "model/PartInstance.h"
+#include "model/Part.h"
 #include "model/Entity.h"
 #include "model/Part.h"
 #include "model/Mesh.h"
@@ -20,6 +20,7 @@
 #include "model/Skeleton.h"
 #include "misc/FileSystem.h"
 #include "tinyXML2/tinyxml2.h"
+#include "model/EntityInstance.h"
 extern int tolua_LuaAPI_open (lua_State* tolua_S);
 Global::Global()
 {
@@ -49,7 +50,6 @@ bool Global::create()
 		return false;
 	}
 	createEntityManager();
-	createPartInstanceManager();
 	createMeshManager();
 	createMaterialManager();
 	createPartManager();
@@ -60,7 +60,6 @@ void Global::destroy()
 {
 	destroySkeletonManager();
 	destroyEntityManager();
-	destroyPartInstanceManager();
 	destroyMeshManager();
 	destroyMaterialManager();
 	destroyPartManager();
@@ -105,12 +104,17 @@ Decal* Global::getBrushDecal()
 	return brushDecal_;
 }
 
-void Global::update()
+void Global::update(float delta)
 {
 	//
 	updatePickingPoint_();
 	//
 	getStateManager()->update();
+	//
+	if (pi_)
+	{
+		pi_->update(delta);
+	}
 }
 
 float Global::getBrushStrength()
@@ -296,7 +300,7 @@ void decode(const std::string& name)
 		//
 		if(i == 0)
 		{
-			skeletonPath = exportPath + "/skeleton/" + fileFinalName + ".skeleton";
+			skeletonPath = exportPath + "/entity/" + fileFinalName + ".skeleton";
 			FileSystem::createFolder(skeletonPath);
 			tM.saveSkeleton(skeletonPath);
 			//
@@ -306,7 +310,7 @@ void decode(const std::string& name)
 			tM.saveMaterial(materialPath);
 			//
 			{
-				std::string animationsPath = exportPath + "/skeleton/";
+				std::string animationsPath = exportPath + "/entity/";
 				FileSystem::createFolder(animationsPath);
 				animationsPath += fileFinalName;
 				animationsPath += ".animation";
@@ -353,7 +357,24 @@ void decode(const std::string& name)
 			a->SetAttribute("file", meshPath.c_str());
 			ele->LinkEndChild(a);
 		}
-
+		{
+			tinyxml2::XMLElement* a = doc.NewElement("skeleton");
+			std::string meshPath;
+			meshPath = "entity/";
+			meshPath += fileFinalName;
+			meshPath += ".skeleton";
+			a->SetAttribute("file", meshPath.c_str());
+			ele->LinkEndChild(a);
+		}
+		{
+			tinyxml2::XMLElement* a = doc.NewElement("animation");
+			std::string meshPath;
+			meshPath = "entity/";
+			meshPath += fileFinalName;
+			meshPath += ".animation";
+			a->SetAttribute("file", meshPath.c_str());
+			ele->LinkEndChild(a);
+		}
 		doc.LinkEndChild(ele);
 		//
 		std::string path = exportPath + "/entity/" + fileFinalName + ".entity";
@@ -370,15 +391,22 @@ void Global::setCurrentLayer( const tstring& name )
 	{
 		return;
 	}
+	if (pi_)
+	{
+		delete pi_;
+		pi_ = NULL;
+	}
 	std::string suffix = layer_.substr(dotPos, layer_.size() - dotPos);
 	std::transform(suffix.begin(), suffix.end(), suffix.begin(), tolower);
 	if(suffix == ".part")
 	{
-		pi_ = getPartInstanceManager()->get(name);
+		pi_ = getPartManager()->get(name);
 	}
 	else if(suffix == ".entity")
 	{
-		pi_ = getEntityManager()->get(name);
+		EntityInstance* e = new EntityInstance;
+		e->setEntity(getEntityManager()->get(name));
+		pi_ = e;
 	}
 	else if(suffix == ".mz")
 	{
@@ -417,6 +445,15 @@ void Global::refreshDataRoot()
 				h->onRefreshLuaScript();
 			}
 		}
+	}
+}
+
+void Global::setAnimation( const tstring& name )
+{
+	if (pi_)
+	{
+		EntityInstance* e = (EntityInstance*)pi_;
+		e->setAnimation(name);
 	}
 }
 

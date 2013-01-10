@@ -261,8 +261,8 @@ void Skeleton::_relate()
 	}
 	
 	//
-	_matrices.resize(_boneNodes.size());
-	_matricesFull.resize(_boneNodes.size());
+	_matrices.resize(_boneNodes.size(), Matrix::Identity);
+	_matricesFull.resize(_boneNodes.size(), Matrix::Identity);
 }
 
 BoneNodeMapIterator Skeleton::getCommandMapIterator( void ) const

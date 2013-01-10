@@ -7,7 +7,8 @@
 #include "model/Material.h"
 #include "model/Entity.h"
 #include "model/Skeleton.h"
-#include "model/PartInstance.h"
+#include "model/Part.h"
+#include "EventManager.h"
 LRESULT DataDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled )
 {
 	bHandled = TRUE;
@@ -37,17 +38,7 @@ LRESULT DataDlg::OnFileItemSelected( UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
 	getGlobal()->setCurrentLayer(FileName);
 	//
 	IFileManager::getFile(FileName)->update(FileName, &properties_);
-	//
-	{
-		std::locale loc = std::locale::global(std::locale("")); //要打开的文件路径含中文，设置全局locale为本地环境 
-		std::ifstream f(FileName);
-		if (!f.good())
-		{
-			return false;
-		}
-		f.close();
-		std::locale::global(loc);//恢复全局locale 
-	}
+	
 	return TRUE;
 }
 
@@ -153,6 +144,36 @@ void FilePart::update( const std::string& fn, CPropertyListCtrl* pl , bool reset
 			pl->AddItem( PropCreateSimpleString(_T("FX"), FileSystem::cutDataPath(f->getFilePath()).c_str()), pCategory);
 		}
 	}
+}
+void FileEntity::update( const std::string& fn, CPropertyListCtrl* pl , bool reset /*= true*/, CCategoryProperty* ct /*= NULL*/)
+{
+	//清空
+	if (reset)
+	{
+		pl->ResetContent();
+	}
+	//部件
+	Entity* p = getEntityManager()->get(fn);
+	if (NULL == p)
+	{
+		return;
+	}
+	if (ct == NULL)
+	{
+		ct = CCategoryProperty::getNullObject();
+	}
+	for (size_t i = 0; i != p->getPartNumber(); ++i)
+	{
+		Part* pt = p->getPart(i);
+		if (pt)
+		{
+			HPROPERTY c = pl->AddItem( PropCreateCategory(pt->getFilePath().c_str()), ct);
+			CCategoryProperty* pCategory = (CCategoryProperty*)(c);
+			pCategory->SetLevel(0);
+			//pCategory->setCategory(NULL);
+			IFileManager::getFile(eFile_Part)->update(pt->getFilePath(), pl, false, pCategory);
+		}
+	}
 	//Skeleton
 	Skeleton* st = p->getSkeleton();
 	if (st)
@@ -179,44 +200,11 @@ void FilePart::update( const std::string& fn, CPropertyListCtrl* pl , bool reset
 
 	}
 }
-void FileEntity::update( const std::string& fn, CPropertyListCtrl* pl , bool reset /*= true*/, CCategoryProperty* ct /*= NULL*/)
-{
-	//清空
-	if (reset)
-	{
-		pl->ResetContent();
-	}
-	//部件
-	Entity* p = getEntityManager()->get(fn);
-	if (NULL == p)
-	{
-		return;
-	}
-	if (ct == NULL)
-	{
-		ct = CCategoryProperty::getNullObject();
-	}
-	for (size_t i = 0; i != p->getPartInstanceNumber(); ++i)
-	{
-		PartInstance* pi = p->getPartInstance(i);
-		if (pi)
-		{
-			Part* pt = pi->getPart();
-			if (pt)
-			{
-				HPROPERTY c = pl->AddItem( PropCreateCategory(pt->getFilePath().c_str()), ct);
-				CCategoryProperty* pCategory = (CCategoryProperty*)(c);
-				pCategory->SetLevel(0);
-				//pCategory->setCategory(NULL);
-				IFileManager::getFile(eFile_Part)->update(pt->getFilePath(), pl, false, pCategory);
-			}
-		}
-	}
-}
 IFile* IFileManager::getFile( const std::string& fn )
 {
 	eFile f = eFile_Null;
 	tstring ext = FileSystem::getFileExtension(fn);
+	SelectModelEventArgs args;
 	if (ext == "part")
 	{
 		f = eFile_Part;
@@ -224,7 +212,10 @@ IFile* IFileManager::getFile( const std::string& fn )
 	else if (ext == "entity")
 	{
 		f = eFile_Entity;
+		args.FilePath_ = fn;
 	}
+	//
+	EventManager::GetInstance().fireEvent(eEvent_SelectModel, args);
 	return getFile(f);
 }
 

@@ -54,7 +54,6 @@ float4 PS(VS_OUTPUT In) : COLOR
 {
   float4 color = (float4)0;
   color = tex2D(gSampler0, In.Tex);
-  color.r += 0.5;
   return  color;
 }
 technique T0

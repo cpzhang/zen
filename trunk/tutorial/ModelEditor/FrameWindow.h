@@ -1,10 +1,12 @@
 #pragma once
 #include "misc/atlHead.h"
+#include "resource.h"
 #include "ViewWindow.h"
 #include "IdleHandler.h"
 #include "HeightDlg.h"
 #include "DataDlg.h"
-#include "resource.h"
+#include "AnimationDlg.h"
+
 class FrameWindow : 
 	public CFrameWindowImpl<FrameWindow>
 	,public CUpdateUI<FrameWindow>
@@ -45,6 +47,8 @@ private:
 	LRESULT OnToobarData(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnToobarChangeTexture(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnToobarOptions(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	//
+	void tabSwitch(WORD id);
 private:
 	CSplitterWindow verticalSplitter_;
 	ViewWindow canvas_;
@@ -53,4 +57,5 @@ private:
 	DataDlg		dlgData_;
 	TerrainTextureDlg dlgTerrainTexture_;
 	OptionsDlg dlgOptions_;
+	AnimationDlg dlgAnimation_;
 };

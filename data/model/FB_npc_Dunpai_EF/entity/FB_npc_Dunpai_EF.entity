@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<entity name="FB_npc_Dunpai_EF">
+    <part file="part/dunpai.part"/>
+    <part file="part/pPipe3.part"/>
+    <part file="part/pPipe5.part"/>
+    <part file="part/pPipe6.part"/>
+    <skeleton file="entity/FB_npc_Dunpai_EF.skeleton"/>
+    <animation file="entity/FB_npc_Dunpai_EF.animation"/>
+</entity>

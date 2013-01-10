@@ -4,21 +4,22 @@
 #include "misc/Singleton.h"
 class Mesh;
 class Material;
-class Skeleton;
+class Entity;
 //×éºÏ£¬Mesh + Material
-class ApiModel_ Part
+class ApiModel_ Part : public IRender
 {
+public:
+	virtual void render();
 public:
 	Part();
 public:
 	bool create(const std::string& fileName);
-	void render();
 	void destroy();
 	Mesh* getMesh();
 	Material* getMaterial();
-	Skeleton* getSkeleton();
 	tstring getFilePath();
 	void renderSkeleton();
+	void setEntity(Entity* e);
 public:
 	static Part* getNullObject()
 	{
@@ -32,7 +33,7 @@ private:
 	std::string Name_;
 	Mesh* Mesh_;
 	Material* Material_;
-	Skeleton* Skeleton_;
+	Entity* Entity_;
 };
 
 Create_Singleton_Declaration(PartManager, Part, ApiModel_)

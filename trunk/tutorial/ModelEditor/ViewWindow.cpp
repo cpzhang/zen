@@ -200,10 +200,11 @@ void ViewWindow::onIdle()
 	static float lastTick = GetTickCount();
 	float currentTick = GetTickCount();
 	float delta = currentTick - lastTick;
+	lastTick = currentTick;
 	camera_.update(delta);
 	getSceneManager()->update();
 	{
-		getGlobal()->update();
+		getGlobal()->update(delta);
 	}
 	//
 	getRenderContex()->setViewMatrix(camera_.view_);

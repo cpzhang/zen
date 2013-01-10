@@ -16,7 +16,7 @@ public:
 	bool create();
 	void destroy();
 	Decal* getBrushDecal();
-	void update();
+	void update(float delta);
 	//
 	float getBrushStrength();
 	void setBrushStrength(float f);
@@ -42,6 +42,8 @@ public:
 	tstring getCurrentLayer();
 	//
 	void refreshDataRoot();
+	//
+	void setAnimation(const tstring& name);
 private:
 	void clear_();
 	bool createBrushDecal();

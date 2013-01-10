@@ -16,4 +16,5 @@ class ApiModel_ IRender
 public:
 	virtual ~IRender(){}
 	virtual void render() = 0;
+	virtual void update(float delta){};
 };

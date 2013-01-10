@@ -2,7 +2,9 @@
 #include "ConfigModel.h"
 #include "misc/stdHead.h"
 #include "misc/Singleton.h"
-class PartInstance;
+class Part;
+class Skeleton;
+class Part;
 class ApiModel_ Entity : public IRender
 {
 public:
@@ -10,9 +12,10 @@ public:
 public:
 	bool create(const tstring& resourceId);
 	void destroy();
-	void addPartInstance(const tstring& resourceId);
-	size_t getPartInstanceNumber();
-	PartInstance* getPartInstance(size_t index);
+	void addPart(const tstring& resourceId);
+	size_t getPartNumber();
+	Part* getPart(size_t index);
+	Skeleton* getSkeleton();
 public:
 	static Entity* getNullObject()
 	{
@@ -21,10 +24,11 @@ public:
 	}
 
 private:
-	typedef std::vector<PartInstance*> PartInstanceVec;
-	PartInstanceVec PartInstances_;
+	typedef std::vector<Part*> PartVec;
+	PartVec Parts_;
 	tstring Name_;
 	tstring FileName_;
+	Skeleton* Skeleton_;
 };
 
 Create_Singleton_Declaration(EntityManager, Entity, ApiModel_)

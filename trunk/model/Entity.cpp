@@ -1,12 +1,13 @@
 #include "Entity.h"
 #include "tinyXML2/tinyxml2.h"
 #include "misc/FileSystem.h"
-#include "PartInstance.h"
+#include "Part.h"
+#include "Skeleton.h"
 void Entity::render()
 {
-	for (size_t i = 0; i != PartInstances_.size(); ++i)
+	for (size_t i = 0; i != Parts_.size(); ++i)
 	{
-		PartInstance* pi = PartInstances_[i];
+		Part* pi = Parts_[i];
 		if (pi)
 		{
 			pi->render();
@@ -14,10 +15,10 @@ void Entity::render()
 	}
 }
 
-void Entity::addPartInstance( const tstring& resourceId )
+void Entity::addPart( const tstring& resourceId )
 {
-	PartInstance* pi = getPartInstanceManager()->get(resourceId);
-	PartInstances_.push_back(pi);
+	Part* pi = getPartManager()->get(resourceId);
+	Parts_.push_back(pi);
 }
 
 bool Entity::create( const tstring& resourceId )
@@ -39,10 +40,21 @@ bool Entity::create( const tstring& resourceId )
 	while (tex)
 	{
 		std::string subEntityFileName = tex->Attribute("file");
-		PartInstance* sub = getPartInstanceManager()->get(parentPath + subEntityFileName);
-		PartInstances_.push_back(sub);
+		Part* sub = getPartManager()->get(parentPath + subEntityFileName);
+		sub->setEntity(this);
+		Parts_.push_back(sub);
 		tex = tex->NextSiblingElement("part");
 	}
+	//skeleton
+	{
+		tinyxml2::XMLElement* mat = r->FirstChildElement("skeleton");
+		if (mat)
+		{
+			std::string skeleton = mat->Attribute("file");
+			Skeleton_ = getSkeletonManager()->get(parentPath + skeleton);
+		}
+	}
+	
 	return true;
 }
 
@@ -51,14 +63,19 @@ void Entity::destroy()
 
 }
 
-size_t Entity::getPartInstanceNumber()
+size_t Entity::getPartNumber()
 {
-	return PartInstances_.size();
+	return Parts_.size();
 }
 
-PartInstance* Entity::getPartInstance( size_t index )
+Part* Entity::getPart( size_t index )
 {
-	return PartInstances_[index];
+	return Parts_[index];
+}
+
+Skeleton* Entity::getSkeleton()
+{
+	return Skeleton_;
 }
 
 Create_Singleton_Imp(EntityManager, ApiModel_)

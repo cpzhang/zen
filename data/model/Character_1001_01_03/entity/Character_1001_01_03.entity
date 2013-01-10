@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
 <entity name="Character_1001_01_03">
     <part file="part/Character_1001_01_03.part"/>
+    <skeleton file="entity/Character_1001_01_03.skeleton"/>
+    <animation file="entity/Character_1001_01_03.animation"/>
 </entity>
