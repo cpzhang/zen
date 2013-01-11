@@ -161,7 +161,10 @@ void Part::render()
 				matrices.push_back(Matrix::Identity);
 			}
 		}
-		ef->SetMatrixArray("gSkinPalette", &matrices[0], matrices.size());
+		if (!matrices.empty())
+		{
+			ef->SetMatrixArray("gSkinPalette", &matrices[0], matrices.size());
+		}
 		Material_->apply();
 		ef->CommitChanges();
 		for (int p = 0; p != passes; ++p)
@@ -170,6 +173,7 @@ void Part::render()
 			Mesh_->render();
 			ef->EndPass();
 		}
+		Material_->cancel();
 	}
 	ef->End();
 	//
@@ -212,6 +216,14 @@ tstring Part::getFilePath()
 void Part::setEntity( Entity* e )
 {
 	Entity_ = e;
+}
+
+void Part::update( float delta )
+{
+	if (Material_)
+	{
+		Material_->update(delta);
+	}
 }
 
 Create_Singleton_Imp(PartManager, ApiModel_)

@@ -24,30 +24,12 @@ distribution.
 #ifndef TINYXML2_INCLUDED
 #define TINYXML2_INCLUDED
 
-#if 1
-	#include <cctype>
-	#include <climits>
-	#include <cstdio>
-	#include <cstring>
-#else
-	// Not completely sure all the interesting systems
-	// can handle the new headers; can switch this if
-	// there is an include problem.
-	#include <limits.h>
-	#include <ctype.h>
-	#include <stdio.h>
-	#include <memory.h>		// Needed by mac.
-#endif
-
-
-/* 
-   TODO: add 'lastAttribute' for faster parsing.
-   TODO: intern strings instead of allocation.
-*/
-/*
-	gcc: g++ -Wall tinyxml2.cpp xmltest.cpp -o gccxmltest.exe
-*/
-
+#include <cctype>
+#include <climits>
+#include <cstdio>
+#include <cstring>
+//
+#include "render/vector3.h"
 #if defined( _DEBUG ) || defined( DEBUG ) || defined (__DEBUG__)
 	#ifndef DEBUG
 		#define DEBUG
@@ -794,6 +776,8 @@ public:
 	int QueryDoubleValue( double* value ) const;
 	/// See QueryIntAttribute
 	int QueryFloatValue( float* value ) const;
+	//
+	int QueryVector3Value( Vector3* value ) const;
 
 	/// Set the attribute to a string value.
 	void SetAttribute( const char* value );
@@ -807,6 +791,7 @@ public:
 	void SetAttribute( double value );
 	/// Set the attribute to value.
 	void SetAttribute( float value );
+	void SetAttribute(const Vector3& value );
 
 private:
 	enum { BUF_SIZE = 200 };
@@ -906,6 +891,12 @@ public:
 	int QueryDoubleAttribute( const char* name, double* _value ) const			{ const XMLAttribute* a = FindAttribute( name ); if ( !a ) return XML_NO_ATTRIBUTE; return a->QueryDoubleValue( _value ); }
 	/// See QueryIntAttribute()
 	int QueryFloatAttribute( const char* name, float* _value ) const				{ const XMLAttribute* a = FindAttribute( name ); if ( !a ) return XML_NO_ATTRIBUTE; return a->QueryFloatValue( _value ); }
+	//
+	int QueryVector3Attribute( const char* name, Vector3* _value ) const				
+	{
+		const XMLAttribute* a = FindAttribute( name ); if ( !a ) return XML_NO_ATTRIBUTE;
+		return a->QueryVector3Value( _value ); 
+	}
 
 	/// Sets the named attribute to value.
 	void SetAttribute( const char* name, const char* _value )	{ XMLAttribute* a = FindOrCreateAttribute( name ); a->SetAttribute( _value ); }
@@ -917,6 +908,7 @@ public:
 	void SetAttribute( const char* name, bool _value )			{ XMLAttribute* a = FindOrCreateAttribute( name ); a->SetAttribute( _value ); }
 	/// Sets the named attribute to value.
 	void SetAttribute( const char* name, double _value )			{ XMLAttribute* a = FindOrCreateAttribute( name ); a->SetAttribute( _value ); }
+	void SetAttribute( const char* name, const Vector3& _value )			{ XMLAttribute* a = FindOrCreateAttribute( name ); a->SetAttribute( _value ); }
 
 	/**
 		Delete an attribute.

@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="pSolid2">
+    <mesh file="mesh/pSolid2.mesh"/>
+    <material file="material/Monster_1844_02_M.material"/>
+</part>

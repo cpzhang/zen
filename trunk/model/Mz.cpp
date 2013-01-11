@@ -226,7 +226,7 @@ void addRenderState(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* ele, D3DRE
 void addTextureStageState(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* ele, u32 stage, D3DTEXTURESTAGESTATETYPE tp, u32 vl)
 {
 	DWORD va = 0;
-	if (tp == D3DTSS_COLOROP || tp == D3DTSS_ALPHAOP)
+	if (tp == D3DTSS_COLOROP)
 	{
 		if (stage == 0)
 		{
@@ -264,6 +264,19 @@ void addTextureStageState(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* ele,
 		a->SetAttribute("value", vl);
 		ele->LinkEndChild(a);
 	}
+}
+template<class T>
+void addKeyFrame(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* ele, const tstring& name, const sKeyFrameSet<T>& kfs)
+{
+	tinyxml2::XMLElement* a = doc.NewElement(name.c_str());
+	for (size_t i = 0; i != kfs.numKeyFrames(); ++i)
+	{
+		tinyxml2::XMLElement* b = doc.NewElement("KeyFrame");
+		b->SetAttribute("time", kfs.getKeyFrame(i)->time);
+		b->SetAttribute("value", kfs.getKeyFrame(i)->v);
+		a->LinkEndChild(b);
+	}
+	ele->LinkEndChild(a);
 }
 void Mz::saveMaterial( const std::string& fileName )
 {
@@ -305,87 +318,109 @@ void Mz::saveMaterial( const std::string& fileName )
 		addRenderState(doc, ele, D3DRS_ZWRITEENABLE, s.mZWriteEnable);
 		addRenderState(doc, ele, D3DRS_ALPHATESTENABLE, s.mAlphaTestEnable);
 		addRenderState(doc, ele, D3DRS_ALPHAREF, s.mAlphaRef);
+		addRenderState(doc, ele, D3DRS_ALPHAFUNC, s.mCmpFunc);
 		addRenderState(doc, ele, D3DRS_SRCBLEND, s.mSrcBlend);
 		addRenderState(doc, ele, D3DRS_DESTBLEND, s.mDestBlend);
-		
-	/*	ele->SetAttribute("CmpFunc", s.mCmpFunc);
-		ele->SetAttribute("Diffuse", s.mDiffuse.getARGB());
-		
-		ele->SetAttribute("UseVertexColor", mUseVertexColor);
-		*/
-
-		//TextureStageState
-		if (mUseVertexColor)
+		if (s.mSrcBlend == D3DBLEND_ONE && s.mDestBlend == D3DBLEND_ZERO)
 		{
-			addTextureStageState(doc, ele, 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-			addTextureStageState(doc, ele, 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-			addTextureStageState(doc, ele, 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-		
-			addTextureStageState(doc, ele, 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-			addTextureStageState(doc, ele, 0, D3DTSS_ALPHAARG1,D3DTA_TEXTURE);
-			addTextureStageState(doc, ele, 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-
-			addTextureStageState(doc, ele, 1, D3DTSS_COLOROP, D3DTOP_MODULATE);
-			addTextureStageState(doc, ele, 1, D3DTSS_COLORARG1, D3DTA_CURRENT );
-			addTextureStageState(doc, ele, 1, D3DTSS_COLORARG2, D3DTA_TFACTOR );
-
-			addTextureStageState(doc, ele, 1, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-			addTextureStageState(doc, ele, 1, D3DTSS_ALPHAARG1,D3DTA_CURRENT );
-			addTextureStageState(doc, ele, 1, D3DTSS_ALPHAARG2, D3DTA_TFACTOR );
-
-			addTextureStageState(doc, ele, 1, D3DTSS_TEXCOORDINDEX, 1);		//默认值为1
+			addRenderState(doc, ele, D3DRS_ALPHABLENDENABLE, false);
 		}
 		else
 		{
-			addTextureStageState(doc, ele, 0, D3DTSS_ALPHAOP,	D3DTOP_MODULATE);
-			addTextureStageState(doc, ele, 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-			addTextureStageState(doc, ele, 0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
-
-			addTextureStageState(doc, ele, 0, D3DTSS_COLOROP,	D3DTOP_MODULATE);
-			addTextureStageState(doc, ele, 0, D3DTSS_COLORARG1,D3DTA_TEXTURE);
-			addTextureStageState(doc, ele, 0, D3DTSS_COLORARG2,D3DTA_TFACTOR);
+			addRenderState(doc, ele, D3DRS_ALPHABLENDENABLE, true);
 		}
+		//TextureStageState
+		if (mVersion >= 30)
+		{
+			if (mUseVertexColor)
+			{
+				addTextureStageState(doc, ele, 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+				addTextureStageState(doc, ele, 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+				addTextureStageState(doc, ele, 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
 
+				addTextureStageState(doc, ele, 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+				addTextureStageState(doc, ele, 0, D3DTSS_ALPHAARG1,D3DTA_TEXTURE);
+				addTextureStageState(doc, ele, 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+
+				addTextureStageState(doc, ele, 1, D3DTSS_COLOROP, D3DTOP_MODULATE);
+				addTextureStageState(doc, ele, 1, D3DTSS_COLORARG1, D3DTA_CURRENT );
+				addTextureStageState(doc, ele, 1, D3DTSS_COLORARG2, D3DTA_TFACTOR );
+
+				addTextureStageState(doc, ele, 1, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+				addTextureStageState(doc, ele, 1, D3DTSS_ALPHAARG1,D3DTA_CURRENT );
+				addTextureStageState(doc, ele, 1, D3DTSS_ALPHAARG2, D3DTA_TFACTOR );
+
+				addTextureStageState(doc, ele, 1, D3DTSS_TEXCOORDINDEX, 1);		//默认值为1
+			}
+			else
+			{
+				addTextureStageState(doc, ele, 0, D3DTSS_ALPHAOP,	D3DTOP_MODULATE);
+				addTextureStageState(doc, ele, 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+				addTextureStageState(doc, ele, 0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
+
+				addTextureStageState(doc, ele, 0, D3DTSS_COLOROP,	D3DTOP_MODULATE);
+				addTextureStageState(doc, ele, 0, D3DTSS_COLORARG1,D3DTA_TEXTURE);
+				addTextureStageState(doc, ele, 0, D3DTSS_COLORARG2,D3DTA_TFACTOR);
+			}
+		}
+		else
+		{
+			if (mUseVertexColor)
+			{
+				addTextureStageState(doc, ele, 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+				addTextureStageState(doc, ele, 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+				addTextureStageState(doc, ele, 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+
+				addTextureStageState(doc, ele, 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+				addTextureStageState(doc, ele, 0, D3DTSS_ALPHAARG1,D3DTA_TEXTURE);
+				addTextureStageState(doc, ele, 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+
+				addTextureStageState(doc, ele, 1, D3DTSS_COLOROP, D3DTOP_MODULATE);
+				addTextureStageState(doc, ele, 1, D3DTSS_COLORARG1, D3DTA_CURRENT );
+				addTextureStageState(doc, ele, 1, D3DTSS_COLORARG2, D3DTA_TFACTOR );
+
+				addTextureStageState(doc, ele, 1, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+				addTextureStageState(doc, ele, 1, D3DTSS_ALPHAARG1,D3DTA_CURRENT );
+				addTextureStageState(doc, ele, 1, D3DTSS_ALPHAARG2, D3DTA_TFACTOR );
+
+				addTextureStageState(doc, ele, 1, D3DTSS_TEXCOORDINDEX, 1);		//默认值为1
+			}
+			else
+			{
+				addTextureStageState(doc, ele, 0, D3DTSS_ALPHAOP,	D3DTOP_MODULATE);
+				addTextureStageState(doc, ele, 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+				addTextureStageState(doc, ele, 0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
+
+				addTextureStageState(doc, ele, 0, D3DTSS_COLOROP,	D3DTOP_MODULATE);
+				addTextureStageState(doc, ele, 0, D3DTSS_COLORARG1,D3DTA_TEXTURE);
+				addTextureStageState(doc, ele, 0, D3DTSS_COLORARG2,D3DTA_TFACTOR);
+			}
+		}
+		// 
+		if (s.mFlowU || s.mScale || s.mRotate)
+		{
+			addTextureStageState(doc, ele, 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
+		}
 		doc.LinkEndChild(ele);
 		//
-		doc.SaveFile(path.c_str());
-		//
+		addKeyFrame<float>(doc, ele, "Alpha", s.mAlphaKFs);
+		addKeyFrame<Vector3>(doc, ele, "Color", s.mColorKFs);
+		if (s.mFlowU)
 		{
-			std::string path = fileName + "/" + s.mName + ".ma";
-			//============================================================================
-			// 开始写入数据 
-			ChunkSet cs;
-
-			//============================================================================
-			// 版本号
-			cs.beginChunk("MVER");	
-			cs.write(&mVersion, sizeof(mVersion));
-			cs.endChunk();
-
-			//============================================================================
-			// alpha
-			{
-				cs.beginChunk("MALP");
-				u32 num = s.mAlphaKFs.numKeyFrames();
-				cs.write(&num, sizeof(num));
-				writeSequence(cs, s.mAlphaKFs._keyFrames);
-				cs.endChunk();
-			}
-
-			//============================================================================
-			// color
-			{
-				cs.beginChunk("MCOL");
-				u32 num = s.mColorKFs.numKeyFrames();
-				cs.write(&num, sizeof(num));
-				writeSequence(cs, s.mColorKFs._keyFrames);
-				cs.endChunk();
-			}
-
-			//============================================================================
-			// 保存文件，结束
-			cs.save(path);
+			addKeyFrame<float>(doc, ele, "FlowU", s.mFlowUKFs);
 		}
+		if (s.mFlowV)
+		{
+			addKeyFrame<float>(doc, ele, "FlowV", s.mFlowVKFs);
+		}
+		if (s.mRotate)
+		{
+			addKeyFrame<float>(doc, ele, "Angle", s.mRotationKFs);
+		}
+		//addKeyFrame<Vector3>(doc, ele, "Scale", s.mScaleKFs);
+
+		//
+		doc.SaveFile(path.c_str());
 	}
 }
 void Mz::saveSubEntity( const std::string& fileName )
@@ -1041,10 +1076,11 @@ void Mz::decodeMaterial( std::ifstream& f, int s )
 			//
 			u8 tcFlowU;
 			f.read((char*)&tcFlowU,sizeof(tcFlowU));
+			mat.mFlowU = tcFlowU;
 			//
 			u8 tcFlowV;
 			f.read((char*)&tcFlowV,sizeof(tcFlowV));
-			mat.mTranslate = tcFlowU || tcFlowV;
+			mat.mFlowV = tcFlowV;
 			//
 			if (mVersion >= 29)
 			{
@@ -1067,16 +1103,20 @@ void Mz::decodeMaterial( std::ifstream& f, int s )
 			if (mVersion >= 26)
 			{
 				f.read((char*)&nKeyframes,sizeof(nKeyframes));
+				if (nKeyframes)
+				{
+					mat.mFlowU = true;
+				}
 				sKeyFrame<float> kf;
 				for (size_t i = 0; i != nKeyframes; ++i)
 				{
 					f.read((char*)&kf, sizeof(kf));
-					//mat.mTranslationKFs.addKeyFrame(kf);
+					mat.mFlowUKFs.addKeyFrame(kf);
 				}
 			}
-			if (mat.mTranslationKFs.numKeyFrames() == 0)
+			if (mat.mFlowUKFs.numKeyFrames() == 0)
 			{
-				mat.mTranslationKFs.setStaticData(tcFlowSpeedU);
+				mat.mFlowUKFs.setStaticData(tcFlowSpeedU);
 			}
 
 			//
@@ -1086,16 +1126,20 @@ void Mz::decodeMaterial( std::ifstream& f, int s )
 			if (mVersion >= 26)
 			{
 				f.read((char*)&nKeyframes,sizeof(nKeyframes));
+				if (nKeyframes)
+				{
+					mat.mFlowV = true;
+				}
 				sKeyFrame<float> kf;
 				for (size_t i = 0; i != nKeyframes; ++i)
 				{
 					f.read((char*)&kf, sizeof(kf));
-					//mat.mRotationKFs.addKeyFrame(kf);
+					mat.mFlowVKFs.addKeyFrame(kf);
 				}
 			}
-			if (mat.mTranslationKFs.numKeyFrames() == 0)
+			if (mat.mFlowVKFs.numKeyFrames() == 0)
 			{
-				mat.mTranslationKFs.setStaticData(tcFlowSpeedU);
+				mat.mFlowVKFs.setStaticData(tcFlowSpeedU);
 			}
 			//版本号28加入flow time，纯粹为了与登陆动画兼容
 			u16 ft = 0.0f;
@@ -1112,6 +1156,7 @@ void Mz::decodeMaterial( std::ifstream& f, int s )
 				for (size_t i = 0; i != nKeyframes; ++i)
 				{
 					f.read((char*)&kf, sizeof(kf));
+					mat.mRotationKFs.addKeyFrame(kf);
 				}
 			}
 		}

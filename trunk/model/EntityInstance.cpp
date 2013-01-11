@@ -51,6 +51,10 @@ void EntityInstance::update( float delta )
 		}
 		Entity_->getSkeleton()->update(AnimationTime_, SkinCurrent_);
 	}
+	if (Entity_)
+	{
+		Entity_->update(delta);
+	}
 }
 
 void EntityInstance::setSpeed( float s )

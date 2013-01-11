@@ -989,6 +989,13 @@ int XMLAttribute::QueryFloatValue( float* value ) const
 	return XML_WRONG_ATTRIBUTE_TYPE;
 }
 
+int XMLAttribute::QueryVector3Value( Vector3* value ) const
+{
+	if ( TIXML_SSCANF( Value(), "(%f, %f, %f)", &(value->x), &(value->y), &(value->z) ) == 1 )
+		return XML_NO_ERROR;
+	return XML_WRONG_ATTRIBUTE_TYPE;
+}
+
 
 void XMLAttribute::SetAttribute( const char* v )
 {
@@ -1033,6 +1040,12 @@ void XMLAttribute::SetAttribute( float v )
 	value.SetStr( buf );
 }
 
+void XMLAttribute::SetAttribute( const Vector3& v )
+{
+	char buf[BUF_SIZE];
+	TIXML_SNPRINTF( buf, BUF_SIZE-1, "(%f, %f, %f)", v.x, v.y, v.z );	
+	value.SetStr( buf );
+}
 
 // --------- XMLElement ---------- //
 XMLElement::XMLElement( XMLDocument* doc ) : XMLNode( doc ),

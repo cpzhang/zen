@@ -10,6 +10,7 @@ class ApiModel_ Part : public IRender
 {
 public:
 	virtual void render();
+	virtual void update(float delta);
 public:
 	Part();
 public:

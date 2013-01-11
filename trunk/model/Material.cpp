@@ -68,6 +68,94 @@ bool Material::create( const std::string& fileName )
 			mat = mat->NextSiblingElement("TextureStageState");
 		}		
 	}
+	//alpha
+	{
+		tinyxml2::XMLElement* a = r->FirstChildElement("Alpha");
+		if (a)
+		{
+			tinyxml2::XMLElement* mat = a->FirstChildElement("KeyFrame");
+			while(mat)
+			{
+				sKeyFrame<float> tss;
+				mat->QueryUnsignedAttribute("time", &tss.time);
+				mat->QueryFloatAttribute("value", &tss.v);
+				AlphaKFs_.addKeyFrame(tss);
+				mat = mat->NextSiblingElement("KeyFrame");
+			}
+		}		
+	}
+	//color
+	{
+		tinyxml2::XMLElement* a = r->FirstChildElement("Color");
+		if (a)
+		{
+			tinyxml2::XMLElement* mat = a->FirstChildElement("KeyFrame");
+			while(mat)
+			{
+				sKeyFrame<Vector3> tss;
+				mat->QueryUnsignedAttribute("time", &tss.time);
+				mat->QueryVector3Attribute("value", &tss.v);
+				ColorKFs_.addKeyFrame(tss);
+				mat = mat->NextSiblingElement("KeyFrame");
+			}
+		}		
+	}
+	//u
+	{
+		tinyxml2::XMLElement* a = r->FirstChildElement("FlowU");
+		if (a)
+		{
+			tinyxml2::XMLElement* mat = a->FirstChildElement("KeyFrame");
+			while(mat)
+			{
+				sKeyFrame<float> tss;
+				mat->QueryUnsignedAttribute("time", &tss.time);
+				mat->QueryFloatAttribute("value", &tss.v);
+				FlowUKFs_.addKeyFrame(tss);
+				mat = mat->NextSiblingElement("KeyFrame");
+			}
+		}		
+	}
+	//v
+	{
+		tinyxml2::XMLElement* a = r->FirstChildElement("FlowV");
+		if (a)
+		{
+			tinyxml2::XMLElement* mat = a->FirstChildElement("KeyFrame");
+			while(mat)
+			{
+				sKeyFrame<float> tss;
+				mat->QueryUnsignedAttribute("time", &tss.time);
+				mat->QueryFloatAttribute("value", &tss.v);
+				FlowVKFs_.addKeyFrame(tss);
+				mat = mat->NextSiblingElement("KeyFrame");
+			}
+		}		
+	}
+	//angle
+	{
+		tinyxml2::XMLElement* a = r->FirstChildElement("Angle");
+		if (a)
+		{
+			tinyxml2::XMLElement* mat = a->FirstChildElement("KeyFrame");
+			while(mat)
+			{
+				sKeyFrame<float> tss;
+				mat->QueryUnsignedAttribute("time", &tss.time);
+				mat->QueryFloatAttribute("value", &tss.v);
+				RotationKFs_.addKeyFrame(tss);
+				mat = mat->NextSiblingElement("KeyFrame");
+			}
+		}		
+	}
+	//
+	{
+		AngleAT_.end = RotationKFs_.getTotalTime();
+		VAT_.end = FlowUKFs_.getTotalTime();
+		UAT_.end = FlowVKFs_.getTotalTime();
+		AlphaAT_.end = AlphaKFs_.getTotalTime();
+		ColorAT_.end = ColorKFs_.getTotalTime();
+	}
 	return true;
 }
 
@@ -84,6 +172,11 @@ void Material::clear_()
 	}
 	Fx_ = NULL;
 	//
+	MatrixUV_ = Matrix::Identity;
+	TFactor_  = Vector4::One;
+	Angle_ = 0.0f;
+	U_ = 0.0f;
+	V_ = 0.0f;
 }
 
 Fx* Material::getFx()
@@ -94,7 +187,68 @@ Fx* Material::getFx()
 	}
 	return Fx_;
 }
+/*
+	Namethatnobodyelsetook    Member since: 11/27/2002  From: Ottawa, Canada
+ 	Posted - 2/6/2005 11:14:23 AM
+	To transform a regular UV (2D coord) use
 
+	// Tell d3d you're transforming
+	SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
+	// Tell D3D your matrix
+	SetTransform(D3DTS_TEXTURE0, &matrix);
+
+	Because it's 2D, the matrix is different than normal. Translation is in _31, and _32, rather than _41, _42, _43.
+	If you want to use the matrix rotations of D3DX use rotation around Z to affect the appropriate parts of the matrix... or do the rotation manually
+
+	+cos(a) +sin(a) 0 0
+	-sin(a) +cos(a) 0 0
+	trans.x trans.y 1 0
+	0 0 0 1
+	*/
+void Material::update( float delta )
+{
+	//
+	AngleAT_.update(delta);
+	VAT_.update(delta);
+	UAT_.update(delta);
+	AlphaAT_.update(delta);
+	ColorAT_.update(delta);
+	//
+	Matrix m = Matrix::Identity;
+	if (RotationKFs_.numKeyFrames())
+	{
+		Angle_ += 0.0001 * delta * RotationKFs_.getFrame(AngleAT_); 
+		float c = cos(Angle_);
+		float s = sin(Angle_);
+		m._11 = c;m._12 = s;
+		m._12 = -s;m._22 = c;
+	}
+	if (FlowUKFs_.numKeyFrames())
+	{
+		U_ += 0.0001 * delta * FlowUKFs_.getFrame(UAT_); 
+	}
+	if (FlowVKFs_.numKeyFrames())
+	{
+		V_ += 0.0001 * delta * FlowVKFs_.getFrame(VAT_); 
+	}
+	Matrix n = Matrix::Identity;
+	n._31 = -0.5f;n._32 = -0.5f;
+	Matrix ni = Matrix::Identity;
+	ni._31 = 0.5f + U_;ni._32 = 0.5f + V_;
+	MatrixUV_ = n * m * ni;
+	//
+	TFactor_  = Vector4::One;
+	if (AlphaKFs_.numKeyFrames())
+	{
+		TFactor_.w *= AlphaKFs_.getFrame(AlphaAT_);
+	}
+	if (ColorKFs_.numKeyFrames())
+	{
+		TFactor_.x *= ColorKFs_.getFrame(ColorAT_).x;
+		TFactor_.y *= ColorKFs_.getFrame(ColorAT_).y;
+		TFactor_.z *= ColorKFs_.getFrame(ColorAT_).z;
+	}
+}
 void Material::apply()
 {
 	IDirect3DDevice9* dx = getRenderContex()->getDxDevice();
@@ -114,8 +268,15 @@ void Material::apply()
 			sTextureStageState& tss = TextureStageStates_[i];
 			dx->SetTextureStageState(tss.stage_, tss.type_, tss.value_);
 		}
+		//
+		if (RotationKFs_.numKeyFrames() > 0 || FlowUKFs_.numKeyFrames() > 0 || FlowVKFs_.numKeyFrames() > 0)
+		{
+			//dx->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
+			dx->SetTransform(D3DTS_TEXTURE0, &MatrixUV_);
+		}
+		dx->SetRenderState(D3DRS_TEXTUREFACTOR, TFactor_.getARGB());
 	}
-	dx->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+	dx->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 }
 
 Material::Material()
@@ -162,6 +323,9 @@ void Material::cancel()
 				dx->SetTextureStageState(tss.stage_, tss.type_, tTextureStageStateDefault_[tss.type_]);
 			}
 		}
+		//
+		dx->SetTransform(D3DTS_TEXTURE0, &Matrix::Identity);
+		dx->SetRenderState(D3DRS_TEXTUREFACTOR, 0xffffffff);
 	}
 }
 

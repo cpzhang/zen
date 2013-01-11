@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<animations name="FB_npc_WuDiGuangQiu_EF">
+    <animation name="Default" duration="2966" skin="skin/Default.skin"/>
+</animations>

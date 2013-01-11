@@ -27,7 +27,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE , LPTSTR lpstrCmdLine, int n
 		{
 			static float lastTick = GetTickCount();
 			float currentTick = GetTickCount();
-			//if (currentTick - lastTick >= 33.33f)
+			if (currentTick - lastTick >= 33.33f)
 			{
 				mw.onIdle();
 				lastTick = currentTick;

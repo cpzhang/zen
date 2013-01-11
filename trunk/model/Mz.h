@@ -119,14 +119,16 @@ struct sMat
 	std::string mName;
 	std::string mTextureName;
 	D3DCULL mCullMode;
-	sKeyFrames<Quaternion>	mRotationKFs;			/// 旋转关键帧
-	sKeyFrames<Vector3>		mScaleKFs;				/// 缩放关键帧
-	sKeyFrames<Vector3>		mTranslationKFs;		/// 平移关键帧
-	sKeyFrames<Vector3>		mColorKFs;				/// 颜色关键帧
-	sKeyFrames<float>		mAlphaKFs;				/// 透明度关键帧
+	sKeyFrameSet<float>		mRotationKFs;			/// 旋转关键帧
+	//sKeyFrameSet<Vector3>		mScaleKFs;				/// 缩放关键帧
+	sKeyFrameSet<float>		mFlowUKFs;				/// 平移关键帧
+	sKeyFrameSet<float>		mFlowVKFs;				/// 平移关键帧
+	sKeyFrameSet<Vector3>		mColorKFs;				/// 颜色关键帧
+	sKeyFrameSet<float>		mAlphaKFs;				/// 透明度关键帧
 	bool mRotate;
 	bool mScale;
-	bool mTranslate;
+	bool mFlowU;
+	bool mFlowV;
 	D3DZBUFFERTYPE mZEnable;
 	bool mZWriteEnable;
 	bool mAlphaTestEnable;

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<entity name="FB_npc_Jitan_jing_EF">
+    <part file="part/jitan_010.part"/>
+    <part file="part/jitan_011.part"/>
+    <part file="part/t_pPlane7.part"/>
+    <part file="part/pPlane7.part"/>
+    <part file="part/pPlane13.part"/>
+    <skeleton file="entity/FB_npc_Jitan_jing_EF.skeleton"/>
+    <animation file="entity/FB_npc_Jitan_jing_EF.animation"/>
+</entity>

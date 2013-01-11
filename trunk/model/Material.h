@@ -6,6 +6,7 @@
 #include "misc/NamedObjectManager.h"
 #include "misc/Singleton.h"
 #include "render/Fx.h"
+#include "render/KeyFrames.h"
 class Fx;
 /*
 Sets the state value for the currently assigned texture
@@ -42,6 +43,7 @@ union uRenderStateValue
 {
 	DWORD dw_;
 };
+
 typedef std::vector<sRenderState> RenderStateVec;
 // fx + texture + pipe state
 class ApiModel_ Material
@@ -56,6 +58,7 @@ public:
 	void apply();
 	void cancel();
 	tstring getFilePath();
+	void update(float delta);
 public:
 	static Material* getNullObject()
 	{
@@ -77,7 +80,24 @@ private:
 	//
 	TextureStageStateVec TextureStageStates_;
 	//u32 Diffuse_;
-	//bool UseVertexColor_;
+	sKeyFrameSet<float>		RotationKFs_;			/// 旋转关键帧
+	//sKeyFrameSet<Vector3>		mScaleKFs_;				/// 缩放关键帧
+	sKeyFrameSet<float>		FlowUKFs_;				/// 平移关键帧
+	sKeyFrameSet<float>		FlowVKFs_;				/// 平移关键帧
+	sKeyFrameSet<Vector3>	ColorKFs_;				/// 颜色关键帧
+	sKeyFrameSet<float>		AlphaKFs_;				/// 透明度关键帧
+	//
+	Matrix MatrixUV_;
+	Vector4 TFactor_;
+	//
+	float Angle_;
+	float U_;
+	float V_;
+	AnimationTime AngleAT_;
+	AnimationTime UAT_;
+	AnimationTime VAT_;
+	AnimationTime AlphaAT_;
+	AnimationTime ColorAT_;
 public:
 	static std::vector<DWORD> tRenderStateDefault_;
 	static std::vector<DWORD> tTextureStageStateDefault_;

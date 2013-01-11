@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="polySurface23">
+    <mesh file="mesh/polySurface23.mesh"/>
+    <material file="material/t_UnnamedShader2.material"/>
+</part>

@@ -19,6 +19,9 @@ add_library(${ItemName} STATIC
   ${HDRS}
   ) 
 
+include_directories(
+  ${CMAKE_SOURCE_DIR}
+)
 # Add dependent external Libraries
 # target_link_libraries(${ItemName}
   # winmm.lib

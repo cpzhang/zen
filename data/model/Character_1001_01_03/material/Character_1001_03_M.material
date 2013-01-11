@@ -4,6 +4,16 @@
     <Texture name="g_Texture0" file="image/Character_1001_01_03.dds"/>
     <RenderState state="15" value="1"/>
     <RenderState state="24" value="190"/>
+    <RenderState state="25" value="7"/>
+    <TextureStageState stage="0" type="4" value="4"/>
     <TextureStageState stage="0" type="6" value="3"/>
     <TextureStageState stage="0" type="3" value="3"/>
+    <TextureStageState stage="0" type="24" value="2"/>
+    <Alpha>
+        <KeyFrame time="0" value="1.000000"/>
+    </Alpha>
+    <Color>
+        <KeyFrame time="0" value="(1.000000, 1.000000, 1.000000)"/>
+    </Color>
+    <Angle/>
 </material>

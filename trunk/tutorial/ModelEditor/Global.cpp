@@ -391,11 +391,6 @@ void Global::setCurrentLayer( const tstring& name )
 	{
 		return;
 	}
-	if (pi_)
-	{
-		delete pi_;
-		pi_ = NULL;
-	}
 	std::string suffix = layer_.substr(dotPos, layer_.size() - dotPos);
 	std::transform(suffix.begin(), suffix.end(), suffix.begin(), tolower);
 	if(suffix == ".part")
@@ -404,9 +399,9 @@ void Global::setCurrentLayer( const tstring& name )
 	}
 	else if(suffix == ".entity")
 	{
-		EntityInstance* e = new EntityInstance;
-		e->setEntity(getEntityManager()->get(name));
-		pi_ = e;
+		static EntityInstance e;
+		e.setEntity(getEntityManager()->get(name));
+		pi_ = &e;
 	}
 	else if(suffix == ".mz")
 	{

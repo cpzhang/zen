@@ -22,9 +22,9 @@ private:
 	}
 public:
 	int id;
-	sKeyFrames<Quaternion>	rotationKFs;			/// 旋转关键帧
-	sKeyFrames<Vector3>		scaleKFs;				/// 缩放关键帧
-	sKeyFrames<Vector3>		translationKFs;			/// 平移关键帧
+	sKeyFrameSet<Quaternion>	rotationKFs;			/// 旋转关键帧
+	sKeyFrameSet<Vector3>		scaleKFs;				/// 缩放关键帧
+	sKeyFrameSet<Vector3>		translationKFs;			/// 平移关键帧
 };
 
 struct Skin

@@ -4,7 +4,9 @@
     <Texture name="g_Texture0" file="image/dunpai.dds"/>
     <RenderState state="15" value="1"/>
     <RenderState state="24" value="190"/>
+    <RenderState state="25" value="7"/>
     <TextureStageState stage="0" type="3" value="0"/>
+    <TextureStageState stage="0" type="4" value="4"/>
     <TextureStageState stage="0" type="6" value="0"/>
     <TextureStageState stage="1" type="1" value="4"/>
     <TextureStageState stage="1" type="2" value="1"/>
@@ -12,4 +14,12 @@
     <TextureStageState stage="1" type="4" value="4"/>
     <TextureStageState stage="1" type="5" value="1"/>
     <TextureStageState stage="1" type="6" value="3"/>
+    <TextureStageState stage="0" type="24" value="2"/>
+    <Alpha>
+        <KeyFrame time="0" value="1.000000"/>
+    </Alpha>
+    <Color>
+        <KeyFrame time="0" value="(1.000000, 1.000000, 1.000000)"/>
+    </Color>
+    <Angle/>
 </material>

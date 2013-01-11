@@ -38,11 +38,11 @@ void BoneNode::update( const AnimationTime& at , Skin* sk)
 	{
 		sBoneKFs& b = sk->boneKFs[_bone->id];
 		//translation
-		Vector3 t = b.translationKFs.getFrame(&at);
+		Vector3 t = b.translationKFs.getFrame(at);
 		//rotation
-		Quaternion q = b.rotationKFs.getFrame(-1, &at);		
+		Quaternion q = b.rotationKFs.getFrame(at);		
 		//scale
-		Vector3 s = b.scaleKFs.getFrame(-1, &at);
+		Vector3 s = b.scaleKFs.getFrame(at);
 
 		Matrix dynamicMtx = Matrix::Identity;
 		dynamicMtx.make(t, s, q);

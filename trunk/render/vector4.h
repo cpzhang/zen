@@ -32,6 +32,7 @@ public:
 
 public:
 	static const Vector4 Zero;
+	static const Vector4 One;
 };
 
 ApiRender_ Vector4 operator *( const Vector4& v, float s );

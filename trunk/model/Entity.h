@@ -9,6 +9,7 @@ class ApiModel_ Entity : public IRender
 {
 public:
 	virtual void render();
+	virtual void update(float delta);
 public:
 	bool create(const tstring& resourceId);
 	void destroy();
@@ -16,6 +17,7 @@ public:
 	size_t getPartNumber();
 	Part* getPart(size_t index);
 	Skeleton* getSkeleton();
+
 public:
 	static Entity* getNullObject()
 	{

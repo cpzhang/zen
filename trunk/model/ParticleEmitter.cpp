@@ -11,7 +11,7 @@ ParticleEmitter::~ParticleEmitter()
 
 void ParticleEmitter::spawn(float delta, const AnimationTime& at, ParticleList& ps)
 {
-	if (!mVisibility.getFrame(at))
+	if (!mVisibility.getFrame(at.current))
 	{
 		return;
 	}

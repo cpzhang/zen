@@ -57,14 +57,14 @@ public:
 	bool mUnFogged;
 	bool mBlockedByY0;
 	//
-	sKeyFrames<float> mSpeedKFs;
-	sKeyFrames<float> mVariationKFs;
-	sKeyFrames<float> mLatitude;
-	sKeyFrames<float> mGravity;
-	sKeyFrames<float> mExplosiveForce;
-	sKeyFrames<bool> mVisibility;
-	sKeyFrames<float> mEmitRate;
-	sKeyFrames<float> mLength;
-	sKeyFrames<float> mWidth;
-	sKeyFrames<float> mHeigth;
+	sKeyFrameSet<float> mSpeedKFs;
+	sKeyFrameSet<float> mVariationKFs;
+	sKeyFrameSet<float> mLatitude;
+	sKeyFrameSet<float> mGravity;
+	sKeyFrameSet<float> mExplosiveForce;
+	sKeyFrameSet<bool> mVisibility;
+	sKeyFrameSet<float> mEmitRate;
+	sKeyFrameSet<float> mLength;
+	sKeyFrameSet<float> mWidth;
+	sKeyFrameSet<float> mHeigth;
 };

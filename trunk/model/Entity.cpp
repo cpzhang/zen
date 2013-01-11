@@ -78,4 +78,16 @@ Skeleton* Entity::getSkeleton()
 	return Skeleton_;
 }
 
+void Entity::update( float delta )
+{
+	for (size_t i = 0; i != Parts_.size(); ++i)
+	{
+		Part* pi = Parts_[i];
+		if (pi)
+		{
+			pi->update(delta);
+		}
+	}
+}
+
 Create_Singleton_Imp(EntityManager, ApiModel_)

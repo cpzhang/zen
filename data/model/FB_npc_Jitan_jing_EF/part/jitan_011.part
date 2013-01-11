@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="jitan_011">
+    <mesh file="mesh/jitan_011.mesh"/>
+    <material file="material/jitan_01_M_02.material"/>
+</part>
