@@ -7,6 +7,7 @@
 #include "misc/Singleton.h"
 #include "render/Fx.h"
 #include "render/KeyFrames.h"
+#include "ModelResManager.h"
 class Fx;
 /*
 Sets the state value for the currently assigned texture
@@ -46,14 +47,20 @@ union uRenderStateValue
 
 typedef std::vector<sRenderState> RenderStateVec;
 // fx + texture + pipe state
-class ApiModel_ Material
+class ApiModel_ Material : public IModelRes
 {
 public:
 	Material();
 	~Material();
 public:
-	bool create(const std::string& fileName);
-	void destroy();
+	virtual bool create(const tstring& resID);
+	virtual void destroy();
+public:
+	static eModelResType getType()
+	{
+		return eModelResType_Material;
+	}
+public:
 	Fx* getFx();
 	void apply();
 	void cancel();
@@ -103,5 +110,5 @@ public:
 	static std::vector<DWORD> tTextureStageStateDefault_;
 	static bool tRSDIntialized_;
 };
-
-Create_Singleton_Declaration(MaterialManager, Material, ApiModel_)
+typedef std::vector<Material*> MaterialVec;
+//Create_Singleton_Declaration(MaterialManager, Material, ApiModel_)

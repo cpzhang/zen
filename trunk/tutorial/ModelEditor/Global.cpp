@@ -43,26 +43,26 @@ bool Global::create()
 	createStateManager();
 	createFxManager();
 	createTextureManager();
-	createSkeletonManager();
+	//createSkeletonManager();
 	createSceneManager();
 	if (!createBrushDecal())
 	{
 		return false;
 	}
-	createEntityManager();
-	createMeshManager();
-	createMaterialManager();
-	createPartManager();
+	//createEntityManager();
+	//createMeshManager();
+	//createMaterialManager();
+	//createPartManager();
 	return true;
 }
 
 void Global::destroy()
 {
-	destroySkeletonManager();
-	destroyEntityManager();
-	destroyMeshManager();
-	destroyMaterialManager();
-	destroyPartManager();
+	//destroySkeletonManager();
+//	destroyEntityManager();
+	//destroyMeshManager();
+	//destroyMaterialManager();
+	//destroyPartManager();
 	//
 	destroySceneManager();
 	//
@@ -395,12 +395,13 @@ void Global::setCurrentLayer( const tstring& name )
 	std::transform(suffix.begin(), suffix.end(), suffix.begin(), tolower);
 	if(suffix == ".part")
 	{
-		pi_ = getPartManager()->get(name);
+//		pi_ = getPartManager()->get(name);
 	}
 	else if(suffix == ".entity")
 	{
 		static EntityInstance e;
-		e.setEntity(getEntityManager()->get(name));
+		e.create(name);
+		e.setAnimation("Run");
 		pi_ = &e;
 	}
 	else if(suffix == ".mz")

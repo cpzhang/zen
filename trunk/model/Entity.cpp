@@ -3,22 +3,9 @@
 #include "misc/FileSystem.h"
 #include "Part.h"
 #include "Skeleton.h"
-void Entity::render()
+void Entity::addPart( const tstring& resID)
 {
-	for (size_t i = 0; i != Parts_.size(); ++i)
-	{
-		Part* pi = Parts_[i];
-		if (pi)
-		{
-			pi->render();
-		}
-	}
-}
-
-void Entity::addPart( const tstring& resourceId )
-{
-	Part* pi = getPartManager()->get(resourceId);
-	Parts_.push_back(pi);
+	Parts_.push_back(resID);
 }
 
 bool Entity::create( const tstring& resourceId )
@@ -40,9 +27,9 @@ bool Entity::create( const tstring& resourceId )
 	while (tex)
 	{
 		std::string subEntityFileName = tex->Attribute("file");
-		Part* sub = getPartManager()->get(parentPath + subEntityFileName);
-		sub->setEntity(this);
-		Parts_.push_back(sub);
+		//Part* sub = ModelResManager::getInstance()->get<Part>();
+		//sub->setEntity(this);
+		Parts_.push_back(parentPath + subEntityFileName);
 		tex = tex->NextSiblingElement("part");
 	}
 	//skeleton
@@ -51,7 +38,8 @@ bool Entity::create( const tstring& resourceId )
 		if (mat)
 		{
 			std::string skeleton = mat->Attribute("file");
-			Skeleton_ = getSkeletonManager()->get(parentPath + skeleton);
+			//Skeleton_ = ModelResManager::getInstance()->get<Skeleton>(parentPath + skeleton);
+			NameSkeleton_ = parentPath + skeleton;
 		}
 	}
 	
@@ -68,26 +56,13 @@ size_t Entity::getPartNumber()
 	return Parts_.size();
 }
 
-Part* Entity::getPart( size_t index )
+const tstring&  Entity::getPart( size_t index )
 {
 	return Parts_[index];
 }
 
-Skeleton* Entity::getSkeleton()
+const tstring& Entity::getSkeleton()
 {
-	return Skeleton_;
+	return NameSkeleton_;
 }
-
-void Entity::update( float delta )
-{
-	for (size_t i = 0; i != Parts_.size(); ++i)
-	{
-		Part* pi = Parts_[i];
-		if (pi)
-		{
-			pi->update(delta);
-		}
-	}
-}
-
-Create_Singleton_Imp(EntityManager, ApiModel_)
+//Create_Singleton_Imp(EntityManager, ApiModel_)

@@ -7,21 +7,33 @@
 #include "render/VDTManager.h"
 #include "render/VertexBuffer.h"
 #include "render/IndexBuffer.h"
+#include "ModelResManager.h"
 class BoundingBox;
 class VertexBuffer;
 class IndexBuffer;
 class Mz;
 typedef std::map<u8, int> BoneIDReferenceMap;
 //¶¥µã£¬Ãæ
-class ApiModel_ Mesh
+class ApiModel_ Mesh : public IModelRes
 {
+public:
+	virtual bool create(const tstring& resID);
+	virtual void destroy();
+public:
+	static eModelResType getType()
+	{
+		return eModelResType_Mesh;
+	}
+	static Mesh* getNullObject()
+	{
+		static Mesh s;
+		return &s;
+	}
 public:
 	Mesh();
 	~Mesh();
-	bool create(const std::string& fileName);
 	void createFromHeightMap(const std::string& fileName, int width, int height );
 	bool createFromMZ(size_t sub, Mz* mz);
-	void destroy();
 	void clear();
 	void render();
 	int getFaceNumber();
@@ -55,12 +67,6 @@ public:
 		u16 index[3];
 	};
 public:
-	static Mesh* getNullObject()
-	{
-		static Mesh s;
-		return &s;
-	}
-public:
 	typedef std::vector<sVDT_PositionTextureBoneWeightColorNormal> VertexPTBWCVec;
 	VertexPTBWCVec	_vertices;
 	typedef std::vector<sVDT_PositionTexture> VertexPTVec;
@@ -79,5 +85,5 @@ private:
 	//		friend class Terrain;
 	friend class MZ;
 };
-
-Create_Singleton_Declaration(MeshManager, Mesh, ApiModel_)
+typedef std::vector<Mesh*> MeshVec;
+//Create_Singleton_Declaration(MeshManager, Mesh, ApiModel_)

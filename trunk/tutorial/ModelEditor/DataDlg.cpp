@@ -93,6 +93,7 @@ void FileNull::update( const std::string& fn, CPropertyListCtrl* pl , bool reset
 
 void FilePart::update( const std::string& fn, CPropertyListCtrl* pl , bool reset /*= true*/, CCategoryProperty* ct /*= NULL*/)
 {
+	/*
 	if (reset)
 	{
 		pl->ResetContent();
@@ -144,16 +145,18 @@ void FilePart::update( const std::string& fn, CPropertyListCtrl* pl , bool reset
 			pl->AddItem( PropCreateSimpleString(_T("FX"), FileSystem::cutDataPath(f->getFilePath()).c_str()), pCategory);
 		}
 	}
+	*/
 }
 void FileEntity::update( const std::string& fn, CPropertyListCtrl* pl , bool reset /*= true*/, CCategoryProperty* ct /*= NULL*/)
 {
+	/*
 	//Çå¿Õ
 	if (reset)
 	{
 		pl->ResetContent();
 	}
 	//²¿¼þ
-	Entity* p = getEntityManager()->get(fn);
+	Entity* p = ModelResManager::getInstance()->get<Entity>(fn);
 	if (NULL == p)
 	{
 		return;
@@ -199,6 +202,7 @@ void FileEntity::update( const std::string& fn, CPropertyListCtrl* pl , bool res
 		}
 
 	}
+*/
 }
 IFile* IFileManager::getFile( const std::string& fn )
 {

@@ -451,25 +451,10 @@ void Mesh::onLoaded_()
 
 void Mesh::_initAABB()
 {
-// 	if (vdt_ == eVertexDeclarationType_PositionTexture)
-// 	{
-// 		for (size_t i = 0; i != _verticesPT.size(); ++i)
-// 		{
-// 			mAABB.updateMax(_verticesPT[i].position);
-// 			mAABB.updateMin(_verticesPT[i].position);
-// 		}
-// 	} 
-// 	else if(vdt_ == eVertexDeclarationType_PositionTextureBoneWeightColorNormal)
- 	{
- 		for (size_t i = 0; i != _vertices.size(); ++i)
- 		{
- 			mAABB.addBounds(_vertices[i].position_);
- 		}
- 	}
-// 	else
-// 	{
-// 		mAABB.reset();
-// 	}
+	for (size_t i = 0; i != _vertices.size(); ++i)
+	{
+		mAABB.addBounds(_vertices[i].position_);
+	}
 }
 
 BoundingBox* Mesh::getAABB()
@@ -487,4 +472,4 @@ tstring Mesh::getFilePath()
 	return filePath_;
 }
 
-Create_Singleton_Imp(MeshManager, ApiModel_)
+//Create_Singleton_Imp(MeshManager, ApiModel_)

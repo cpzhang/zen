@@ -2,25 +2,29 @@
 #include "ConfigModel.h"
 #include "misc/stdHead.h"
 #include "misc/Singleton.h"
+#include "ModelResManager.h"
 class Mesh;
 class Material;
 class Entity;
 //×éºÏ£¬Mesh + Material
-class ApiModel_ Part : public IRender
+class ApiModel_ Part : public IModelRes
 {
-public:
-	virtual void render();
-	virtual void update(float delta);
 public:
 	Part();
 public:
-	bool create(const std::string& fileName);
-	void destroy();
-	Mesh* getMesh();
-	Material* getMaterial();
-	tstring getFilePath();
+	virtual bool create(const tstring& resID);
+	virtual void destroy();
+public:
+	static eModelResType getType()
+	{
+		return eModelResType_Part;
+	}
+public:
+	const tstring& getMesh();
+	const tstring& getMaterial();
+	const tstring& getFilePath();
 	void renderSkeleton();
-	void setEntity(Entity* e);
+	//void setEntity(Entity* e);
 public:
 	static Part* getNullObject()
 	{
@@ -32,9 +36,9 @@ private:
 private:
 	tstring FilePath_;
 	std::string Name_;
-	Mesh* Mesh_;
-	Material* Material_;
-	Entity* Entity_;
+	tstring NameMesh_;
+	tstring NameMaterial_;
+	//Entity* Entity_;
 };
-
-Create_Singleton_Declaration(PartManager, Part, ApiModel_)
+typedef std::vector<Part*> PartVec;
+//Create_Singleton_Declaration(PartManager, Part, ApiModel_)

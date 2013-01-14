@@ -27,7 +27,7 @@ LRESULT AnimationDlg::OnDestroyDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 AnimationDlg::AnimationDlg()
 {
 	EventManager::GetInstance().subscribeEvent(eEvent_SelectModel, SubscriberSlot(&AnimationDlg::onModelChanged, this));
-	Entity_ = NULL;
+//	Entity_ = NULL;
 }
 
 AnimationDlg::~AnimationDlg()
@@ -43,12 +43,12 @@ bool AnimationDlg::onModelChanged( const EventArgs& args)
 	{
 		return false;
 	}
-	Entity* p = getEntityManager()->get(m->FilePath_);
+	Entity* p = ModelResManager::getInstance()->get<Entity>(m->FilePath_);
 	if (Entity::getNullObject() == p)
 	{
 		return false;
 	}
-	Skeleton* st = p->getSkeleton();
+	/*Skeleton* st = p->getSkeleton();
 	for (int i = 0; i != st->getSkinAnimationNumber(); ++i)
 	{
 		sSkinAnimation* a = st->getSkinAnimation(i);
@@ -56,17 +56,16 @@ bool AnimationDlg::onModelChanged( const EventArgs& args)
 		{
 			properties_.AddString(a->name.c_str());
 		}
-	}
-	Entity_ = p;
+	}*/
 	return true;
 }
 LRESULT AnimationDlg::OnLbnSelchangeListAnimation(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (NULL == Entity_)
-	{
-		return 0;
-	}
+	//if (NULL == Entity_)
+	//{
+	//	return 0;
+	//}
 	
 	int t = properties_.GetCurSel();
 	char buf[256]={0};

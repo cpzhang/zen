@@ -3,7 +3,7 @@
 #include "render/KeyFrames.h"
 #include "misc/ConstBaseIterator.h"
 #include "misc/singleton.h"
-//#include "BoneNode.h"
+#include "ModelResManager.h"
 class BoneNode;
 class Skin;
 typedef stdext::hash_map<std::string, BoneNode*> BoneNodeMap;
@@ -16,7 +16,7 @@ struct sSkinAnimation
 };
 typedef std::vector<sSkinAnimation> SkinAnimationVec;
 typedef std::map<tstring, Skin*> NameSkinMap;
-class ApiModel_ Skeleton
+class ApiModel_ Skeleton : public IModelRes
 {
 public:
 	virtual BoneNode* createBoneNode(const std::string& name);
@@ -24,14 +24,20 @@ public:
 	virtual BoneNode* getBoneNode(const std::string& name);
 	virtual bool      hasBoneNode(const std::string& name);
 public:
-	bool create(const std::string& fileName);
-	void destroy();
+	virtual bool create(const tstring& resID);
+	virtual void destroy();
+public:
+	static eModelResType getType()
+	{
+		return eModelResType_Entity;
+	}
+public:
 	//
 	bool decodeSkinAnimationXML(const std::string& fileName);
 	int getSkinAnimationNumber();
 	sSkinAnimation* getSkinAnimation(int index);
 	//
-	Skin* getSkin(const tstring& skinAnimationName, AnimationTime& at);
+	const tstring& getSkin(const tstring& skinAnimationName, AnimationTime& at);
 	//
 	void update(const AnimationTime& at, Skin* s);
 	BoneNodeMapIterator	getCommandMapIterator(void) const;
@@ -57,11 +63,11 @@ protected:
 	tstring FilePath_;
 	SkinAnimationVec SkinAnimations_;
 	tstring SkinAnimationXMLFilePath_;
-	NameSkinMap NameSkins_;
+	ResIDVec NameSkins_;
 public:
 	std::vector<Matrix> _matrices;
 	std::vector<Matrix> _matricesFull;
 	friend class BoneNode;
 };
-Create_Singleton_Declaration(SkeletonManager, Skeleton, ApiModel_)
+//Create_Singleton_Declaration(SkeletonManager, Skeleton, ApiModel_)
 

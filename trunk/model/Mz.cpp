@@ -1105,7 +1105,7 @@ void Mz::decodeMaterial( std::ifstream& f, int s )
 				f.read((char*)&nKeyframes,sizeof(nKeyframes));
 				if (nKeyframes)
 				{
-					mat.mFlowU = true;
+					//mat.mFlowU = true;
 				}
 				sKeyFrame<float> kf;
 				for (size_t i = 0; i != nKeyframes; ++i)
@@ -1128,7 +1128,7 @@ void Mz::decodeMaterial( std::ifstream& f, int s )
 				f.read((char*)&nKeyframes,sizeof(nKeyframes));
 				if (nKeyframes)
 				{
-					mat.mFlowV = true;
+					//mat.mFlowV = true;
 				}
 				sKeyFrame<float> kf;
 				for (size_t i = 0; i != nKeyframes; ++i)

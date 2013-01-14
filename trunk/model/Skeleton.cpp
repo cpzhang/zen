@@ -140,11 +140,11 @@ void Skeleton::destroy()
 			delete r;
 		}
 	}
-	for (NameSkinMap::iterator it = NameSkins_.begin(); it != NameSkins_.end(); ++it)
+	/*for (NameSkinMap::iterator it = NameSkins_.begin(); it != NameSkins_.end(); ++it)
 	{
 		Skin* k = it->second;
 		delete k;
-	}
+	}*/
 	NameSkins_.clear();
 		
 	_clear();
@@ -155,17 +155,6 @@ u16 Skeleton::getNumBoneNodes( void ) const
 	return _boneNodes.size();
 }
 
-// 	BoneNode* Skeleton::getRootBoneNode( void )
-// 	{
-// 		BoneNodeMap::iterator it = _boneNodes.find(_rootName);
-// 		if (it == _boneNodes.end())
-// 		{
-// 			return NULL;
-// 		}
-// 
-// 		return it->second;
-// 	}
-
 BoneNode* Skeleton::getBoneNode( const std::string& name )
 {
 	if (_boneNodes.find(name) == _boneNodes.end())
@@ -175,18 +164,6 @@ BoneNode* Skeleton::getBoneNode( const std::string& name )
 
 	return _boneNodes[name];
 }
-// 
-// 	bool Skeleton::setRootBoneNode( const std::string& name )
-// 	{
-// 		if (_boneNodes.find(name) == _boneNodes.end())
-// 		{
-// 			return false;
-// 		}
-// 
-// 		_rootName = std::string(name);
-// 
-// 		return true;
-// 	}
 
 bool Skeleton::hasBoneNode( const std::string& name )
 {
@@ -312,7 +289,7 @@ sSkinAnimation* Skeleton::getSkinAnimation( int index )
 	return &SkinAnimations_[index];
 }
 
-Skin* Skeleton::getSkin( const tstring& skinAnimationName, AnimationTime& at)
+const tstring& Skeleton::getSkin( const tstring& skinAnimationName, AnimationTime& at)
 {
 	sSkinAnimation* a = NULL;
 	for (int i = 0; i != SkinAnimations_.size(); ++i)
@@ -329,74 +306,8 @@ Skin* Skeleton::getSkin( const tstring& skinAnimationName, AnimationTime& at)
 	}
 	if (NULL == a)
 	{
-		return NULL;
+		return "";
 	}
 	at.end = a->duration;
-
-	NameSkinMap::iterator it = NameSkins_.find(skinAnimationName);
-	if (it == NameSkins_.end())
-	{
-		Skin* k = new Skin;
-		k->create(a->skinFilePath);
-		NameSkins_[skinAnimationName] = k;
-	}	
-	return NameSkins_[skinAnimationName];
+	return a->skinFilePath;
 }
-
-Create_Singleton_Imp(SkeletonManager, ApiModel_)
-
-// void SkeletonManager::destroy()
-// {
-// 	NameMeshMap::iterator it = skeletons_.begin();
-// 	for (; it != skeletons_.end(); ++it)
-// 	{
-// 		Skeleton* t = it->second;
-// 		if (t)
-// 		{
-// 			t->destroy();
-// 			delete t;
-// 		}
-// 	}
-// 	skeletons_.clear();
-// }
-// 
-// Skeleton* SkeletonManager::getSkeleton( const tstring& name )
-// {
-// 	Skeleton* m = find_(name);
-// 	if (m)
-// 	{
-// 		return m;
-// 	}
-// 	return create_(name);
-// }
-// 
-// Skeleton* SkeletonManager::find_( const tstring & resourceID )
-// {
-// 	NameMeshMap::iterator it = skeletons_.find(name);
-// 	if (it != skeletons_.end())
-// 	{
-// 		return it->second;
-// 	}
-// 	return NULL;
-// }
-// 
-// Skeleton* SkeletonManager::create_( const tstring & resourceID )
-// {
-// 	Skeleton* mt = new Skeleton;
-// 	if (mt->create(resourceID))
-// 	{
-// 		add_(mt, resourceID);
-// 	}
-// 	else
-// 	{
-// 		mt->destroy();
-// 		delete mt;
-// 		mt = Skeleton::getNullObject();
-// 	}
-// 	return mt;
-// }
-// 
-// void SkeletonManager::add_( Skeleton* pMesh, tstring resourceID )
-// {
-// 	skeletons_.insert( std::make_pair(resourceID, pMesh) );
-// }

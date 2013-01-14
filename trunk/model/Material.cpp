@@ -473,4 +473,4 @@ bool Material::tRSDIntialized_(FALSE);
 
 std::vector<DWORD> Material::tRenderStateDefault_;
 
-Create_Singleton_Imp(MaterialManager, ApiModel_)
+//Create_Singleton_Imp(MaterialManager, ApiModel_)

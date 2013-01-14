@@ -30,5 +30,5 @@ private:
 	bool onModelChanged(const EventArgs& args);
 private:
 	CListBox properties_;
-	Entity* Entity_;
+//	Entity* Entity_;
 };

@@ -196,3 +196,24 @@ public:
 	{
 	}
 };
+template<class T>
+class KeyFrameController
+{
+public:
+	void update(float delta)
+	{
+		AniTime_.update(delta);
+	}
+	T getValue()
+	{
+		if (KeyFrameSet_)
+		{
+			KeyFrameSet_->getFrame(AniTime_);
+		}
+		return DefaultValue_;
+	}
+public:
+	AnimationTime		AniTime_;
+	sKeyFrameSet<T>*	KeyFrameSet_;
+	T					DefaultValue_;
+};
