@@ -26,18 +26,16 @@ public:
 	MouseCamera();
 	~MouseCamera();
 public:
-	float speed() const;
-
-	void speed( float s );
-
+	void create( float distance, float angleXZ, float angleYZ ){}
+	float getSpeed() const;
+	void setSpeed( float s );
 	float turboSpeed() const;
-
 	void turboSpeed( float s );
 	void update( float dTime);
 	bool handleKeyEvent( );
 	bool handleMouseEvent();
-	void view( const Matrix & v );
-	void view( const Vector3 & eye, const Vector3 & lookAt, const Vector3 & up );
+	void init( const Matrix & v );
+	void init( const Vector3 & eye, const Vector3 & lookAt, const Vector3 & up );
 	void viewToPolar();
 
 	void polarToView();

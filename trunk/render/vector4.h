@@ -20,7 +20,7 @@ public:
 	{
 		return D3DXVec4Length( this );
 	}
-	u32 getARGB();
+	u32 getARGB() const;
 	inline Vector4 operator + ( const Vector4& rkVector ) const
 	{
 		return Vector4(

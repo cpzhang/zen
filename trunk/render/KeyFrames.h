@@ -200,6 +200,32 @@ template<class T>
 class KeyFrameController
 {
 public:
+	void init(const AnimationTime& at, sKeyFrameSet<T>* kfs, const T& dv)
+	{
+		AniTime_ = at;
+		KeyFrameSet_ = kfs;
+		DefaultValue_ = dv;
+	}
+	void init(sKeyFrameSet<T>* kfs, const T& dv)
+	{
+		AnimationTime at;
+		at.start = 0;
+		at.current = 0;
+		if (NULL == kfs || kfs->empty())
+		{
+			at.end = 0;
+		}
+		else
+		{
+			at.end = kfs->getKeyFrame(kfs->numKeyFrames() - 1)->time;
+		}
+		init(at, kfs, dv);
+	}
+	void clear()
+	{
+		AniTime_.current = AniTime_.end = 0;
+		KeyFrameSet_ = NULL;
+	}
 	void update(float delta)
 	{
 		AniTime_.update(delta);
@@ -208,9 +234,17 @@ public:
 	{
 		if (KeyFrameSet_)
 		{
-			KeyFrameSet_->getFrame(AniTime_);
+			return KeyFrameSet_->getFrame(AniTime_);
 		}
 		return DefaultValue_;
+	}
+	bool empty()
+	{
+		if (NULL == KeyFrameSet_  || KeyFrameSet_->empty())
+		{
+			return true;
+		}
+		return false;
 	}
 public:
 	AnimationTime		AniTime_;

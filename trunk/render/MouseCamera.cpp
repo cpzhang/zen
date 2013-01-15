@@ -21,12 +21,12 @@ MouseCamera::~MouseCamera()
 
 }
 
-float MouseCamera::speed() const
+float MouseCamera::getSpeed() const
 {
 	return speed_[0];
 }
 
-void MouseCamera::speed( float s )
+void MouseCamera::setSpeed( float s )
 {
 	speed_[0] = s;
 }
@@ -111,13 +111,13 @@ bool MouseCamera::handleMouseEvent()
 	return handled;
 }
 
-void MouseCamera::view( const Matrix & v )
+void MouseCamera::init( const Matrix & v )
 {
 	view_ = v;
 	viewToPolar();
 }
 
-void MouseCamera::view( const Vector3 & eye, const Vector3 & lookAt, const Vector3 & up )
+void MouseCamera::init( const Vector3 & eye, const Vector3 & lookAt, const Vector3 & up )
 {
 	D3DXMatrixLookAtLH(&view_, &eye, &lookAt, &up);
 	viewToPolar();
@@ -145,11 +145,8 @@ void MouseCamera::polarToView()
 
 		Matrix rot = Matrix::Identity;
 		D3DXMatrixRotationYawPitchRoll( &rot, yaw_, pitch_, 0.f );
-		Matrix tra;
+		Matrix tra = Matrix::Identity;
 		tra.setTranslate(pos);
-		//rot[3][0] = pos.x;
-		//rot[3][1] = pos.y;
-		//rot[3][2] = pos.z;
 		rot.postMultiply(tra);
 		view_.invert(rot);
 	}
@@ -168,11 +165,11 @@ void MouseCamera::handleInput( float dTime )
 	float movementSpeed;
 
 	if (isKeyDown(VK_CAPITAL))
-		movementSpeed = speed();
+		movementSpeed = getSpeed();
 	else
 		movementSpeed = turboSpeed();
 
-	//frame rate independent speed, but capped
+	//frame rate independent setSpeed, but capped
 	if ( dTime < 0.1f )
 		movementSpeed *= dTime;
 	else

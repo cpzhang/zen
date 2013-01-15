@@ -62,10 +62,10 @@ public:
 	}
 public:
 	Fx* getFx();
-	void apply();
+	void apply(const Matrix& uvMat, const Vector4& tf);
 	void cancel();
 	tstring getFilePath();
-	void update(float delta);
+	//void update(float delta);
 public:
 	static Material* getNullObject()
 	{
@@ -76,6 +76,7 @@ public:
 private:
 	void clear_();
 private:
+public:
 	tstring Name_;
 	tstring FilePath_;
 	tstring FxFileName_;
@@ -94,17 +95,22 @@ private:
 	sKeyFrameSet<Vector3>	ColorKFs_;				/// 颜色关键帧
 	sKeyFrameSet<float>		AlphaKFs_;				/// 透明度关键帧
 	//
-	Matrix MatrixUV_;
-	Vector4 TFactor_;
-	//
-	float Angle_;
-	float U_;
-	float V_;
-	AnimationTime AngleAT_;
-	AnimationTime UAT_;
-	AnimationTime VAT_;
-	AnimationTime AlphaAT_;
-	AnimationTime ColorAT_;
+	//Matrix MatrixUV_;
+	//Vector4 TFactor_;
+	////
+	//float Angle_;
+	//float U_;
+	//float V_;
+	//AnimationTime AngleAT_;
+	//AnimationTime UAT_;
+	//AnimationTime VAT_;
+	//AnimationTime AlphaAT_;
+	//AnimationTime ColorAT_;
+	//序列图
+	int mRows;
+	int mCols;
+	int mChangeInterval;
+	int mChangeStyle;
 public:
 	static std::vector<DWORD> tRenderStateDefault_;
 	static std::vector<DWORD> tTextureStageStateDefault_;

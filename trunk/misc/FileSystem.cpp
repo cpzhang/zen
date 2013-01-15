@@ -113,7 +113,7 @@ void FileSystem::createFolder(tstring& path)
 
 void FileSystem::setDataDirectory( const tstring& dir )
 {
-	dataPath_ = dir;
+	dataPath_ = standardFilePath(dir);
 }
 
 tstring FileSystem::cutDataPath( const tstring& path )

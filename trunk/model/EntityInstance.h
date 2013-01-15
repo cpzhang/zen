@@ -28,6 +28,8 @@ public:
 	Entity* getEntity();
 	void setAnimation(const tstring& resourceId);
 	void setSpeed(float s);
+private:
+	void updateMaterial_( float delta );
 public:
 	static EntityInstance* getNullObject()
 	{
@@ -45,6 +47,24 @@ private:
 	MaterialVec Materials_;
 	Skeleton* Skeleton_;
 	std::vector<Matrix> MatricesSkin_;
+	typedef std::vector<KeyFrameController<float>> FloatKFCVec;
+	typedef std::vector<float> FloatVec;
+	FloatKFCVec Angles_;
+	FloatVec AnglesCurrent_;
+	FloatKFCVec Us_;
+	FloatVec UsCurrent_;
+	FloatKFCVec Vs_;
+	FloatVec VsCurrent_;
+	FloatKFCVec Alphas_;
+	typedef std::vector<KeyFrameController<Vector3>> Vector3KFCVec;
+	typedef std::vector<Vector4> Vector4Vec;
+	Vector3KFCVec Colors_;
+	Vector4Vec ColorsCurrent_;
+	std::vector<Matrix> MatricesMaterial_;
+	typedef std::vector<KeyFrameController<Quaternion>> QuaternionKFCVec;
+	FloatVec UVSequenceTimer_;
+	FloatVec Rows_;
+	FloatVec Cols_;
 };
 
 Create_Singleton_Declaration(EntityInstanceManager, EntityInstance, ApiModel_)

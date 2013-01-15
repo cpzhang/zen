@@ -23,7 +23,7 @@ bool Part::create( const std::string& fileName )
 		return false;
 	}
 	std::string parentPath = FileSystem::getParent(fileName);
-	parentPath = FileSystem::getParent(parentPath);
+	//parentPath = FileSystem::getParent(parentPath);
 	parentPath += "/";
 	Name_ = r->Attribute("name");
 	{

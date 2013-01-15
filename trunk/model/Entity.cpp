@@ -22,7 +22,7 @@ bool Entity::create( const tstring& resourceId )
 	tinyxml2::XMLElement* tex= r->FirstChildElement("part");
 	std::string parentPath = FileSystem::standardFilePath(FileName_);
 	parentPath = FileSystem::getParent(parentPath);
-	parentPath = FileSystem::getParent(parentPath);
+	//parentPath = FileSystem::getParent(parentPath);
 	parentPath += "/";
 	while (tex)
 	{

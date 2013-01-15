@@ -35,7 +35,7 @@ bool Material::create( const std::string& fileName )
 		textureFileName = mat->Attribute("file");
 		FileSystem::standardFilePath(textureFileName);
 		std::string imagePath = FileSystem::getParent(fileName);
-		imagePath = FileSystem::getParent(imagePath);
+		//imagePath = FileSystem::getParent(imagePath);
 		imagePath += "/";
 		if (textureFileName.find('.') != std::string::npos)
 		{
@@ -148,14 +148,25 @@ bool Material::create( const std::string& fileName )
 			}
 		}		
 	}
-	//
+	//UVSequence
 	{
+		tinyxml2::XMLElement* a = r->FirstChildElement("UVSequence");
+		if (a)
+		{
+			a->QueryIntAttribute("Rows", &mRows);
+			a->QueryIntAttribute("Cols", &mCols);
+			a->QueryIntAttribute("Interval", &mChangeInterval);
+			a->QueryIntAttribute("Style", &mChangeStyle);
+		}		
+	}
+	//
+	/*{
 		AngleAT_.end = RotationKFs_.getTotalTime();
 		VAT_.end = FlowUKFs_.getTotalTime();
 		UAT_.end = FlowVKFs_.getTotalTime();
 		AlphaAT_.end = AlphaKFs_.getTotalTime();
 		ColorAT_.end = ColorKFs_.getTotalTime();
-	}
+	}*/
 	return true;
 }
 
@@ -172,11 +183,13 @@ void Material::clear_()
 	}
 	Fx_ = NULL;
 	//
-	MatrixUV_ = Matrix::Identity;
+	/*MatrixUV_ = Matrix::Identity;
 	TFactor_  = Vector4::One;
 	Angle_ = 0.0f;
 	U_ = 0.0f;
-	V_ = 0.0f;
+	V_ = 0.0f;*/
+	mRows = 1;
+	mCols = 1;
 }
 
 Fx* Material::getFx()
@@ -205,51 +218,7 @@ Fx* Material::getFx()
 	trans.x trans.y 1 0
 	0 0 0 1
 	*/
-void Material::update( float delta )
-{
-	//
-	AngleAT_.update(delta);
-	VAT_.update(delta);
-	UAT_.update(delta);
-	AlphaAT_.update(delta);
-	ColorAT_.update(delta);
-	//
-	Matrix m = Matrix::Identity;
-	if (RotationKFs_.numKeyFrames())
-	{
-		Angle_ += 0.0001 * delta * RotationKFs_.getFrame(AngleAT_); 
-		float c = cos(Angle_);
-		float s = sin(Angle_);
-		m._11 = c;m._12 = s;
-		m._12 = -s;m._22 = c;
-	}
-	if (FlowUKFs_.numKeyFrames())
-	{
-		U_ += 0.0001 * delta * FlowUKFs_.getFrame(UAT_); 
-	}
-	if (FlowVKFs_.numKeyFrames())
-	{
-		V_ += 0.0001 * delta * FlowVKFs_.getFrame(VAT_); 
-	}
-	Matrix n = Matrix::Identity;
-	n._31 = -0.5f;n._32 = -0.5f;
-	Matrix ni = Matrix::Identity;
-	ni._31 = 0.5f + U_;ni._32 = 0.5f + V_;
-	MatrixUV_ = n * m * ni;
-	//
-	TFactor_  = Vector4::One;
-	if (AlphaKFs_.numKeyFrames())
-	{
-		TFactor_.w *= AlphaKFs_.getFrame(AlphaAT_);
-	}
-	if (ColorKFs_.numKeyFrames())
-	{
-		TFactor_.x *= ColorKFs_.getFrame(ColorAT_).x;
-		TFactor_.y *= ColorKFs_.getFrame(ColorAT_).y;
-		TFactor_.z *= ColorKFs_.getFrame(ColorAT_).z;
-	}
-}
-void Material::apply()
+void Material::apply(const Matrix& uvMat, const Vector4& tf)
 {
 	IDirect3DDevice9* dx = getRenderContex()->getDxDevice();
 	//RenderState，保存时，已过滤掉默认值
@@ -269,12 +238,15 @@ void Material::apply()
 			dx->SetTextureStageState(tss.stage_, tss.type_, tss.value_);
 		}
 		//
-		if (RotationKFs_.numKeyFrames() > 0 || FlowUKFs_.numKeyFrames() > 0 || FlowVKFs_.numKeyFrames() > 0)
+		if (RotationKFs_.numKeyFrames() > 0 || FlowUKFs_.numKeyFrames() > 0 || FlowVKFs_.numKeyFrames() > 0 || mRows > 1 || mCols > 1)
 		{
 			//dx->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
-			dx->SetTransform(D3DTS_TEXTURE0, &MatrixUV_);
+			dx->SetTransform(D3DTS_TEXTURE0, &uvMat);
 		}
-		dx->SetRenderState(D3DRS_TEXTUREFACTOR, TFactor_.getARGB());
+		if (!AlphaKFs_.empty() || !ColorKFs_.empty())
+		{
+			dx->SetRenderState(D3DRS_TEXTUREFACTOR, tf.getARGB());
+		}
 	}
 	dx->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 }

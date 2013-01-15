@@ -202,7 +202,7 @@ void Mz::saveAnimation( const std::string& fileName )
 		tinyxml2::XMLElement* a = doc.NewElement("animation");
 		a->SetAttribute("name", mAnimations[i].name.c_str());
 		a->SetAttribute("duration", mAnimations[i].end);
-		std::string skinPath(TEXT("skin/"));
+		std::string skinPath;
 		skinPath += mAnimations[i].name;
 		skinPath += ".skin";
 		a->SetAttribute("skin", skinPath.c_str());
@@ -281,14 +281,14 @@ void addKeyFrame(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* ele, const ts
 void Mz::saveMaterial( const std::string& fileName )
 {
 	Material::initRenderStateDefault();
-	std::string parentPath = FileSystem::getParent(fileName);
+	std::string parentPath/* = FileSystem::getParent*/(fileName);
 	std::string parentPathOld = FileSystem::getParent(mzFileName_);
 	for (size_t i = 0; i != mMaterials.size(); ++i)
 	{
 		sMat& s = mMaterials[i];
 		std::string path = fileName + "/" + s.mName + ".material";
 		std::string imagePathOld = parentPathOld + "/" + s.mTextureName;
-		std::string imagePathNew = parentPath + "/image/" + s.mTextureName;
+		std::string imagePathNew = parentPath + "/" + s.mTextureName;
 		FileSystem::createFolder(imagePathNew);
 		CopyFile(imagePathOld.c_str(), imagePathNew.c_str(), false);
 		//============================================================================
@@ -307,9 +307,9 @@ void Mz::saveMaterial( const std::string& fileName )
 		{
 			tinyxml2::XMLElement* a = doc.NewElement("Texture");
 			a->SetAttribute("name", "g_Texture0");
-			std::string fileName("image");
-			fileName += "/";
-			fileName += s.mTextureName;
+			std::string fileName;//("image");
+			//fileName += "/";
+			fileName = s.mTextureName;
 			a->SetAttribute("file", fileName.c_str());
 			ele->LinkEndChild(a);
 		}
@@ -317,10 +317,11 @@ void Mz::saveMaterial( const std::string& fileName )
 		addRenderState(doc, ele, D3DRS_ZENABLE, s.mZEnable);
 		addRenderState(doc, ele, D3DRS_ZWRITEENABLE, s.mZWriteEnable);
 		addRenderState(doc, ele, D3DRS_ALPHATESTENABLE, s.mAlphaTestEnable);
-		addRenderState(doc, ele, D3DRS_ALPHAREF, s.mAlphaRef);
-		addRenderState(doc, ele, D3DRS_ALPHAFUNC, s.mCmpFunc);
-		addRenderState(doc, ele, D3DRS_SRCBLEND, s.mSrcBlend);
-		addRenderState(doc, ele, D3DRS_DESTBLEND, s.mDestBlend);
+		if (s.mAlphaTestEnable)
+		{
+			addRenderState(doc, ele, D3DRS_ALPHAREF, s.mAlphaRef);
+			addRenderState(doc, ele, D3DRS_ALPHAFUNC, s.mCmpFunc);
+		}
 		if (s.mSrcBlend == D3DBLEND_ONE && s.mDestBlend == D3DBLEND_ZERO)
 		{
 			addRenderState(doc, ele, D3DRS_ALPHABLENDENABLE, false);
@@ -328,6 +329,8 @@ void Mz::saveMaterial( const std::string& fileName )
 		else
 		{
 			addRenderState(doc, ele, D3DRS_ALPHABLENDENABLE, true);
+			addRenderState(doc, ele, D3DRS_SRCBLEND, s.mSrcBlend);
+			addRenderState(doc, ele, D3DRS_DESTBLEND, s.mDestBlend);
 		}
 		//TextureStageState
 		if (mVersion >= 30)
@@ -397,7 +400,7 @@ void Mz::saveMaterial( const std::string& fileName )
 			}
 		}
 		// 
-		if (s.mFlowU || s.mScale || s.mRotate)
+		if (s.mFlowU || s.mScale || s.mRotate || s.mRows > 1 || s.mCols > 1)
 		{
 			addTextureStageState(doc, ele, 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
 		}
@@ -418,6 +421,15 @@ void Mz::saveMaterial( const std::string& fileName )
 			addKeyFrame<float>(doc, ele, "Angle", s.mRotationKFs);
 		}
 		//addKeyFrame<Vector3>(doc, ele, "Scale", s.mScaleKFs);
+		if (s.mRows > 1 || s.mCols > 1)
+		{
+			tinyxml2::XMLElement* a = doc.NewElement("UVSequence");
+			a->SetAttribute("Rows", s.mRows);
+			a->SetAttribute("Cols", s.mCols);
+			a->SetAttribute("Interval", s.mChangeInterval);
+			a->SetAttribute("Style", s.mChangeStyle);
+			ele->LinkEndChild(a);
+		}
 
 		//
 		doc.SaveFile(path.c_str());
@@ -440,7 +452,7 @@ void Mz::saveSubEntity( const std::string& fileName )
 		{
 			tinyxml2::XMLElement* a = doc.NewElement("mesh");
 			std::string meshPath;
-			meshPath = "mesh/";
+			//meshPath = "/";
 			meshPath += mesh.name;
 			meshPath += ".mesh";
 			a->SetAttribute("file", meshPath.c_str());
@@ -449,7 +461,7 @@ void Mz::saveSubEntity( const std::string& fileName )
 		{
 			tinyxml2::XMLElement* a = doc.NewElement("material");
 			std::string meshPath;
-			meshPath = "material/";
+			//meshPath = "/";
 			meshPath += mMaterials[mesh.matId].mName;
 			meshPath += ".material";
 			a->SetAttribute("file", meshPath.c_str());
@@ -458,7 +470,7 @@ void Mz::saveSubEntity( const std::string& fileName )
 		if(0){
 			tinyxml2::XMLElement* a = doc.NewElement("boneMapping");
 			std::string meshPath;
-			meshPath = "mesh/";
+			//meshPath = "/";
 			meshPath += mesh.name;
 			meshPath += ".boneMapping";
 			a->SetAttribute("file", meshPath.c_str());
@@ -467,7 +479,7 @@ void Mz::saveSubEntity( const std::string& fileName )
 		if(0){
 			tinyxml2::XMLElement* a = doc.NewElement("skeleton");
 			std::string meshPath;
-			meshPath = "skeleton/";
+			meshPath = "/";
 			std::string fileFinalName = FileSystem::removeParent(mzFileName_);
 			fileFinalName = FileSystem::removeFileExtension(fileFinalName);
 			meshPath += fileFinalName;
@@ -478,7 +490,7 @@ void Mz::saveSubEntity( const std::string& fileName )
 		if(0){
 			tinyxml2::XMLElement* a = doc.NewElement("animation");
 			std::string meshPath;
-			meshPath = "animation/";
+			meshPath = "/";
 			std::string fileFinalName = FileSystem::removeParent(mzFileName_);
 			fileFinalName = FileSystem::removeFileExtension(fileFinalName);
 			meshPath += fileFinalName;
@@ -1246,6 +1258,10 @@ void Mz::decodeMaterial( std::ifstream& f, int s )
 				}
 			}
 			f.read((char*)&changeInterval,sizeof(changeInterval));
+			mat.mRows = rows;
+			mat.mCols = cols;
+			mat.mChangeStyle = changeStyle;
+			mat.mChangeInterval = changeInterval;
 		}
 		mat.mAlphaRef = 0;
 		//
@@ -1261,6 +1277,11 @@ void Mz::decodeMaterial( std::ifstream& f, int s )
 			mat.mTextureName = str;
 			u8 opType;
 			f.read((char*)&opType,sizeof(opType));
+			//if (mat.mAlphaTestEnable)
+			{
+				mat.mCmpFunc = D3DCMP_GREATEREQUAL;
+				mat.mAlphaRef = 0xBE;
+			}
 			switch(opType)
 			{
 			case 0:
@@ -1336,12 +1357,6 @@ void Mz::decodeMaterial( std::ifstream& f, int s )
 		if (noDepthWrite)
 		{
 			mat.mZWriteEnable = false;
-		}
-		mat.mCmpFunc = D3DCMP_ALWAYS;
-		if (mat.mAlphaTestEnable)
-		{
-			mat.mCmpFunc = D3DCMP_GREATEREQUAL;
-			mat.mAlphaRef = 0xBE;
 		}
 		mMaterials.push_back(mat);
 	}

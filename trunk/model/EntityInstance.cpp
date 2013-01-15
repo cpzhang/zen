@@ -71,7 +71,7 @@ void EntityInstance::render()
 			{
 				ef->SetMatrixArray("gSkinPalette", &matrices[0], matrices.size());
 			}
-			tl->apply();
+			tl->apply(MatricesMaterial_[i], ColorsCurrent_[i]);
 			ef->CommitChanges();
 			for (int p = 0; p != passes; ++p)
 			{
@@ -107,16 +107,51 @@ bool EntityInstance::create( const tstring& resourceId )
 	}
 	//
 	Skeleton_ = ModelResManager::getInstance()->get<Skeleton>(Entity_->getSkeleton());
+	//
+	Angles_.resize(Materials_.size());
+	AnglesCurrent_.resize(Materials_.size(), 0.0f);
+	Us_.resize(Materials_.size());
+	UsCurrent_.resize(Materials_.size(), 0.0f);
+	Vs_.resize(Materials_.size());
+	VsCurrent_.resize(Materials_.size(), 0.0f);
+	Alphas_.resize(Materials_.size());
+	AnglesCurrent_.resize(Materials_.size(), 1.0f);
+	Colors_.resize(Materials_.size());
+	ColorsCurrent_.resize(Materials_.size(), Vector4::One);
+	//
+	Rows_.resize(Materials_.size(), 1.0f);
+	Cols_.resize(Materials_.size(), 1.0f);
+	UVSequenceTimer_.resize(Materials_.size(), 0.0f);
+	//
+	MatricesMaterial_.resize(Materials_.size(), Matrix::Identity);
+	//
+	for (size_t i = 0; i != Materials_.size(); ++i)
+	{
+		Material* m = Materials_[i];
+		Angles_[i].init(&m->RotationKFs_, 0.0f);
+		Us_[i].init(&m->FlowUKFs_, 0.0f);
+		Vs_[i].init(&m->FlowVKFs_, 0.0f);
+		Alphas_[i].init(&m->AlphaKFs_, 1.0f);
+		Colors_[i].init(&m->ColorKFs_, 1.0f);
+	}
 	return true;
 }
 
 void EntityInstance::destroy()
 {
-	Entity_->removeReference();
-	Entity_ = NULL;
+	if (Entity_)
+	{
+		Entity_->removeReference();
+		Entity_ = NULL;
+	}
+	
 	//
-	Skeleton_->removeReference();
-	Skeleton_ = NULL;
+	if (Skeleton_)
+	{
+		Skeleton_->removeReference();
+		Skeleton_ = NULL;
+	}
+	
 	//
 	for (size_t i = 0; i != Parts_.size(); ++i)
 	{
@@ -124,10 +159,19 @@ void EntityInstance::destroy()
 		p->removeReference();
 		Meshes_[i]->removeReference();
 		Materials_[i]->removeReference();
+		Angles_[i].clear();
+		Us_[i].clear();
+		Vs_[i].clear();
+		Alphas_[i].clear();
+		Colors_[i].clear();
 	}
 	Parts_.clear();
 	Meshes_.clear();
 	Materials_.clear();
+	//
+	UVSequenceTimer_.clear();
+	Cols_.clear();
+	Rows_.clear();
 	//
 	if (SkinCurrent_)
 	{
@@ -151,6 +195,7 @@ void EntityInstance::setAnimation( const tstring& resourceId )
 
 void EntityInstance::update( float delta )
 {
+	//skin
 	if (SkinCurrent_)
 	{
 		AnimationTime_.update(delta * Speed_);
@@ -159,8 +204,95 @@ void EntityInstance::update( float delta )
 		MatricesSkin_.resize(Skeleton_->_matrices.size());
 		memcpy(&MatricesSkin_[0], &Skeleton_->_matrices[0], Skeleton_->_matrices.size() * sizeof(Matrix));
 	}
+	//material
+	updateMaterial_(delta);
 }
+void EntityInstance::updateMaterial_( float delta )
+{
+	//
+	for (size_t i = 0; i != Materials_.size(); ++i)
+	{
+		Material* tl = Materials_[i];
+		if (NULL == tl)
+		{
+			continue;
+		}
+		//
+		Matrix m = Matrix::Identity;
+		if (tl->mCols > 1 || tl->mRows > 1)
+		{
+			UVSequenceTimer_[i] += delta;
+			if (UVSequenceTimer_[i] >= tl->mChangeInterval)
+			{
+				UVSequenceTimer_[i] = 0.0f;
+				switch(tl->mChangeStyle)
+				{
+				case 0:
+					{
+						Rows_[i]++;
+						if (Rows_[i] >= tl->mRows)
+						{
+							Rows_[i] = 0;
+							Cols_[i]++;
+						}
+						if (Cols_[i] >= tl->mCols)
+						{
+							Cols_[i] = 0;
+						}
+					}break;
+				case 1:
+					{
 
+					}break;
+				}
+			}
+			//
+			float su = 1.0f / tl->mRows;
+			float sv = 1.0f / tl->mCols;
+			m._11 = su; m._22 = sv;
+			m._31 = su * Rows_[i]; m._32 = sv * Cols_[i];
+			MatricesMaterial_[i] = m;
+		}
+		else if(!Angles_[i].empty() || !Us_[i].empty() || !Vs_[i].empty())
+		{
+			{
+				Angles_[i].update(delta);
+				AnglesCurrent_[i] += 0.0001 * delta * Angles_[i].getValue(); 
+				float c = cos(AnglesCurrent_[i]);
+				float s = sin(AnglesCurrent_[i]);
+				m._11 = c;m._12 = s;
+				m._12 = -s;m._22 = c;
+			}
+			{
+				Us_[i].update(delta);
+				UsCurrent_[i] += 0.0001 * delta * Us_[i].getValue();
+			}
+			{
+				Vs_[i].update(delta);
+				VsCurrent_[i] += 0.0001 * delta * Vs_[i].getValue(); 
+			}
+			Matrix n = Matrix::Identity;
+			n._31 = -0.5f;n._32 = -0.5f;
+			Matrix ni = Matrix::Identity;
+			ni._31 = 0.5f + UsCurrent_[i];
+			ni._32 = 0.5f + VsCurrent_[i];
+			MatricesMaterial_[i] = n * m * ni;
+		}
+		//
+		ColorsCurrent_[i] = Vector4::One;
+		if(!Alphas_[i].empty()){
+			Alphas_[i].update(delta);
+			ColorsCurrent_[i].w = Alphas_[i].getValue();
+		}
+		if(!Colors_[i].empty()){
+			Colors_[i].update(delta);
+			Vector3 c = Colors_[i].getValue();
+			ColorsCurrent_[i].x = c.x;
+			ColorsCurrent_[i].y = c.y;
+			ColorsCurrent_[i].z = c.z;
+		}
+	}
+}
 void EntityInstance::setSpeed( float s )
 {
 	Speed_ = s;

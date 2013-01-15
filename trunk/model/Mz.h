@@ -137,6 +137,11 @@ struct sMat
 	D3DCMPFUNC mCmpFunc;
 	u32 mAlphaRef;
 	Vector4 mDiffuse;
+	//–Ú¡–Õº
+	int mRows;
+	int mCols;
+	int mChangeInterval;
+	int mChangeStyle;
 };
 struct tranMatrix
 {

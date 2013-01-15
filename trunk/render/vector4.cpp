@@ -15,7 +15,7 @@ Vector4::Vector4( const Vector3& v ):D3DXVECTOR4( v.x, v.y, v.z, 0.0f )
 
 }
 
-u32 Vector4::getARGB()
+u32 Vector4::getARGB() const
 {
 	return Colour::getUint32FromNormalised(*this);
 }

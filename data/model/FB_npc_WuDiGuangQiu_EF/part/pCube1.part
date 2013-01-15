@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<part name="pCube1">
-    <mesh file="mesh/pCube1.mesh"/>
-    <material file="material/UnnamedShader58.material"/>
-</part>

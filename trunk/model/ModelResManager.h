@@ -40,11 +40,11 @@ public:
 	{
 		ResID_ = resID;
 	}
-public:
-	static eModelResType getType()
-	{
-		return eModelResType_None;
-	}
+//public:
+//	static eModelResType getType()
+//	{
+//		return eModelResType_None;
+//	}
 private:
 	void onNoReference_();
 protected:
@@ -103,13 +103,13 @@ public:
 				return T::getNullObject();
 			}
 		}
-		else
+		/*else
 		{
 			if (n->Ele_->getType() != T::getType())
 			{
 				return NULL;
 			}
-		}
+		}*/
 		return (T*)n->Ele_;
 	}
 	void release(const tstring& resID)

@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<part name="pPipe5">
-    <mesh file="mesh/pPipe5.mesh"/>
-    <material file="material/UnnamedShader5.material"/>
-</part>

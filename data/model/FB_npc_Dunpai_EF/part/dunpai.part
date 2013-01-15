@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<part name="dunpai">
-    <mesh file="mesh/dunpai.mesh"/>
-    <material file="material/dunpai_M.material"/>
-</part>
