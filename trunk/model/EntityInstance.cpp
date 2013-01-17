@@ -9,6 +9,7 @@
 #include "render/Fx.h"
 #include "render/FxManager.h"
 #include "render/rendercontext.h"
+#include "ParticleEmitter.h"
 void EntityInstance::render()
 {
 	for (size_t i = 0; i != Parts_.size(); ++i)
@@ -83,6 +84,12 @@ void EntityInstance::render()
 		}
 		ef->End();
 	}
+	//
+	for (size_t i = 0; i != Particles_.size(); ++i)
+	{
+		ParticleCluster& c = Particles_[i];
+		c.render();
+	}
 }
 
 bool EntityInstance::create( const tstring& resourceId )
@@ -134,6 +141,15 @@ bool EntityInstance::create( const tstring& resourceId )
 		Alphas_[i].init(&m->AlphaKFs_, 1.0f);
 		Colors_[i].init(&m->ColorKFs_, 1.0f);
 	}
+	//
+	for (size_t i = 0; i != Entity_->getParticleNumber(); ++i)
+	{
+		ParticleEmitter* p = ModelResManager::getInstance()->get<ParticleEmitter>(Entity_->getParticleName(i));
+		p->addReference();
+		ParticleCluster c;
+		c.create(p);
+		Particles_.push_back(c);
+	}
 	return true;
 }
 
@@ -178,6 +194,12 @@ void EntityInstance::destroy()
 		SkinCurrent_->removeReference();
 		SkinCurrent_ = NULL;
 	}
+	//
+	for (size_t i = 0; i != Particles_.size(); ++i)
+	{
+		Particles_[i].getEmitter()->removeReference();
+	}
+	Particles_.clear();
 }
 
 void EntityInstance::setAnimation( const tstring& resourceId )
@@ -202,10 +224,20 @@ void EntityInstance::update( float delta )
 		Skeleton_->update(AnimationTime_, SkinCurrent_);
 		//
 		MatricesSkin_.resize(Skeleton_->_matrices.size());
-		memcpy(&MatricesSkin_[0], &Skeleton_->_matrices[0], Skeleton_->_matrices.size() * sizeof(Matrix));
+		if (!Skeleton_->_matrices.empty())
+		{
+			memcpy(&MatricesSkin_[0], &Skeleton_->_matrices[0], Skeleton_->_matrices.size() * sizeof(Matrix));
+		}
 	}
 	//material
 	updateMaterial_(delta);
+	//
+	//
+	for (size_t i = 0; i != Particles_.size(); ++i)
+	{
+		ParticleCluster& c = Particles_[i];
+		c.update(delta);
+	}
 }
 void EntityInstance::updateMaterial_( float delta )
 {

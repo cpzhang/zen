@@ -20,8 +20,6 @@ void ParticleEmitter::spawn(float delta, const AnimationTime& at, ParticleList& 
 	mCurrentEmission += mEmitRate.getFrame(at) * timeFactor;
 	for (; mCurrentEmission > 0.0f; mCurrentEmission -= 1.0f)
 	{
-		//调试一个粒子
-		//mLimitNumber = 1;
 		if (ps.size() >= mLimitNumber)
 		{
 			return;
@@ -162,4 +160,153 @@ void ParticleEmitter::spawn(float delta, const AnimationTime& at, ParticleList& 
 void ParticleEmitter::_clear()
 {
 	mCurrentEmission = 0.0f;
+	mVersion = 0;
+}
+
+void ParticleEmitter::destroy()
+{
+
+}
+
+void ParticleEmitter::save( const tstring& fn )
+{
+	//============================================================================
+	tinyxml2::XMLDocument doc;
+	// 
+	tinyxml2::XMLDeclaration* dec = doc.NewDeclaration("xml version=\"1.0\"");
+	doc.LinkEndChild(dec);
+	//
+	tinyxml2::XMLElement* ele = doc.NewElement("ParticleEmitter");
+	doc.LinkEndChild(ele);
+	//
+	addValue(doc, ele, "Alpha", mAlpha);
+	addValue(doc, ele, "AttachEmitter", mAttatchEmitter);
+	addValue(doc, ele, "AspectRadio", mAspectRadio);
+
+	addValue(doc, ele, "ChangeStyle", mChangeStyle);
+	addValue(doc, ele, "ChangeInterval", mChangeInterval);
+	addValue(doc, ele, "Cols", mCols);
+	addValue(doc, ele, "ColorStart", mColorStart);
+	addValue(doc, ele, "ColorMiddle", mColorMiddle);
+	addValue(doc, ele, "ColorEnd", mColorEnd);
+	
+	addValue(doc, ele, "FixedSize", mFixedSize);
+	addValue(doc, ele, "ForSword", mForSword);
+
+	addValue(doc, ele, "Head", mHead);
+	addValue(doc, ele, "HeadDecay", mHeadDecay);
+	addValue(doc, ele, "HeadLifeSpan", mHeadLifeSpan);
+	
+	addValue(doc, ele, "InitAngleBegin", mInitAngleBegin);
+	addValue(doc, ele, "InitAngleEnd", mInitAngleEnd);
+	addValue(doc, ele, "InitNumber", mInitNumber);
+	
+	addValue(doc, ele, "LifeSpan", mLifeSpan);
+	addValue(doc, ele, "LifeVar", mLifeVar);
+	
+	addValue(doc, ele, "MaxNumber", mLimitNumber);
+	addValue(doc, ele, "MoveWithEmitter", mMoveWithEmitter);
+	
+	addValue(doc, ele, "RotateSpeed", mRotateSpeed);
+	addValue(doc, ele, "RotateSpeedVar", mRotateSpeedVar);
+	addValue(doc, ele, "Rows", mRows);
+
+	addValue(doc, ele, "Scale", mScale);
+	addValue(doc, ele, "ScaleVar", mScaleVar);
+	addValue(doc, ele, "SwordInitAngle", mSwordInitAngle);
+
+	addValue(doc, ele, "Tail", mTail);
+	addValue(doc, ele, "TailLifeSpan", mTailLifeSpan);
+	addValue(doc, ele, "TailDecay", mTailDecay);	
+	addValue(doc, ele, "Texture", mTextureFile.c_str());
+	addValue(doc, ele, "Time", mTime);
+
+	addValue(doc, ele, "Wander", mWander);
+	addValue(doc, ele, "WanderRadius", mWanderRadius);
+	addValue(doc, ele, "WanderSpeed", mWanderSpeed);
+	//
+	addKeyFrame<float>(doc, ele, "EmitRate", mEmitRate);
+	addKeyFrame<float>(doc, ele, "ExplosiveForce", mExplosiveForce);
+	addKeyFrame<float>(doc, ele, "Gravity", mGravity);
+	addKeyFrame<float>(doc, ele, "Height", mHeigth);
+	addKeyFrame<float>(doc, ele, "Length", mLength);
+	addKeyFrame<float>(doc, ele, "Speed", mSpeedKFs);
+	addKeyFrame<float>(doc, ele, "Variation", mVariationKFs);
+	addKeyFrame<bool>(doc, ele,	 "Visibility", mVisibility);
+	addKeyFrame<float>(doc, ele, "Width", mWidth);
+	//
+	doc.SaveFile(fn.c_str());
+}
+
+bool ParticleEmitter::create( const tstring& resID )
+{
+	tinyxml2::XMLDocument doc;
+	if (tinyxml2::XML_SUCCESS != doc.LoadFile(resID.c_str()))
+	{
+		return false;
+	}
+	tinyxml2::XMLElement* ele = doc.RootElement();
+	if (NULL == ele)
+	{
+		return false;
+	}
+	//
+	getValue(ele, "Alpha", mAlpha);
+	getValue(ele, "AttachEmitter", mAttatchEmitter);
+	getValue(ele, "AspectRadio", mAspectRadio);
+
+	getValue(ele, "ChangeStyle", mChangeStyle);
+	getValue(ele, "ChangeInterval", mChangeInterval);
+	getValue(ele, "Cols", mCols);
+	getValue(ele, "ColorStart", mColorStart);
+	getValue(ele, "ColorMiddle", mColorMiddle);
+	getValue(ele, "ColorEnd", mColorEnd);
+
+	getValue(ele, "FixedSize", mFixedSize);
+	getValue(ele, "ForSword", mForSword);
+
+	getValue(ele, "Head", mHead);
+	getValue(ele, "HeadDecay", mHeadDecay);
+	getValue(ele, "HeadLifeSpan", mHeadLifeSpan);
+
+	getValue(ele, "InitAngleBegin", mInitAngleBegin);
+	getValue(ele, "InitAngleEnd", mInitAngleEnd);
+	getValue(ele, "InitNumber", mInitNumber);
+
+	getValue(ele, "LifeSpan", mLifeSpan);
+	getValue(ele, "LifeVar", mLifeVar);
+
+	getValue(ele, "MaxNumber", mLimitNumber);
+	getValue(ele, "MoveWithEmitter", mMoveWithEmitter);
+
+	getValue(ele, "RotateSpeed", mRotateSpeed);
+	getValue(ele, "RotateSpeedVar", mRotateSpeedVar);
+	getValue(ele, "Rows", mRows);
+
+	getValue(ele, "Scale", mScale);
+	getValue(ele, "ScaleVar", mScaleVar);
+	getValue(ele, "SwordInitAngle", mSwordInitAngle);
+
+	getValue(ele, "Tail", mTail);
+	getValue(ele, "TailLifeSpan", mTailLifeSpan);
+	getValue(ele, "TailDecay", mTailDecay);	
+	getValue(ele, "Texture", mTextureFile);
+	getValue(ele, "Time", mTime);
+
+	getValue(ele, "Wander", mWander);
+	getValue(ele, "WanderRadius", mWanderRadius);
+	getValue(ele, "WanderSpeed", mWanderSpeed);
+	//
+	getKeyFrame<float>(ele, "EmitRate", mEmitRate);
+	getKeyFrame<float>(ele, "ExplosiveForce", mExplosiveForce);
+	getKeyFrame<float>(ele, "Gravity", mGravity);
+	getKeyFrame<float>(ele, "Height", mHeigth);
+	getKeyFrame<float>(ele, "Length", mLength);
+	getKeyFrame<float>(ele, "Speed", mSpeedKFs);
+	getKeyFrame<float>(ele, "Variation", mVariationKFs);
+	getKeyFrame<bool>(ele,	"Visibility", mVisibility);
+	getKeyFrame<float>(ele, "Width", mWidth);
+
+	//
+	mCurrentEmission = mInitNumber;
 }

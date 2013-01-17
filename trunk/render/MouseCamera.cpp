@@ -43,13 +43,13 @@ void MouseCamera::turboSpeed( float s )
 
 void MouseCamera::update( float dTime )
 {
+	if (handleMouseEvent())
+	{
+		polarToView();
+	}
 	if (handleKeyEvent())
 	{
 		handleInput(dTime);
-	}
-	else if (handleMouseEvent())
-	{
-		polarToView();
 	}
 }
 
@@ -245,9 +245,9 @@ void MouseCamera::handleInput( float dTime )
 		if ( keyDown_['E'] )
 		{
 			//move up
-			view_._41 += up.x * movementSpeed;
+			//view_._41 += up.x * movementSpeed;
 			view_._42 += up.y * movementSpeed;
-			view_._43 += up.z * movementSpeed;
+			//view_._43 += up.z * movementSpeed;
 			viewChanged = true;
 		}
 	}
@@ -261,9 +261,9 @@ void MouseCamera::handleInput( float dTime )
 		if ( keyDown_['Q'] )
 		{
 			//move down
-			view_._41 -= up.x * movementSpeed;
+			//view_._41 -= up.x * movementSpeed;
 			view_._42 -= up.y * movementSpeed;
-			view_._43 -= up.z * movementSpeed;
+			//view_._43 -= up.z * movementSpeed;
 			viewChanged = true;
 		}
 	}

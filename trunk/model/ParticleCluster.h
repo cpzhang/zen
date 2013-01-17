@@ -12,8 +12,12 @@ public:
 	~ParticleCluster();
 public:
 	void render();
-	void update(float delta, const AnimationTime& at);
+	void update(float delta);
 	bool create(ParticleEmitter* e);
+	ParticleEmitter* getEmitter()
+	{
+		return mEmitter;
+	}
 	void destroy();
 private:
 	void _clear();
@@ -23,4 +27,7 @@ private:
 	Texture* mTexture;
 	IMaterial* mMaterial;
 	Matrix mPVW;
+	AnimationTime mAT;
 };
+
+typedef std::vector<ParticleCluster> ParticleClusterVec;

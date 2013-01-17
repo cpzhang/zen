@@ -184,7 +184,7 @@ public:
 	void decodeAnimation( std::ifstream& f, int s );
 	void decodeBone( std::ifstream& f, int s );
 	void decodeRibbon( std::ifstream& f, int s );
-	void decodeParticle( std::ifstream& f, int s );
+	void decodeParticle( std::ifstream& f, int s, char* b);
 	void saveAnimation( const std::string& fileName );
 	void loadMzI( const std::string& fileName );
 	void loadFb( const std::string& fileName );

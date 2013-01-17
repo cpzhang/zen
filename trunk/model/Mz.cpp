@@ -136,7 +136,13 @@ bool Mz::load( const std::string& fileName )
 		}
 	}
 	f.close();
-
+	//
+	if (!mParticleEmitter.empty())
+	{
+		tstring fn = FileSystem::getDataDirectory();
+		fn += "/particle/0.xml";
+		mParticleEmitter[0].save(fn);
+	}
 	return true;
 }
 
@@ -592,7 +598,7 @@ void Mz::decodeBone( std::ifstream& f, int s )
 		}
 		if (hasParticleSystem)
 		{
-			decodeParticle(f, s);
+			decodeParticle(f, s, name);
 		}
 		k.boneKFs.push_back(bkf);
 	}
@@ -1395,7 +1401,7 @@ void Mz::clear()
 	mLoadFBs = false;
 }
 
-void Mz::decodeParticle( std::ifstream& f, int s )
+void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 {
 	bool visible;
 	f.read((char*)&visible,sizeof(visible));
@@ -1564,7 +1570,8 @@ void Mz::decodeParticle( std::ifstream& f, int s )
 
 	//初始化例子发射器
 	ParticleEmitter pe;
-	pe.mTextureFile = "image/";
+	pe.mBoneName = b;
+	pe.mTextureFile = "particle/image/";
 	pe.mTextureFile += filename;
 	pe.mBlendMode = blendMode;
 	pe.mInitNumber = initialNum;
@@ -1614,6 +1621,7 @@ void Mz::decodeParticle( std::ifstream& f, int s )
 	u32 nKeyframes;
 	//visibility
 	f.read((char*)&nKeyframes,sizeof(nKeyframes));
+	pe.mVisibility.setStaticData(visible);
 	for (u32 j = 0;j < nKeyframes;j++)
 	{
 		sKeyFrame<bool> kf;
@@ -1621,6 +1629,7 @@ void Mz::decodeParticle( std::ifstream& f, int s )
 		pe.mVisibility.addKeyFrame(kf);
 	}
 	//speed
+	pe.mSpeedKFs.setStaticData(speed);
 	f.read((char*)&nKeyframes,sizeof(nKeyframes));
 	for (u32 j = 0;j < nKeyframes;j++)
 	{
@@ -1629,6 +1638,7 @@ void Mz::decodeParticle( std::ifstream& f, int s )
 		pe.mSpeedKFs.addKeyFrame(kf);
 	}
 	//variation
+	pe.mVariationKFs.setStaticData(variation);
 	f.read((char*)&nKeyframes,sizeof(nKeyframes));
 	for (u32 j = 0;j < nKeyframes;j++)
 	{
@@ -1637,6 +1647,7 @@ void Mz::decodeParticle( std::ifstream& f, int s )
 		pe.mVariationKFs.addKeyFrame(kf);
 	}
 	//latitude
+	pe.mLatitude.setStaticData(coneAngle);
 	f.read((char*)&nKeyframes,sizeof(nKeyframes));
 	for (u32 j = 0;j < nKeyframes;j++)
 	{
@@ -1645,6 +1656,7 @@ void Mz::decodeParticle( std::ifstream& f, int s )
 		pe.mLatitude.addKeyFrame(kf);
 	}
 	//gravity
+	pe.mGravity.setStaticData(gravity);
 	f.read((char*)&nKeyframes,sizeof(nKeyframes));
 	for (u32 j = 0;j < nKeyframes;j++)
 	{
@@ -1655,6 +1667,7 @@ void Mz::decodeParticle( std::ifstream& f, int s )
 	if (mVersion >= 17)
 	{
 		//explosiveForce
+		pe.mExplosiveForce.setStaticData(explosiveForce);
 		f.read((char*)&nKeyframes,sizeof(nKeyframes));
 		for (u32 j = 0;j < nKeyframes;j++)
 		{
@@ -1664,6 +1677,7 @@ void Mz::decodeParticle( std::ifstream& f, int s )
 		}
 	}
 	//emissionRate
+	pe.mEmitRate.setStaticData(emissionRate);
 	f.read((char*)&nKeyframes,sizeof(nKeyframes));
 	for (u32 j = 0;j < nKeyframes;j++)
 	{
@@ -1672,6 +1686,7 @@ void Mz::decodeParticle( std::ifstream& f, int s )
 		pe.mEmitRate.addKeyFrame(kf);
 	}
 	//width
+	pe.mWidth.setStaticData(width);
 	f.read((char*)&nKeyframes,sizeof(nKeyframes));
 	for (u32 j = 0;j < nKeyframes;j++)
 	{
@@ -1680,6 +1695,7 @@ void Mz::decodeParticle( std::ifstream& f, int s )
 		pe.mWidth.addKeyFrame(kf);
 	}
 	//length
+	pe.mLength.setStaticData(length);
 	f.read((char*)&nKeyframes,sizeof(nKeyframes));
 	for (u32 j = 0;j < nKeyframes;j++)
 	{
@@ -1690,6 +1706,7 @@ void Mz::decodeParticle( std::ifstream& f, int s )
 	if (mVersion >= 16)
 	{
 		//height 
+		pe.mHeigth.setStaticData(height);
 		f.read((char*)&nKeyframes,sizeof(nKeyframes));
 		for (u32 j = 0;j < nKeyframes;j++)
 		{

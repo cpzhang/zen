@@ -1,6 +1,7 @@
 #include "ParticleCluster.h"
 #include "ParticleEmitter.h"
 #include "render/TextureManager.h"
+#include "render/rendercontext.h"
 //#include "Material.h"
 //#include "Effect.h"
 //#include "TextureManager.h"
@@ -19,33 +20,45 @@
 
 	void ParticleCluster::render()
 	{
-// 		mMaterial->apply();
-// 		Effect* fx = mMaterial->getEffect();
-// 		fx->setTexture("g_MeshTexture", mTexture);
-// 		fx->setMatrix("g_mWorldViewProjection", mPVW);
-// 		//
-// 		ParticleList::iterator it;
-// 		for (it = mParticles.begin(); it != mParticles.end(); ++it)
-// 		{
+
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+		//
+		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+		getRenderContex()->getDxDevice()->SetTransform(D3DTS_VIEW, &getRenderContex()->getViewMatrix());
+		getRenderContex()->getDxDevice()->SetTransform(D3DTS_PROJECTION, &getRenderContex()->getProjectionMatrix());
+		getRenderContex()->setVertexDeclaration(sVDT_PositionColorTexture::getType());
+		getRenderContex()->getDxDevice()->SetTexture(0, mTexture->getDxTexture());
+ 		ParticleList::iterator it;
+ 		for (it = mParticles.begin(); it != mParticles.end(); ++it)
+ 		{
 // 			u32 passes = 0;
 // 			fx->begin(&passes);
 // 			for (u32 i = 0; i != passes; ++i)
 // 			{
 // 				fx->beginPass(i);
-// 				it->render();
+ 				it->render();
 // 				fx->endPass();
 // 			}
 // 			fx->end();
-// 		}
+ 		}
 	}
 
-	void ParticleCluster::update(float delta, const AnimationTime& at)
+	void ParticleCluster::update(float delta)
 	{
+		Matrix view = getRenderContex()->getViewMatrix();
+		view.invert();
+		Vector3 forward = view.applyToUnitAxisVector( 2 );
+		Vector3 up = view.applyToUnitAxisVector( 1 );
+		Vector3 right = view.applyToUnitAxisVector( 0 );
+
 		//
 		ParticleList::iterator it;
 		for (it = mParticles.begin(); it != mParticles.end(); ++it)
 		{
-			it->update(delta);
+			it->update(delta, right, up, forward);
 		}
 
 		//
@@ -63,7 +76,8 @@
 		}
 
 		//
-		mEmitter->spawn(delta, at, mParticles);
+		mAT.update(delta);
+		mEmitter->spawn(delta, mAT, mParticles);
 		//
 		//mPVW = cam->getProjectionMatrix() * cam->getViewMatrix();
 	}
@@ -86,6 +100,7 @@
 		{
 			return false;
 		}
+		mAT.end = mEmitter->mTime;
 // 		mMaterial = MaterialManager::getInstancePtr()->createMaterial(eMaterialType_Vertex);
 // 		if (NULL == mMaterial)
 // 		{

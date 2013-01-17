@@ -17,11 +17,11 @@ Particle::~Particle()
 
 void Particle::render()
 {
-	static u16 s_indices[] = {0, 1, 3, 1, 2, 3};
+	static u16 s_indices[] = {0, 3, 1, 1, 3, 2};
 	getRenderContex()->drawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, 4, 2, s_indices, D3DFMT_INDEX16, mVertices, sVDT_PositionColorTexture::getSize());
 }
 
-void Particle::update(float delta)
+void Particle::update(float delta, const Vector3& right, const Vector3& up, const Vector3& forword)
 {
 	float timeFactor;
 	//秒
@@ -100,7 +100,10 @@ void Particle::update(float delta)
 			}
 		}
 	}
-
+	if (mLife < 0.001f)
+	{
+		mLife = 1.0f;
+	}
 	float lifeFactor = almostEqual(randomReal(mLife,0.0f), 0.0f) ? 0.0f : (1.0f - (mAge / mLife));
 	//换贴图
 	if(mDeltaTime >= mEmitter->mChangeInterval)
@@ -163,25 +166,27 @@ void Particle::update(float delta)
 	if(lifeFactor < mEmitter->mTime)
 	{
 		float tempInterval = mEmitter->mTime;
-		float tempFactor = (randomReal(tempInterval,0.0f) > 0.0f) ? 0.0f : (lifeFactor / tempInterval);
-
-		scale = mScale.x + tempFactor * (mScale.y- mScale.z);
-		mColor = InterpolateBezier(tempFactor,color1,color2);
+		if (tempInterval > 0.01f)
+		{
+			float tempFactor = (randomReal(tempInterval,0.0f) > 0.0f) ? 0.0f : (lifeFactor / tempInterval);
+			scale = mScale.x + tempFactor * (mScale.y- mScale.z);
+			mColor = InterpolateBezier(tempFactor,color1,color2);
+		}
 	}
 	else
 	{
 		float tempInterval = 1.0f - mEmitter->mTime;
-		float tempFactor = (tempInterval <= 0.0f) ? 0.0f : ((lifeFactor - mEmitter->mTime) / tempInterval);
-
-		scale = mScale.y + tempFactor * (mScale.z - mScale.y);
-		mColor = InterpolateBezier(tempFactor,color2,color3);
+		if (tempInterval > 0.01f)
+		{
+			float tempFactor = (tempInterval <= 0.0f) ? 0.0f : ((lifeFactor - mEmitter->mTime) / tempInterval);
+			scale = mScale.y + tempFactor * (mScale.z - mScale.y);
+			mColor = InterpolateBezier(tempFactor,color2,color3);
+		}
 	}
 	mVertices[0].color_ = Colour::getUint32(mColor);
 	mVertices[1].color_ = Colour::getUint32(mColor);
 	mVertices[2].color_ = Colour::getUint32(mColor);
 	mVertices[3].color_ = Colour::getUint32(mColor);
-	Vector3 look;
-	Vector3 _up;
 	Matrix mtxNode;
 	Vector3 pos = mPosition;
 	//attachToEmitter优先于moveWithEmitter
@@ -192,44 +197,32 @@ void Particle::update(float delta)
 	else if(mEmitter->mMoveWithEmitter)
 	{
 	}
-
-	{
-		Vector3 xlook = Vector3(-1.224745f,1,1.224745f);
-		xlook.normalise();
-//		look=cam->getDirection();
-//		_up = cam->getUp();
-	}
-
-	Vector3 _right = _up * look;
-	_right.normalise();
-	_up = look * _right;
-	_up.normalise();
-
 	mAngle += mRotateSpeed * timeFactor;
 
 	float aspectRatio1 = 1.0f;
-	if(!randomReal(mEmitter->mAspectRadio,0.0f))
+	if(mEmitter->mAspectRadio > 0.01f && !randomReal(mEmitter->mAspectRadio,0.0f))
 		aspectRatio1 = 1.0f / mEmitter->mAspectRadio;
 	if(mEmitter->mHead)
 	{
 		Vector3 vAxis;
 		//绕vAxis旋转angle角度
-		Quaternion q;
+		Quaternion q(0,0,0,1);
 		if(!randomReal(mAngle,0.0f))
 		{
-			vAxis = _right * _up;
+			vAxis = right * up;
 			q.fromAngleAxis(mAngle,vAxis);
 		}
 
-		Vector3 vt = _up * aspectRatio1;
-		Vector3 v0 = _right + vt;
-		Vector3 v1 = _right - vt;
+		Vector3 vt = up * aspectRatio1;
+		Vector3 v0 = right + vt;
+		Vector3 v1 = right - vt;
 		Vector3 v2 = v0;
 		Vector3 v3 = v1;
 		if(!randomReal(mAngle,0.0f))
 		{
 			Matrix m;
 			m.setRotate(&q);
+			m.setIdentity();
 			v0 = m.applyVector(v0);
 			v1 = m.applyVector(v1);
 			v2 = m.applyVector(v2);
@@ -241,11 +234,27 @@ void Particle::update(float delta)
 		mVertices[1].position_ = pos + vt3;
 		mVertices[2].position_ = pos + vt2;
 		mVertices[3].position_ = pos - vt3;
+		//
+		{
+			Vector3 v01 = mVertices[0].position_ - mVertices[1].position_;
+			Vector3 v02 = mVertices[0].position_ - mVertices[2].position_;
+			Vector3 v03 = mVertices[0].position_ - mVertices[3].position_;
+			Vector3 v12 = mVertices[1].position_ - mVertices[2].position_;
+			Vector3 v13 = mVertices[1].position_ - mVertices[3].position_;
+			Vector3 v23 = mVertices[2].position_ - mVertices[3].position_;
+			const float len = 50.0f;
+			if (v01.length() > len || v02.length() > len || v03.length() > len || 
+				v12.length() > len || v13.length() > len || 
+				v23.length() > len)
+			{
+				mVertices[0].position_ = Vector3::Zero;
+			}
+		}
 	}
 	if(mEmitter->mTail)
 	{
-		Vector3 v1 = _right + _up;
-		Vector3 v2 = _right - _up;
+		Vector3 v1 = right + up;
+		Vector3 v2 = right - up;
 		Vector3 v3 = v1 * scale;
 		Vector3 v4 = v2 * scale;
 		mVertices[0].position_ = mOriginalPosition - v3;

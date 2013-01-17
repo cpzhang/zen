@@ -9,6 +9,7 @@ enum eModelResType
 	eModelResType_Part,
 	eModelResType_Mesh,
 	eModelResType_Material,
+	eModelResType_ParticleEmitter,
 	eModelResType_Size
 };
 typedef std::vector<tstring> ResIDVec;
@@ -85,6 +86,10 @@ public:
 	template<class T>
 	T* get(const tstring& resID)
 	{
+		if (resID.empty())
+		{
+			return T::getNullObject();
+		}
 		sModelResNode* n = getNode(resID);
 		if (n == NULL)
 		{

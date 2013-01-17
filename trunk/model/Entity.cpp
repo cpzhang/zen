@@ -22,13 +22,10 @@ bool Entity::create( const tstring& resourceId )
 	tinyxml2::XMLElement* tex= r->FirstChildElement("part");
 	std::string parentPath = FileSystem::standardFilePath(FileName_);
 	parentPath = FileSystem::getParent(parentPath);
-	//parentPath = FileSystem::getParent(parentPath);
 	parentPath += "/";
 	while (tex)
 	{
 		std::string subEntityFileName = tex->Attribute("file");
-		//Part* sub = ModelResManager::getInstance()->get<Part>();
-		//sub->setEntity(this);
 		Parts_.push_back(parentPath + subEntityFileName);
 		tex = tex->NextSiblingElement("part");
 	}
@@ -38,9 +35,16 @@ bool Entity::create( const tstring& resourceId )
 		if (mat)
 		{
 			std::string skeleton = mat->Attribute("file");
-			//Skeleton_ = ModelResManager::getInstance()->get<Skeleton>(parentPath + skeleton);
 			NameSkeleton_ = parentPath + skeleton;
 		}
+	}
+	//
+	tex= r->FirstChildElement("particle");
+	while (tex)
+	{
+		std::string subEntityFileName = tex->Attribute("file");
+		NameParticles_.push_back(FileSystem::getDataDirectory() + "/" + subEntityFileName);
+		tex = tex->NextSiblingElement("particle");
 	}
 	
 	return true;
@@ -65,4 +69,15 @@ const tstring& Entity::getSkeleton()
 {
 	return NameSkeleton_;
 }
+
+size_t Entity::getParticleNumber()
+{
+	return NameParticles_.size();
+}
+
+const tstring& Entity::getParticleName( const size_t index )
+{
+	return NameParticles_[index];
+}
+
 //Create_Singleton_Imp(EntityManager, ApiModel_)

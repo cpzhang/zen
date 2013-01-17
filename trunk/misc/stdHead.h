@@ -19,3 +19,5 @@ typedef std::wstring tstring;
 #else
 typedef std::string tstring;
 #endif
+
+typedef std::vector<tstring> tstringVec;

@@ -97,6 +97,11 @@ public:
 		_bStatic = true;
 	}
 
+	const T& getStaticData() const
+	{
+		return _staticData ;
+	}
+
 	void addKeyFrame(const sKeyFrame<T>& keyFrame)
 	{
 		_keyFrames.push_back(keyFrame);

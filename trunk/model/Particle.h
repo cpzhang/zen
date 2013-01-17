@@ -8,7 +8,7 @@ public:
 	~Particle();
 public:
 	void render();
-	void update(float delta);
+	void update(float delta, const Vector3& right, const Vector3& up, const Vector3& forword);
 	bool isAlive();
 private:
 	void _clear();

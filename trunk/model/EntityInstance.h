@@ -6,6 +6,7 @@
 #include "Part.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "ParticleCluster.h"
 class Entity;
 class Skin;
 class Material;
@@ -65,6 +66,8 @@ private:
 	FloatVec UVSequenceTimer_;
 	FloatVec Rows_;
 	FloatVec Cols_;
+	//
+	ParticleClusterVec Particles_;
 };
 
 Create_Singleton_Declaration(EntityInstanceManager, EntityInstance, ApiModel_)
