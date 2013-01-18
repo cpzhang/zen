@@ -188,7 +188,7 @@ void ViewWindow::onIdle()
 		Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
 		camera_.limit_ =  BoundingBox( minBound, maxBound );
 		camera_.create(10, MATH_PI, MATH_PI_Half);
-		camera_.init(Vector3(0, 20, -20), Vector3(0, 0, 0), Vector3::AxisY);
+		camera_.init(Vector3(0, 0, -20), Vector3(0, 0, 0), Vector3::AxisY);
 		//
 		Camera c = getRenderContex()->getCamera();
 		c.setFarPlane(10000.0f);

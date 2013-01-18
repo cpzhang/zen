@@ -27,6 +27,9 @@
 		//
 		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
 		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+		Matrix m = Matrix::Identity;
+		m.setScale(0.01f, 0.01f, 0.01f);
+		getRenderContex()->getDxDevice()->SetTransform(D3DTS_WORLD, &m);
 		getRenderContex()->getDxDevice()->SetTransform(D3DTS_VIEW, &getRenderContex()->getViewMatrix());
 		getRenderContex()->getDxDevice()->SetTransform(D3DTS_PROJECTION, &getRenderContex()->getProjectionMatrix());
 		getRenderContex()->setVertexDeclaration(sVDT_PositionColorTexture::getType());
@@ -44,6 +47,8 @@
 // 			}
 // 			fx->end();
  		}
+		//
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
 	}
 
 	void ParticleCluster::update(float delta)
@@ -76,7 +81,7 @@
 		}
 
 		//
-		mAT.update(delta);
+		mAT.update(delta * 0.001f);
 		mEmitter->spawn(delta, mAT, mParticles);
 		//
 		//mPVW = cam->getProjectionMatrix() * cam->getViewMatrix();

@@ -139,9 +139,15 @@ bool Mz::load( const std::string& fileName )
 	//
 	if (!mParticleEmitter.empty())
 	{
+		tstring n = FileSystem::removeParent(mzFileName_);
+		n = FileSystem::removeFileExtension(n);
 		tstring fn = FileSystem::getDataDirectory();
-		fn += "/particle/0.xml";
-		mParticleEmitter[0].save(fn);
+		std::ostringstream ss;
+		for (size_t i = 0; i != mParticleEmitter.size(); ++i)
+		{
+			ss<<fn<<"/particle/"<<n<<"_"<<i<<".particle";
+			mParticleEmitter[i].save(ss.str());
+		}
 	}
 	return true;
 }

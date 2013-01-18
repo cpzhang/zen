@@ -12,8 +12,13 @@ public:
 	bool isAlive();
 private:
 	void _clear();
+	void updateUV_();
+	void updateColor_();
+	void updatePostion_(const Vector3& right, const Vector3& up, const Vector3& forword);
 public:
 	sVDT_PositionColorTexture mVertices[4];
+	float mRate;//age / life
+	float mDelta;
 	//
 	Vector4 mColor;
 	//

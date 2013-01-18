@@ -82,10 +82,11 @@ void ParticleEmitter::spawn(float delta, const AnimationTime& at, ParticleList& 
 
 		p.mVelocity *= speed;
 
+		p.mAge = 0.0f;
 		if(mLifeSpan < mLifeVar)
-			p.mAge = p.mLife = mLifeSpan;
+			p.mLife = mLifeSpan;
 		else
-			p.mAge = p.mLife= randomReal(mLifeSpan - mLifeVar, mLifeSpan + mLifeVar);
+			p.mLife= randomReal(mLifeSpan - mLifeVar, mLifeSpan + mLifeVar);
 
 		p.mGravity = mGravity.getFrame(at);
 		p.mExplosiveForce = mExplosiveForce.getFrame(at);
