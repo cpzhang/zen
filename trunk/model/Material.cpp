@@ -35,7 +35,6 @@ bool Material::create( const std::string& fileName )
 		textureFileName = mat->Attribute("file");
 		FileSystem::standardFilePath(textureFileName);
 		std::string imagePath = FileSystem::getParent(fileName);
-		//imagePath = FileSystem::getParent(imagePath);
 		imagePath += "/";
 		if (textureFileName.find('.') != std::string::npos)
 		{
@@ -160,13 +159,6 @@ bool Material::create( const std::string& fileName )
 		}		
 	}
 	//
-	/*{
-		AngleAT_.end = RotationKFs_.getTotalTime();
-		VAT_.end = FlowUKFs_.getTotalTime();
-		UAT_.end = FlowVKFs_.getTotalTime();
-		AlphaAT_.end = AlphaKFs_.getTotalTime();
-		ColorAT_.end = ColorKFs_.getTotalTime();
-	}*/
 	return true;
 }
 
@@ -183,11 +175,6 @@ void Material::clear_()
 	}
 	Fx_ = NULL;
 	//
-	/*MatrixUV_ = Matrix::Identity;
-	TFactor_  = Vector4::One;
-	Angle_ = 0.0f;
-	U_ = 0.0f;
-	V_ = 0.0f;*/
 	mRows = 1;
 	mCols = 1;
 }
@@ -444,5 +431,3 @@ std::vector<DWORD> Material::tTextureStageStateDefault_;
 bool Material::tRSDIntialized_(FALSE);
 
 std::vector<DWORD> Material::tRenderStateDefault_;
-
-//Create_Singleton_Imp(MaterialManager, ApiModel_)

@@ -145,6 +145,8 @@ bool Mz::load( const std::string& fileName )
 		std::ostringstream ss;
 		for (size_t i = 0; i != mParticleEmitter.size(); ++i)
 		{
+			ss.str("");
+			ss.clear();
 			ss<<fn<<"/particle/"<<n<<"_"<<i<<".particle";
 			mParticleEmitter[i].save(ss.str());
 		}

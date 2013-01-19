@@ -99,10 +99,10 @@ void Particle::updateColor_()
 	color1.z = mColorStart.z;
 	color1.w = mAlpha.x;
 
-	color2.x = mColorMiddle.x;
-	color2.y = mColorMiddle.y;
-	color2.z = mColorMiddle.z;
-	color2.w = mAlpha.y;
+	color2.x = mColorMiddle.x * 2.0f;
+	color2.y = mColorMiddle.y * 2.0f;
+	color2.z = mColorMiddle.z * 2.0f;
+	color2.w = mAlpha.y * 2.0f;
 
 	color3.x = mColorEnd.x;
 	color3.y = mColorEnd.y;
@@ -110,10 +110,16 @@ void Particle::updateColor_()
 	color3.w = mAlpha.z;
 
 	mColor = InterpolateBezier(mRate, color1, color2, color3);
-	mVertices[0].color_ = Colour::getUint32(mColor);
-	mVertices[1].color_ = Colour::getUint32(mColor);
-	mVertices[2].color_ = Colour::getUint32(mColor);
-	mVertices[3].color_ = Colour::getUint32(mColor);
+	{
+		std::ostringstream ss;
+		ss<<mColor.w<<std::endl;
+		::OutputDebugString(ss.str().c_str());
+	}
+	u32 c = Colour::getUint32FromNormalised(mColor);
+	mVertices[0].color_ = c;
+	mVertices[1].color_ = c;
+	mVertices[2].color_ = c;
+	mVertices[3].color_ = c;
 }
 
 void Particle::updatePostion_(const Vector3& right, const Vector3& up, const Vector3& forword)
@@ -204,13 +210,13 @@ void Particle::updatePostion_(const Vector3& right, const Vector3& up, const Vec
 		Vector3 v1 = -right - up;
 		Vector3 v2 = right - up;
 		Vector3 v3 = right + up;
-		//绕vAxis旋转angle角度
-		Quaternion q;
-		q.fromAngleAxis(mAngle, forword);
 		//if(0)
 		{
 			Matrix ms;
 			ms.setScale(scale, scale, scale);
+			//绕vAxis旋转angle角度
+			Quaternion q;
+			q.fromAngleAxis(mAngle, forword);
 			Matrix mr;
 			mr.setRotate(&q);
 			Matrix m = mr * ms;
@@ -226,9 +232,9 @@ void Particle::updatePostion_(const Vector3& right, const Vector3& up, const Vec
 			mVertices[3].position_ = mPosition + v3;
 		}
 		//
-		std::ostringstream ss;
-		ss<<mPosition.x<<","<<mPosition.y<<","<<mPosition.z;
-		::OutputDebugString(ss.str().c_str());
+		//std::ostringstream ss;
+		//ss<<mPosition.x<<","<<mPosition.y<<","<<mPosition.z;
+		//::OutputDebugString(ss.str().c_str());
 	}
 	if(mEmitter->mTail)
 	{

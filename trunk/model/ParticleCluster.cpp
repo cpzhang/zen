@@ -20,15 +20,40 @@
 
 	void ParticleCluster::render()
 	{
-
-		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
-		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 		//
-		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ZENABLE, true);
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ZWRITEENABLE, false);
+		//
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+		//
+		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
 		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+		//
+		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+		//
+		switch(mEmitter->mBlendMode)
+		{
+		case 4:
+			{
+				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, false);
+				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+			}break;
+		case 2:
+			{
+				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, false);
+				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+			}break;
+		default:
+			break;
+		}
+		//
 		Matrix m = Matrix::Identity;
-		m.setScale(0.01f, 0.01f, 0.01f);
+		m.setScale(0.02f, 0.02f, 0.02f);
 		getRenderContex()->getDxDevice()->SetTransform(D3DTS_WORLD, &m);
 		getRenderContex()->getDxDevice()->SetTransform(D3DTS_VIEW, &getRenderContex()->getViewMatrix());
 		getRenderContex()->getDxDevice()->SetTransform(D3DTS_PROJECTION, &getRenderContex()->getProjectionMatrix());

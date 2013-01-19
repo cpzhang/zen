@@ -184,6 +184,9 @@ void ParticleEmitter::save( const tstring& fn )
 	addValue(doc, ele, "AttachEmitter", mAttatchEmitter);
 	addValue(doc, ele, "AspectRadio", mAspectRadio);
 
+	//
+	addValue(doc, ele, "BlendMode", mBlendMode);
+	//
 	addValue(doc, ele, "ChangeStyle", mChangeStyle);
 	addValue(doc, ele, "ChangeInterval", mChangeInterval);
 	addValue(doc, ele, "Cols", mCols);
@@ -256,6 +259,9 @@ bool ParticleEmitter::create( const tstring& resID )
 	getValue(ele, "AttachEmitter", mAttatchEmitter);
 	getValue(ele, "AspectRadio", mAspectRadio);
 
+	//
+	getValue(ele, "BlendMode", mBlendMode);
+	//
 	getValue(ele, "ChangeStyle", mChangeStyle);
 	getValue(ele, "ChangeInterval", mChangeInterval);
 	getValue(ele, "Cols", mCols);

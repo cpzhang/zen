@@ -94,18 +94,6 @@ public:
 	sKeyFrameSet<float>		FlowVKFs_;				/// 平移关键帧
 	sKeyFrameSet<Vector3>	ColorKFs_;				/// 颜色关键帧
 	sKeyFrameSet<float>		AlphaKFs_;				/// 透明度关键帧
-	//
-	//Matrix MatrixUV_;
-	//Vector4 TFactor_;
-	////
-	//float Angle_;
-	//float U_;
-	//float V_;
-	//AnimationTime AngleAT_;
-	//AnimationTime UAT_;
-	//AnimationTime VAT_;
-	//AnimationTime AlphaAT_;
-	//AnimationTime ColorAT_;
 	//序列图
 	int mRows;
 	int mCols;
@@ -117,4 +105,3 @@ public:
 	static bool tRSDIntialized_;
 };
 typedef std::vector<Material*> MaterialVec;
-//Create_Singleton_Declaration(MaterialManager, Material, ApiModel_)
