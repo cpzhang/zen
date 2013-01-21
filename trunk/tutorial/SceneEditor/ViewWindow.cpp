@@ -213,7 +213,8 @@ void ViewWindow::onIdle()
 	u32 clearFlags = D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER;
 	if ( getRenderContex()->isStencilAvailable() )
 		clearFlags |= D3DCLEAR_STENCIL;
-	getRenderContex()->getDxDevice()->Clear( 0, NULL, clearFlags, 0, 1, 0 );
+	static Vector4 scc(0.223f,0.427f,0.647f, 0.0f);
+	getRenderContex()->getDxDevice()->Clear( 0, NULL, clearFlags, scc.getARGB(), 1, 0 );
 	getRenderContex()->beginScene();
 	renderAxisXYZ();
 	//poem();

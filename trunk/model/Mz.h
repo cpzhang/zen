@@ -171,7 +171,7 @@ public:
 	void destroy();
 
 	size_t getSubMeshNumber();
-
+	size_t getParticleSystemNumber();
 	std::string getSubMeshName( size_t sub );
 
 	void decodeVersion( std::ifstream& f, int s );

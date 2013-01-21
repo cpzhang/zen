@@ -1634,6 +1634,10 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<bool> kf;
 		f.read((char*)&kf,sizeof(kf));
+		if (nKeyframes = 1 && kf.v == visible)
+		{
+			break;
+		}
 		pe.mVisibility.addKeyFrame(kf);
 	}
 	//speed
@@ -1643,6 +1647,10 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<float> kf;
 		f.read((char*)&kf,sizeof(kf));
+		if (nKeyframes = 1 && kf.v == speed)
+		{
+			break;
+		}
 		pe.mSpeedKFs.addKeyFrame(kf);
 	}
 	//variation
@@ -1652,6 +1660,10 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<float> kf;
 		f.read((char*)&kf,sizeof(kf));
+		if (nKeyframes = 1 && kf.v == variation)
+		{
+			break;
+		}
 		pe.mVariationKFs.addKeyFrame(kf);
 	}
 	//latitude
@@ -1661,6 +1673,10 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<float> kf;
 		f.read((char*)&kf,sizeof(kf));
+		if (nKeyframes = 1 && kf.v == coneAngle)
+		{
+			break;
+		}
 		pe.mLatitude.addKeyFrame(kf);
 	}
 	//gravity
@@ -1670,6 +1686,10 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<float> kf;
 		f.read((char*)&kf,sizeof(kf));
+		if (nKeyframes = 1 && kf.v == gravity)
+		{
+			break;
+		}
 		pe.mGravity.addKeyFrame(kf);
 	}
 	if (mVersion >= 17)
@@ -1681,6 +1701,10 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 		{
 			sKeyFrame<float> kf;
 			f.read((char*)&kf,sizeof(kf));
+			if (nKeyframes = 1 && kf.v == explosiveForce)
+			{
+				break;
+			}
 			pe.mExplosiveForce.addKeyFrame(kf);
 		}
 	}
@@ -1691,6 +1715,10 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<float> kf;
 		f.read((char*)&kf,sizeof(kf));
+		if (nKeyframes = 1 && kf.v == emissionRate)
+		{
+			break;
+		}
 		pe.mEmitRate.addKeyFrame(kf);
 	}
 	//width
@@ -1700,6 +1728,10 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<float> kf;
 		f.read((char*)&kf,sizeof(kf));
+		if (nKeyframes = 1 && kf.v == width)
+		{
+			break;
+		}
 		pe.mWidth.addKeyFrame(kf);
 	}
 	//length
@@ -1709,6 +1741,10 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<float> kf;
 		f.read((char*)&kf,sizeof(kf));
+		if (nKeyframes = 1 && kf.v == length)
+		{
+			break;
+		}
 		pe.mLength.addKeyFrame(kf);
 	}
 	if (mVersion >= 16)
@@ -1720,9 +1756,18 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 		{
 			sKeyFrame<float> kf;
 			f.read((char*)&kf,sizeof(kf));
+			if (nKeyframes = 1 && kf.v == height)
+			{
+				break;
+			}
 			pe.mHeigth.addKeyFrame(kf);
 		}
 	}
 	//
 	mParticleEmitter.push_back(pe);
+}
+
+size_t Mz::getParticleSystemNumber()
+{
+	return mParticleEmitter.size();
 }

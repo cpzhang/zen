@@ -12,7 +12,7 @@ public:
 	~ParticleCluster();
 public:
 	void render();
-	void update(float delta);
+	void update(float delta, const Matrix& m);
 	bool create(ParticleEmitter* e);
 	ParticleEmitter* getEmitter()
 	{

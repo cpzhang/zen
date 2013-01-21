@@ -99,18 +99,25 @@ void Particle::updateColor_()
 	color1.z = mColorStart.z;
 	color1.w = mAlpha.x;
 
-	color2.x = mColorMiddle.x * 2.0f;
-	color2.y = mColorMiddle.y * 2.0f;
-	color2.z = mColorMiddle.z * 2.0f;
-	color2.w = mAlpha.y * 2.0f;
+	color2.x = mColorMiddle.x;
+	color2.y = mColorMiddle.y;
+	color2.z = mColorMiddle.z;
+	color2.w = mAlpha.y;
 
 	color3.x = mColorEnd.x;
 	color3.y = mColorEnd.y;
 	color3.z = mColorEnd.z;
 	color3.w = mAlpha.z;
 
-	mColor = InterpolateBezier(mRate, color1, color2, color3);
+	if (mRate < mEmitter->mTime)
 	{
+		mColor = InterpolateBezier(mRate/mEmitter->mTime, color1, color2);
+	}
+	else
+	{
+		mColor = InterpolateBezier((mRate - mEmitter->mTime) / (1.0f - mEmitter->mTime), color2, color3);
+	}
+	if(0){
 		std::ostringstream ss;
 		ss<<mColor.w<<std::endl;
 		::OutputDebugString(ss.str().c_str());
@@ -186,11 +193,11 @@ void Particle::updatePostion_(const Vector3& right, const Vector3& up, const Vec
 			else
 			{
 				//mVelocity += (mPosition - vOrigin) * timeFactor * mExplosiveForce;
-				//mVelocity.y += (mGravity * timeFactor);
+				mVelocity.y += (mGravity * mDelta);
 				//mPosition += (mVelocity * timeFactor);
 				//重力导致的位移
-				float d = 0.5f * 9.8f * mAge * mAge;
-				mPosition.y -= d;
+				//float d = 0.5f * 9.8f * mAge * mAge;
+				mPosition += mVelocity;
 			}
 		}
 	}
@@ -216,7 +223,7 @@ void Particle::updatePostion_(const Vector3& right, const Vector3& up, const Vec
 			ms.setScale(scale, scale, scale);
 			//绕vAxis旋转angle角度
 			Quaternion q;
-			q.fromAngleAxis(mAngle, forword);
+			q.fromAngleAxis((mAngle + 90) * TwoPI / 360.f, forword);
 			Matrix mr;
 			mr.setRotate(&q);
 			Matrix m = mr * ms;

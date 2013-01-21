@@ -236,7 +236,7 @@ void EntityInstance::update( float delta )
 	for (size_t i = 0; i != Particles_.size(); ++i)
 	{
 		ParticleCluster& c = Particles_[i];
-		c.update(delta);
+		c.update(delta, Matrix::Identity);
 	}
 }
 void EntityInstance::updateMaterial_( float delta )

@@ -34,6 +34,9 @@
 		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 		//
+		getRenderContex()->getDxDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+		getRenderContex()->getDxDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+		//
 		switch(mEmitter->mBlendMode)
 		{
 		case 4:
@@ -76,7 +79,7 @@
 		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
 	}
 
-	void ParticleCluster::update(float delta)
+	void ParticleCluster::update( float delta, const Matrix& m )
 	{
 		Matrix view = getRenderContex()->getViewMatrix();
 		view.invert();

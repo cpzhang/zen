@@ -76,7 +76,7 @@ void ParticleEmitter::spawn(float delta, const AnimationTime& at, ParticleList& 
 			mtxY.make(Vector3::Zero, Vector3::One, q);
 		}
 		Matrix rot;
-		rot.multiply(mtxY, mtxX);
+		rot.multiply(mtxX, mtxY);
 		p.mVelocity = rot.applyVector(Vector3(0,1,0));
 		p.mVelocity.normalise();
 
@@ -234,6 +234,7 @@ void ParticleEmitter::save( const tstring& fn )
 	addKeyFrame<float>(doc, ele, "Gravity", mGravity);
 	addKeyFrame<float>(doc, ele, "Height", mHeigth);
 	addKeyFrame<float>(doc, ele, "Length", mLength);
+	addKeyFrame<float>(doc, ele, "Latitude", mLatitude);
 	addKeyFrame<float>(doc, ele, "Speed", mSpeedKFs);
 	addKeyFrame<float>(doc, ele, "Variation", mVariationKFs);
 	addKeyFrame<bool>(doc, ele,	 "Visibility", mVisibility);
@@ -308,6 +309,7 @@ bool ParticleEmitter::create( const tstring& resID )
 	getKeyFrame<float>(ele, "ExplosiveForce", mExplosiveForce);
 	getKeyFrame<float>(ele, "Gravity", mGravity);
 	getKeyFrame<float>(ele, "Height", mHeigth);
+	getKeyFrame<float>(ele, "Latitude", mLatitude);
 	getKeyFrame<float>(ele, "Length", mLength);
 	getKeyFrame<float>(ele, "Speed", mSpeedKFs);
 	getKeyFrame<float>(ele, "Variation", mVariationKFs);

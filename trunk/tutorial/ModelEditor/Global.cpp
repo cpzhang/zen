@@ -356,6 +356,16 @@ void decode(const std::string& name)
 			a->SetAttribute("file", meshPath.c_str());
 			ele->LinkEndChild(a);
 		}
+		for (int i = 0; i < tM.getParticleSystemNumber(); ++i)
+		{
+			tstring n = FileSystem::removeParent(fileName);
+			n = FileSystem::removeFileExtension(n);
+			std::ostringstream ss;
+			ss<<"particle/"<<n<<"_"<<i<<".particle";
+			tinyxml2::XMLElement* a = doc.NewElement("particle");
+			a->SetAttribute("file", ss.str().c_str());
+			ele->LinkEndChild(a);
+		}
 		{
 			tinyxml2::XMLElement* a = doc.NewElement("skeleton");
 			std::string meshPath;
@@ -427,6 +437,47 @@ void Global::setCurrentLayer( const tstring& name )
 				std::string meshPath;
 				meshPath += entityName;
 				meshPath += ".animation";
+				a->SetAttribute("file", meshPath.c_str());
+				ele->LinkEndChild(a);
+			}
+			doc.LinkEndChild(ele);
+			//
+			std::string path;// = exportPath + "/" + fileFinalName + ".entity";
+			{
+				path = FileSystem::getParent(name) + "/" + partName + "_t.entity";
+			}
+			//FileSystem::createFolder(path);
+			doc.SaveFile(path.c_str());
+			//
+			{
+				e.destroy();
+				e.create(path);
+				e.setAnimation("Run");
+				pi_ = &e;
+			}
+			::DeleteFile(path.c_str());
+		}
+	}
+	else if(suffix == ".particle")
+	{
+		// .entity 
+		{
+			tstring fileName = FileSystem::removeParent(name);
+			tstring partName = FileSystem::removeFileExtension(fileName);
+			tstring entityName = FileSystem::getParent(name);
+			entityName = FileSystem::removeParent(entityName);
+			//============================================================================
+			tinyxml2::XMLDocument doc;
+			// 
+			tinyxml2::XMLDeclaration* dec = doc.NewDeclaration("xml version=\"1.0\"");
+			doc.LinkEndChild(dec);
+			//
+			tinyxml2::XMLElement* ele = doc.NewElement("entity");
+			ele->SetAttribute("name", partName.c_str());
+			{
+				tinyxml2::XMLElement* a = doc.NewElement("particle");
+				std::string meshPath("particle/");
+				meshPath += fileName;
 				a->SetAttribute("file", meshPath.c_str());
 				ele->LinkEndChild(a);
 			}
