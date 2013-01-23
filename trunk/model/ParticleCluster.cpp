@@ -2,6 +2,7 @@
 #include "ParticleEmitter.h"
 #include "render/TextureManager.h"
 #include "render/rendercontext.h"
+#include "BoneNode.h"
 //#include "Material.h"
 //#include "Effect.h"
 //#include "TextureManager.h"
@@ -119,6 +120,7 @@
 	{
 		mTexture = NULL;
 		mEmitter = NULL;
+		mBoneID = Bone::tInvalidID;
 	}
 
 	bool ParticleCluster::create( ParticleEmitter* e )

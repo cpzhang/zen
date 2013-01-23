@@ -22,6 +22,7 @@ public:
 	virtual BoneNode* createBoneNode(const std::string& name);
 	virtual u16 getNumBoneNodes(void) const;
 	virtual BoneNode* getBoneNode(const std::string& name);
+	virtual int getBoneID(const std::string& name);
 	virtual bool      hasBoneNode(const std::string& name);
 public:
 	virtual bool create(const tstring& resID);

@@ -44,6 +44,14 @@ bool Entity::create( const tstring& resourceId )
 	{
 		std::string subEntityFileName = tex->Attribute("file");
 		NameParticles_.push_back(FileSystem::getDataDirectory() + "/" + subEntityFileName);
+		//
+		{
+			const char* n = tex->Attribute("bone");
+			if (NULL != n)
+			{
+				NameParticleBones_.push_back(n);
+			}
+		}
 		tex = tex->NextSiblingElement("particle");
 	}
 	
@@ -78,6 +86,11 @@ size_t Entity::getParticleNumber()
 const tstring& Entity::getParticleName( const size_t index )
 {
 	return NameParticles_[index];
+}
+
+const tstring& Entity::getParticleBoneName( const size_t index )
+{
+	return NameParticleBones_[index];
 }
 
 //Create_Singleton_Imp(EntityManager, ApiModel_)

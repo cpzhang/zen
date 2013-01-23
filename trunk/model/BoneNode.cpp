@@ -87,3 +87,5 @@ BoneNode* BoneNode::getParentNode()
 {
 	return _parent;
 }
+
+const int Bone::tInvalidID(-2);

@@ -21,6 +21,7 @@ public:
 	int		id;
 	int     parent;
 	std::string name;
+	static const int tInvalidID;
 };
 
 class Skeleton;

@@ -148,6 +148,10 @@ bool EntityInstance::create( const tstring& resourceId )
 		p->addReference();
 		ParticleCluster c;
 		c.create(p);
+		if (!Skeleton_->_matrices.empty())
+		{
+			c.setBoneID(Skeleton_->getBoneID(Entity_->getParticleBoneName(i)));
+		}
 		Particles_.push_back(c);
 	}
 	return true;
@@ -236,7 +240,14 @@ void EntityInstance::update( float delta )
 	for (size_t i = 0; i != Particles_.size(); ++i)
 	{
 		ParticleCluster& c = Particles_[i];
-		c.update(delta, Matrix::Identity);
+		if (Skeleton_->_matrices.empty())
+		{
+			c.update(delta, Matrix::Identity);
+		}
+		else
+		{
+			c.update(delta, Skeleton_->_matricesFull[c.getBoneID()]);
+		}
 	}
 }
 void EntityInstance::updateMaterial_( float delta )

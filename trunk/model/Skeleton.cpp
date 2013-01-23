@@ -311,3 +311,12 @@ const tstring& Skeleton::getSkin( const tstring& skinAnimationName, AnimationTim
 	at.end = a->duration;
 	return a->skinFilePath;
 }
+
+int Skeleton::getBoneID( const std::string& name )
+{
+	if (_boneNodes.find(name) == _boneNodes.end())
+	{
+		return Bone::tInvalidID;
+	}
+	return _boneNodes[name]->getBone()->id;
+}

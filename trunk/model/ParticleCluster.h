@@ -18,6 +18,14 @@ public:
 	{
 		return mEmitter;
 	}
+	void setBoneID(int id)
+	{
+		mBoneID = id;
+	}
+	int getBoneID()
+	{
+		return mBoneID;
+	}
 	void destroy();
 private:
 	void _clear();
@@ -28,6 +36,7 @@ private:
 	IMaterial* mMaterial;
 	Matrix mPVW;
 	AnimationTime mAT;
+	int mBoneID;
 };
 
 typedef std::vector<ParticleCluster> ParticleClusterVec;

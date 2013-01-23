@@ -24,6 +24,7 @@ public:
 	//
 	size_t getParticleNumber();
 	const tstring& getParticleName(const size_t index);
+	const tstring& getParticleBoneName(const size_t index);
 public:
 	static Entity* getNullObject()
 	{
@@ -37,6 +38,7 @@ private:
 	tstring FileName_;
 	tstring NameSkeleton_;
 	tstringVec NameParticles_;
+	tstringVec NameParticleBones_;
 };
 
 //Create_Singleton_Declaration(EntityManager, Entity, ApiModel_)

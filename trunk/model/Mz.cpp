@@ -1634,7 +1634,7 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<bool> kf;
 		f.read((char*)&kf,sizeof(kf));
-		if (nKeyframes = 1 && kf.v == visible)
+		if (1 == nKeyframes && kf.v == visible)
 		{
 			break;
 		}
@@ -1647,7 +1647,7 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<float> kf;
 		f.read((char*)&kf,sizeof(kf));
-		if (nKeyframes = 1 && kf.v == speed)
+		if (1 == nKeyframes && kf.v == speed)
 		{
 			break;
 		}
@@ -1660,7 +1660,7 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<float> kf;
 		f.read((char*)&kf,sizeof(kf));
-		if (nKeyframes = 1 && kf.v == variation)
+		if (1 == nKeyframes && kf.v == variation)
 		{
 			break;
 		}
@@ -1673,7 +1673,7 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<float> kf;
 		f.read((char*)&kf,sizeof(kf));
-		if (nKeyframes = 1 && kf.v == coneAngle)
+		if (1 == nKeyframes && kf.v == coneAngle)
 		{
 			break;
 		}
@@ -1686,7 +1686,7 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<float> kf;
 		f.read((char*)&kf,sizeof(kf));
-		if (nKeyframes = 1 && kf.v == gravity)
+		if (1 == nKeyframes && kf.v == gravity)
 		{
 			break;
 		}
@@ -1701,7 +1701,7 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 		{
 			sKeyFrame<float> kf;
 			f.read((char*)&kf,sizeof(kf));
-			if (nKeyframes = 1 && kf.v == explosiveForce)
+			if (1 == nKeyframes && kf.v == explosiveForce)
 			{
 				break;
 			}
@@ -1715,7 +1715,7 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<float> kf;
 		f.read((char*)&kf,sizeof(kf));
-		if (nKeyframes = 1 && kf.v == emissionRate)
+		if (1 == nKeyframes && kf.v == emissionRate)
 		{
 			break;
 		}
@@ -1728,7 +1728,7 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<float> kf;
 		f.read((char*)&kf,sizeof(kf));
-		if (nKeyframes = 1 && kf.v == width)
+		if (1 == nKeyframes && kf.v == width)
 		{
 			break;
 		}
@@ -1741,7 +1741,7 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	{
 		sKeyFrame<float> kf;
 		f.read((char*)&kf,sizeof(kf));
-		if (nKeyframes = 1 && kf.v == length)
+		if (1 == nKeyframes && kf.v == length)
 		{
 			break;
 		}
@@ -1756,7 +1756,7 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 		{
 			sKeyFrame<float> kf;
 			f.read((char*)&kf,sizeof(kf));
-			if (nKeyframes = 1 && kf.v == height)
+			if (1 == nKeyframes && kf.v == height)
 			{
 				break;
 			}
@@ -1770,4 +1770,9 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 size_t Mz::getParticleSystemNumber()
 {
 	return mParticleEmitter.size();
+}
+
+tstring Mz::getParticleSystemBone( size_t index )
+{
+	return mParticleEmitter[index].mBoneName;
 }

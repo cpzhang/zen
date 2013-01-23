@@ -172,6 +172,7 @@ public:
 
 	size_t getSubMeshNumber();
 	size_t getParticleSystemNumber();
+	tstring getParticleSystemBone(size_t index);
 	std::string getSubMeshName( size_t sub );
 
 	void decodeVersion( std::ifstream& f, int s );

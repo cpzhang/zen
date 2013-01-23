@@ -291,45 +291,45 @@ void decode(const std::string& name)
 	Mesh m;
 	std::string skeletonPath;
 	std::string skinPath;
+	//
+	{
+		//
+		skeletonPath = exportPath + "/" + fileFinalName + ".skeleton";
+		FileSystem::createFolder(skeletonPath);
+		tM.saveSkeleton(skeletonPath);
+		//
+		std::string materialPath = exportPath + "/";
+		FileSystem::createFolder(materialPath);
+		materialPath = FileSystem::standardFilePath(materialPath);
+		tM.saveMaterial(materialPath);
+		//
+		{
+			std::string animationsPath = exportPath + "/";
+			FileSystem::createFolder(animationsPath);
+			animationsPath += fileFinalName;
+			animationsPath += ".animation";
+			animationsPath = FileSystem::standardFilePath(animationsPath);
+			tM.saveAnimation(animationsPath);
+		}
+		//
+		{
+			std::string animationsPath = exportPath + "/";
+			FileSystem::createFolder(animationsPath);
+			tM.saveSubEntity(animationsPath);
+		}
+		//
+		{
+			skinPath = exportPath + "/";
+			FileSystem::createFolder(skinPath);
+			tM.saveSkin(skinPath);
+		}
+	}
 	for (int i = 0; i < tM.getSubMeshNumber(); ++i)
 	{
 		tM.create(i, &m);
 		std::string path = exportPath + "/" + tM.getSubMeshName(i) + ".mesh";
 		FileSystem::createFolder(path);
 		m.save(path);
-		//
-		if(i == 0)
-		{
-			skeletonPath = exportPath + "/" + fileFinalName + ".skeleton";
-			FileSystem::createFolder(skeletonPath);
-			tM.saveSkeleton(skeletonPath);
-			//
-			std::string materialPath = exportPath + "/";
-			FileSystem::createFolder(materialPath);
-			materialPath = FileSystem::standardFilePath(materialPath);
-			tM.saveMaterial(materialPath);
-			//
-			{
-				std::string animationsPath = exportPath + "/";
-				FileSystem::createFolder(animationsPath);
-				animationsPath += fileFinalName;
-				animationsPath += ".animation";
-				animationsPath = FileSystem::standardFilePath(animationsPath);
-				tM.saveAnimation(animationsPath);
-			}
-			//
-			{
-				std::string animationsPath = exportPath + "/";
-				FileSystem::createFolder(animationsPath);
-				tM.saveSubEntity(animationsPath);
-			}
-			//
-			{
-				skinPath = exportPath + "/";
-				FileSystem::createFolder(skinPath);
-				tM.saveSkin(skinPath);
-			}
-		}
 		std::string bmPath = exportPath + "/" + tM.getSubMeshName(i) + ".boneMapping";
 		FileSystem::createFolder(bmPath);
 		m.saveBoneMapping(bmPath, &tM);
@@ -364,6 +364,7 @@ void decode(const std::string& name)
 			ss<<"particle/"<<n<<"_"<<i<<".particle";
 			tinyxml2::XMLElement* a = doc.NewElement("particle");
 			a->SetAttribute("file", ss.str().c_str());
+			a->SetAttribute("bone", tM.getParticleSystemBone(i).c_str());
 			ele->LinkEndChild(a);
 		}
 		{
