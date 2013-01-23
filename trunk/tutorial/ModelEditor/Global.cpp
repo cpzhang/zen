@@ -58,8 +58,13 @@ bool Global::create()
 
 void Global::destroy()
 {
+	if (pi_)
+	{
+		delete pi_;
+		pi_ = NULL;
+	}
 	//destroySkeletonManager();
-//	destroyEntityManager();
+	//	destroyEntityManager();
 	//destroyMeshManager();
 	//destroyMaterialManager();
 	//destroyPartManager();
@@ -72,8 +77,10 @@ void Global::destroy()
 	//
 	destroyStateManager();
 	//
-	destroyLuaScript();
+	ModelResManager::getInstance()->destroy();
 	//
+	destroyLuaScript();
+	//在此以前，把VB 纹理等显存资源释放干净
 	if (getRenderContex())
 	{
 		destroyRenderContex();

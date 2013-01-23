@@ -980,6 +980,12 @@ void Mz::decodeSubMesh( std::ifstream& f, int s )
 
 void Mz::decodeVertices( std::ifstream& f, int s )
 {
+	if (mVersion >= 30)
+	{
+		u8 vt;
+		f>>vt;
+		--s;
+	}
 	bool useVertexColor = false;
 	if (mVersion >= 15)
 	{

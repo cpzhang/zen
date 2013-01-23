@@ -14,6 +14,10 @@ class Skeleton;
 class ApiModel_ EntityInstance : public IRender
 {
 public:
+	~EntityInstance()
+	{
+		destroy();
+	}
 	EntityInstance()
 	{
 		SkinCurrent_ = NULL;

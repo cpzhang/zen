@@ -39,7 +39,7 @@ void Particle::update(float delta, const Vector3& right, const Vector3& up, cons
 
 bool Particle::isAlive()
 {
-	return (mAge <= mLife) && (mLife > 0.0001f);
+	return (mAge <= mLife) && (mLife > 0.00001f);
 }
 
 void Particle::_clear()
@@ -194,10 +194,7 @@ void Particle::updatePostion_(const Vector3& right, const Vector3& up, const Vec
 			{
 				//mVelocity += (mPosition - vOrigin) * timeFactor * mExplosiveForce;
 				mVelocity.y += (mGravity * mDelta);
-				//mPosition += (mVelocity * timeFactor);
-				//重力导致的位移
-				//float d = 0.5f * 9.8f * mAge * mAge;
-				mPosition += mVelocity;
+				mPosition += (mVelocity * mDelta);
 			}
 		}
 	}

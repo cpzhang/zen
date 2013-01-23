@@ -45,7 +45,6 @@ bool Skin::create( const std::string& fileName )
 			}break;
 		case 'MBON': // นว๗ภ
 			{
-				Skin k;
 				u32 numBones;
 				f.read((char*)&numBones,sizeof(numBones));
 				for (u32 i = 0;i < numBones;i++)

@@ -62,6 +62,16 @@ class ModelResManager
 public:
 	~ModelResManager()
 	{
+		
+	}
+public:
+	static ModelResManager* getInstance()
+	{
+		static ModelResManager s;
+		return &s;
+	}
+	void destroy()
+	{
 		ResHashMap::iterator it = Res_.begin();
 		while(it != Res_.end())
 		{
@@ -75,12 +85,6 @@ public:
 			++it;
 		}
 		Res_.clear();
-	}
-public:
-	static ModelResManager* getInstance()
-	{
-		static ModelResManager s;
-		return &s;
 	}
 public:
 	template<class T>
