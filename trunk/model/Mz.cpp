@@ -1004,7 +1004,33 @@ void Mz::decodeVertices( std::ifstream& f, int s )
 			while (s > 0)
 			{
 				f.read((char*)&v3, sizeof(sVertex_V3Color));
+				//
+				if (0)
+				{
+					mVertices[i].bones[0] = v3.bones[0];
+					mVertices[i].bones[1] = v3.bones[1];
+					mVertices[i].bones[2] = v3.bones[2];
+					mVertices[i].bones[3] = v3.bones[3];
+					//
+					mVertices[i].weights[0] = v3.weights[0];
+					mVertices[i].weights[1] = v3.weights[1];
+					mVertices[i].weights[2] = v3.weights[2];
+					mVertices[i].weights[3] = v3.weights[3];
+					//
+					mVertices[i].color[0] = v3.color[0];
+					mVertices[i].color[1] = v3.color[1];
+					mVertices[i].color[2] = v3.color[2];
+					mVertices[i].color[3] = v3.color[3];
+					//
+					mVertices[i].normal[0] = v3.normal[0];
+					mVertices[i].normal[1] = v3.normal[1];
+					mVertices[i].normal[2] = v3.normal[2];
+					//
+					mVertices[i].pos[0] = v3.pos[0];
+				}
 				mVertices[i] = v3;
+				
+				//
 				s -= sizeof(sVertex_V3Color);
 				++i;
 			}

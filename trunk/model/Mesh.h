@@ -36,6 +36,7 @@ public:
 	bool createFromMZ(size_t sub, Mz* mz);
 	void clear();
 	void render();
+	void render(const std::vector<Matrix>& ms);
 	int getFaceNumber();
 	int getVertexNumber();
 	int getVersion();
@@ -74,6 +75,7 @@ public:
 	typedef std::vector<sFace> FaceVec;
 	FaceVec	_faces;
 	VertexBuffer vertexBuffer_;
+	VertexBuffer vertexBufferHW_;
 	IndexBuffer indexBuffer_;
 	std::string _name;
 	tstring filePath_;

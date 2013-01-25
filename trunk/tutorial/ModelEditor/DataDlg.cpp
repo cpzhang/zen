@@ -43,7 +43,7 @@ LRESULT DataDlg::OnFileItemSelected( UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
 }
 
 
-void DataDlg::onIdle()
+void DataDlg::onIdle(const float delta)
 {
 }
 

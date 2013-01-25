@@ -23,7 +23,7 @@
 	{
 		//
 		//getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ZENABLE, true);
-		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 		//
 		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
@@ -41,24 +41,33 @@
 		//
 		switch(mEmitter->mBlendMode)
 		{
-		case 4:
-			{
-				//getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, false);
-				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-			}break;
 		case 2:
 			{
 				//getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, false);
 				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 			}break;
+		case 3:
+			{
+				//getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, false);
+				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+			}break;
+		case 4:
+			{
+				//getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, false);
+				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+			}break;
 		default:
-			break;
+			{
+				breakable;
+				break;
+			}
 		}
 		//
 		Matrix m = Matrix::Identity;
-		m.setScale(0.02f, 0.02f, 0.02f);
+		m.setScale(0.01f, 0.01f, 0.01f);
 		getRenderContex()->getDxDevice()->SetTransform(D3DTS_WORLD, &m);
 		getRenderContex()->getDxDevice()->SetTransform(D3DTS_VIEW, &getRenderContex()->getViewMatrix());
 		getRenderContex()->getDxDevice()->SetTransform(D3DTS_PROJECTION, &getRenderContex()->getProjectionMatrix());
@@ -80,14 +89,14 @@
 		//
 		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 		getRenderContex()->getDxDevice()->SetTexture(0, NULL);
-		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
 		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 	}
 
-	void ParticleCluster::update( float delta, const Matrix& m )
+	void ParticleCluster::update( float delta, const Matrix& m)
 	{
 		Matrix view = getRenderContex()->getViewMatrix();
 		view.invert();
@@ -117,8 +126,8 @@
 		}
 
 		//
-		mAT.update(delta * 0.001f);
-		mEmitter->spawn(delta, mAT, mParticles);
+		mAT.update(delta/* * 0.001f*/);
+		mEmitter->spawn(delta, mAT, mParticles, m);
 		//
 		//mPVW = cam->getProjectionMatrix() * cam->getViewMatrix();
 	}
@@ -142,32 +151,8 @@
 		{
 			return false;
 		}
-		mAT.end = mEmitter->mTime;
-// 		mMaterial = MaterialManager::getInstancePtr()->createMaterial(eMaterialType_Vertex);
-// 		if (NULL == mMaterial)
-// 		{
-// 			return false;
-// 		}
-// 		mMaterial->mVertexDeclaration = eVertexDeclarationType_PositionColorTexture;
-// 		mMaterial->setEffect("shader/Particle.fx");
-// 		if (NULL == mMaterial->getEffect())
-// 		{
-// 			return false;
-// 		}
-// 		mMaterial->mZEnable = eZBufferType_True;
-// 		//需要alpha blend，必须关掉Z Write Enable
-// 		mMaterial->mZWriteEnable = false;
-// 		switch(e->mBlendMode)
-// 		{
-// 		case 3:
-// 		case 4:
-// 			{
-// 				mMaterial->mSrcBlend = D3DBLEND_SRCALPHA;
-// 				mMaterial->mDestBlend = D3DBLEND_ONE;
-// 				mMaterial->mAlphaTestEnable = false;
-// 			}
-// 			break;
-// 		}
+		//换成毫秒
+		mAT.end = 2208;//mEmitter->mTime * 1000.0f;
 		return true;
 	}
 

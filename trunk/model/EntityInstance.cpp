@@ -77,7 +77,7 @@ void EntityInstance::render()
 				for (int p = 0; p != passes; ++p)
 				{
 					ef->BeginPass(p);
-					ms->render();
+					ms->render(matrices);
 					ef->EndPass();
 				}
 			}

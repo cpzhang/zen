@@ -25,11 +25,13 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE , LPTSTR lpstrCmdLine, int n
 		}
 		else
 		{
+			//Retrieves the number of milliseconds that have elapsed since the system was started, up to 49.7 days.
 			static float lastTick = GetTickCount();
 			float currentTick = GetTickCount();
-			if (currentTick - lastTick >= 33.33f)
+			float delta = currentTick - lastTick;
+			if (delta >= 33.33f)
 			{
-				mw.onIdle();
+				mw.onIdle(delta);
 				lastTick = currentTick;
 			}
 		}

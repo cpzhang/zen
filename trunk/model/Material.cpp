@@ -227,8 +227,20 @@ void Material::apply(const Matrix& uvMat, const Vector4& tf)
 		//
 		if (RotationKFs_.numKeyFrames() > 0 || FlowUKFs_.numKeyFrames() > 0 || FlowVKFs_.numKeyFrames() > 0 || mRows > 1 || mCols > 1)
 		{
-			//dx->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
-			dx->SetTransform(D3DTS_TEXTURE0, &uvMat);
+			if (getFxManager()->getShaderType() == eFx_Shader0)
+			{
+
+			}
+			else
+			{
+				dx->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
+			}
+			//dx->SetTransform(D3DTS_TEXTURE0, &uvMat);
+			Fx_->getDxEffect()->SetMatrix("gUV", &uvMat);
+		}
+		else
+		{
+			Fx_->getDxEffect()->SetMatrix("gUV", &Matrix::Identity);
 		}
 		if (!AlphaKFs_.empty() || !ColorKFs_.empty())
 		{

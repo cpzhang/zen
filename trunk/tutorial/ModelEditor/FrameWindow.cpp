@@ -64,10 +64,10 @@ LRESULT FrameWindow::OnNewscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndC
 	return 0;
 }
 
-void FrameWindow::onIdle()
+void FrameWindow::onIdle(const float delta)
 {
 	UIUpdateToolBar(FALSE);
-	canvas_.onIdle();
+	canvas_.onIdle(delta);
 }
 
 void FrameWindow::onRefreshLuaScript()

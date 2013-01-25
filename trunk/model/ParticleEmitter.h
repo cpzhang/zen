@@ -109,7 +109,7 @@ public:
 		return &s;
 	}
 public:
-	void spawn(float delta, const AnimationTime& at, ParticleList& ps);
+	void spawn(float delta, const AnimationTime& at, ParticleList& ps, const Matrix& m);
 	template<class T>
 	void addKeyFrame(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* ele, const tstring& name, const sKeyFrameSet<T>& kfs)
 	{

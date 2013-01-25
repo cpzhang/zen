@@ -156,7 +156,7 @@ void renderAxisXYZ()
 	renderAxis(Colour::Blue, Vector3::AxisZ);
 }
 
-void ViewWindow::onIdle()
+void ViewWindow::onIdle(const float delta)
 {
 	if (NULL == getRenderContex())
 	{
@@ -197,10 +197,6 @@ void ViewWindow::onIdle()
 		getSceneManager()->setAllChunksVisible(true);
 	}
 	//
-	static float lastTick = GetTickCount();
-	float currentTick = GetTickCount();
-	float delta = currentTick - lastTick;
-	lastTick = currentTick;
 	camera_.update(delta);
 	getSceneManager()->update();
 	{

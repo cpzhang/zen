@@ -12,6 +12,9 @@ typedef unsigned __int32	u32;
 typedef __int64				s64;
 typedef unsigned __int64	u64;
 
+// …Ë÷√∂œµ„
+#define	breakable		switch(1) case 1: default:
+
 #define safeDelete(x) if((x)!=NULL){delete (x); (x) = NULL;}
 
 ApiMisc_ bool isKeyDown(int vk);

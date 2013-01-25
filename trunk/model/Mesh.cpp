@@ -86,6 +86,7 @@ bool Mesh::createFromMZ(size_t sub, Mz* mz)
 void Mesh::destroy()
 {
 	vertexBuffer_.destroy();
+	vertexBufferHW_.destroy();
 	indexBuffer_.destroy();
 	clear();
 }
@@ -106,6 +107,11 @@ bool Mesh::initBuffer_()
 		BufferLocker<VertexBuffer, sVDT_PositionTextureBoneWeightColorNormal> vl(vertexBuffer_);
 		vl.fill(&_vertices[0], _vertices.size()*sVDT_PositionTextureBoneWeightColorNormal::getSize());
 	}
+	{
+		vertexBufferHW_.create(_vertices.size() * sVDT_PositionTextureBoneWeightColorNormal::getSize(),0, 0, D3DPOOL_MANAGED);
+		BufferLocker<VertexBuffer, sVDT_PositionTextureBoneWeightColorNormal> vl(vertexBufferHW_);
+		vl.fill(&_vertices[0], _vertices.size()*sVDT_PositionTextureBoneWeightColorNormal::getSize());
+	}
 	//
 	{
 		indexBuffer_.create(_faces.size() * sizeof(sFace), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED);
@@ -118,9 +124,40 @@ bool Mesh::initBuffer_()
 
 void Mesh::render()
 {
+	vertexBufferHW_.apply(0, 0, sVDT_PositionTextureBoneWeightColorNormal::getSize());
+	indexBuffer_.apply();
+ 	getRenderContex()->setVertexDeclaration(sVDT_PositionTextureBoneWeightColorNormal::getType());
+	getRenderContex()->drawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, _vertices.size(), 0, _faces.size());
+}
+
+void Mesh::render( const std::vector<Matrix>& ms )
+{
+	if (ms.empty())
+	{
+		return render();
+	}
+	VertexPTBWCVec tvs(_vertices);
+	{
+		for (size_t i = 0; i != tvs.size(); ++i)
+		{
+			sVDT_PositionTextureBoneWeightColorNormal& p = tvs[i];
+			Vector3 t = Vector3::Zero; 
+			for (size_t k = 0; k != 4; ++k)
+			{
+				if (p.weights_[k] < 0.00001f)
+				{
+					break;
+				}
+				t += ms[p.bones_[k]].applyVector(p.position_) * p.weights_[k];
+			}
+			p.position_ = t;
+		}
+		BufferLocker<VertexBuffer, sVDT_PositionTextureBoneWeightColorNormal> vl(vertexBuffer_);
+		vl.fill(&tvs[0], tvs.size()*sVDT_PositionTextureBoneWeightColorNormal::getSize());
+	}
 	vertexBuffer_.apply(0, 0, sVDT_PositionTextureBoneWeightColorNormal::getSize());
 	indexBuffer_.apply();
- 	getRenderContex()->setVertexDeclaration(vdt_);
+	getRenderContex()->setVertexDeclaration(sVDT_PositionTextureBoneWeightColorNormal::getType());
 	getRenderContex()->drawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, _vertices.size(), 0, _faces.size());
 }
 

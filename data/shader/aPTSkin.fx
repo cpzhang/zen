@@ -2,7 +2,13 @@
 #include "std.fxh"
 // This is used by 3dsmax to load the correct parser
 string ParamID = "0x0001";
-
+float4x4 gUV= 
+{
+1,0,0,0,
+0,1,0,0,
+0,0,1,0,
+0,0,0,1
+};
 struct VS_INPUT
 {
   float4 Pos  : POSITION;
@@ -16,7 +22,7 @@ struct VS_OUTPUT
 {
   float4 Pos  : POSITION;
   float2 Tex : TEXCOORD0;
-  //float4 Color : COLOR0;
+  float4 Color : COLOR0;
   //float4 LightColor : COLOR1;
   //float4 vPosLight : TEXCOORD1;
 };
@@ -43,16 +49,11 @@ VS_OUTPUT VS(VS_INPUT ip)
 	p = mul(p, gView);
 	VS_OUTPUT op;
 	op.Pos = mul(p, gProjection);
-	op.Tex  = ip.Tex;
+	op.Tex  = mul(float4(ip.Tex, 1.0, 0.0), gUV);
+	op.Color = ip.Color;
 	return op;
 }
-float4x4 gUV= 
-{
-1,0,0,0,
-0,1,0,0,
-0,0,1,0,
-0,0,0,1
-};
+
 float4 g_TFactor = {1.0, 1.0, 1.0, 1.0};
 texture g_Texture0 < 
 string UIName = "Texture0";
@@ -76,6 +77,7 @@ technique T0
       WorldTransform[0] = <gWorld>;
       ViewTransform = <gView>;
       ProjectionTransform = <gProjection>;
+	  TextureTransform[0] = <gUV>;
 
       Texture[0] = <g_Texture0>;
 

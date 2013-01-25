@@ -9,7 +9,7 @@ ParticleEmitter::~ParticleEmitter()
 	_clear();
 }
 
-void ParticleEmitter::spawn(float delta, const AnimationTime& at, ParticleList& ps)
+void ParticleEmitter::spawn(float delta, const AnimationTime& at, ParticleList& ps, const Matrix& m)
 {
 	if (!mVisibility.getFrame(at.current))
 	{
@@ -18,9 +18,9 @@ void ParticleEmitter::spawn(float delta, const AnimationTime& at, ParticleList& 
 	//»»Ëã³ÉÃë
 	float timeFactor = delta / 1000.0f;
 	mCurrentEmission += mEmitRate.getFrame(at) * timeFactor;
-	for (; mCurrentEmission > 0.0f; mCurrentEmission -= 1.0f)
+	while(mCurrentEmission >= 1.0f)
 	{
-		if (ps.size() >= mLimitNumber)
+		if (ps.size() >= mLimitNumber /*|| !ps.empty()*/)
 		{
 			return;
 		}
@@ -60,6 +60,7 @@ void ParticleEmitter::spawn(float delta, const AnimationTime& at, ParticleList& 
 		speed *= (1.0f + randomReal(0.0f, variation));
 
 		p.mPosition = Vector3(randomReal(-width,width), randomReal(-height,height), randomReal(-length,length));
+		p.mPosition = m.applyVector(p.mPosition);
 		p.mOriginalPosition = p.mPosition;
 
 		Matrix mtxX;
@@ -79,6 +80,7 @@ void ParticleEmitter::spawn(float delta, const AnimationTime& at, ParticleList& 
 		rot.multiply(mtxX, mtxY);
 		p.mVelocity = rot.applyVector(Vector3(0,1,0));
 		p.mVelocity.normalise();
+		p.mVelocity = m.applyVectorNormal(p.mVelocity);
 
 		p.mVelocity *= speed;
 
@@ -155,6 +157,8 @@ void ParticleEmitter::spawn(float delta, const AnimationTime& at, ParticleList& 
 		}
 		//
 		ps.push_back(p);
+		//
+		mCurrentEmission -= 1.0f;
 	}
 }
 

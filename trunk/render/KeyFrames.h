@@ -75,7 +75,7 @@ public:
 	/// Static
 	bool					_bStatic;
 	T						_staticData;
-	AnimationTime			_at;
+	//AnimationTime			_at;
 public:
 	void clear()
 	{
@@ -106,12 +106,16 @@ public:
 	{
 		_keyFrames.push_back(keyFrame);
 		_bStatic = false;
-		_at.end = keyFrame.time;
+		//_at.end = keyFrame.time;
 	}
-	u32 getTotalTime()
-	{
-		return _at.end;
-	}
+ 	u32 getTotalTime()
+ 	{
+		if (_keyFrames.empty())
+		{
+			return 0;
+		}
+ 		return _keyFrames[_keyFrames.size() - 1].time;
+ 	}
 	void sort()
 	{
 		if (_keyFrames.size() > 1)
@@ -141,23 +145,23 @@ public:
 		{
 			return _keyFrames[0].v;
 		}
+		//
 		size_t size = _keyFrames.size();
-		size_t b = 0;
 		size_t e = _keyFrames.size() - 1;
-		u32 time = t % (u32)_at.end;
-		if (time == b)
+		if (t <= _keyFrames[0].time)
 		{
-			return _keyFrames[b].v;
+			return _keyFrames[0].v;
 		}
-		if (time == e)
+		if (t >= _keyFrames[e].time)
 		{
 			return _keyFrames[e].v;
 		}
+		size_t b = 0;
 		//¶þ·Ö²éÕÒ
 		while(b < e)
 		{
 			int middle = ((b + e) >> 1);
-			if (time == middle)
+			if (t == middle)
 			{
 				return _keyFrames[middle].v;
 			}
@@ -165,7 +169,7 @@ public:
 			{
 				break;
 			}
-			if(time > _keyFrames[b].time && time < _keyFrames[middle].time)
+			if(t > _keyFrames[b].time && t < _keyFrames[middle].time)
 			{
 				e = middle;
 			}
@@ -174,7 +178,7 @@ public:
 				b = middle;
 			}
 		}
-		float r = (float)(time - _keyFrames[b].time) / (float)(_keyFrames[e].time - _keyFrames[b].time);
+		float r = (float)(t - _keyFrames[b].time) / (float)(_keyFrames[e].time - _keyFrames[b].time);
 		T d;
 		switch(_interpolationType)
 		{
@@ -187,6 +191,11 @@ public:
 		case eInterpolationType_Bezier_Cubic:
 //			d = InterpolateBezier(r,_keyFrames[b].v, _keyFrames[e].v);
 			break;
+		default:
+			{
+				d = InterpolateBezier(r,_keyFrames[b].v, _keyFrames[e].v);
+				break;
+			}
 		}
 
 		return d;

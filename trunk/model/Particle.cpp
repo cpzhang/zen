@@ -34,7 +34,18 @@ void Particle::update(float delta, const Vector3& right, const Vector3& up, cons
 	mDeltaTime += mDelta;
 	updateUV_();
 	updateColor_();
-	updatePostion_(right, up, forword);
+	if (0)
+	{
+		Vector3 r, u;
+		u = Vector3::AxisY;
+		r.crossProduct(u, forword);
+		u.crossProduct(forword, r);
+		updatePostion_(r, u, forword);
+	} 
+	else
+	{
+		updatePostion_(right, up, forword);
+	}
 }
 
 bool Particle::isAlive()
@@ -207,20 +218,64 @@ void Particle::updatePostion_(const Vector3& right, const Vector3& up, const Vec
 	}
 	//然后，以中心为坐标原点，以摄像机的基，构建正方形，旋转缩放之
 	mAngle += mRotateSpeed * mDelta;
-	float scale = InterpolateBezier(mRate, mScale.x, mScale.y, mScale.z);
+	float scale;// = InterpolateBezier(mRate, mScale.x, mScale.y, mScale.z);
+	//
+	{
+		if (mRate < mEmitter->mTime)
+		{
+			scale = InterpolateBezier(mRate/mEmitter->mTime, mScale.x, mScale.y);
+		}
+		else
+		{
+			scale = InterpolateBezier((mRate - mEmitter->mTime) / (1.0f - mEmitter->mTime), mScale.y, mScale.z);
+		}
+	}
 	if(mEmitter->mHead)
 	{
-		Vector3 v0 = -right + up;
-		Vector3 v1 = -right - up;
-		Vector3 v2 = right - up;
-		Vector3 v3 = right + up;
+		float us = 1.0f;
+		if (mEmitter->mAspectRadio >= 0.0001f)
+		{
+			us = 1.0f / mEmitter->mAspectRadio;
+		}
+		Vector3 v0;
+		Vector3 v1;
+		Vector3 v2;
+		Vector3 v3;
+		float al = 0.0f;
+		if (mEmitter->mForSword)
+		{
+			Vector3 v = mVelocity;
+			Vector3 r;
+			r.crossProduct(v, forword);
+			r.normalise();
+			Vector3 u;
+			u.crossProduct(forword, r);
+			u.normalise();
+			Vector3 np = u * us;
+			v0 = -r + np;
+			v1 = -r - np;
+			v2 = r - np;
+			v3 = r + np;
+			//
+			al = mEmitter->mSwordInitAngle;// + 90;
+		}
+		else
+		{
+			Vector3 np = up * us;
+			v0 = -right + np;
+			v1 = -right - np;
+			v2 = right - np;
+			v3 = right + np;
+			//
+			al = mAngle;// + 90;
+		}
 		//if(0)
 		{
 			Matrix ms;
 			ms.setScale(scale, scale, scale);
 			//绕vAxis旋转angle角度
 			Quaternion q;
-			q.fromAngleAxis((mAngle + 90) * TwoPI / 360.f, forword);
+			q.fromAngleAxis(al * TwoPI / 360.f, forword);
 			Matrix mr;
 			mr.setRotate(&q);
 			Matrix m = mr * ms;

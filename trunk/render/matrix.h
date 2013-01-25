@@ -135,6 +135,12 @@ public:
 		D3DXVec3Transform( &vout, &v2, this );
 		return Vector3(vout.x, vout.y, vout.z);
 	}
+	Vector3 applyVectorNormal( const Vector3& v2 ) const
+	{
+		Vector3 vout;
+		D3DXVec3TransformNormal( &vout, &v2, this );
+		return vout;
+	}
 
 public:
 	static const Matrix Identity;
