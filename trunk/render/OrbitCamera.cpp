@@ -183,6 +183,12 @@ void OrbitCamera::handleInput( float dTime )
 	else
 		movementSpeed *= 0.1f;
 
+	//根据距离调整移动速度，距离越远，速度越快；反之，越慢
+	{
+		float r = distance_ / 1000.0f;
+		float a = r * MATH_PI_Half;
+		movementSpeed *= sin(a);
+	}
 
 	if ( isKeyDown('W'))
 	{

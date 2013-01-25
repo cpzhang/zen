@@ -331,6 +331,8 @@ void Mz::saveMaterial( const std::string& fileName )
 		addRenderState(doc, ele, D3DRS_ZENABLE, s.mZEnable);
 		addRenderState(doc, ele, D3DRS_ZWRITEENABLE, s.mZWriteEnable);
 		addRenderState(doc, ele, D3DRS_ALPHATESTENABLE, s.mAlphaTestEnable);
+		addRenderState(doc, ele, D3DRS_CULLMODE, s.mCullMode);
+		addRenderState(doc, ele, D3DRS_ALPHAREF, s.mAlphaRef);
 		if (s.mAlphaTestEnable)
 		{
 			addRenderState(doc, ele, D3DRS_ALPHAREF, s.mAlphaRef);
@@ -1102,7 +1104,14 @@ void Mz::decodeMaterial( std::ifstream& f, int s )
 		//
 		u8 twoSide;
 		f.read((char*)&twoSide,sizeof(twoSide));
-		mat.mCullMode = (D3DCULL)twoSide;
+		if (twoSide)
+		{
+			mat.mCullMode = D3DCULL_NONE;
+		}
+		else
+		{
+			mat.mCullMode = D3DCULL_CW;
+		}
 		if (mVersion >= 4)
 		{
 			//

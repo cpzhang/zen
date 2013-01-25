@@ -35,6 +35,8 @@ public:
 	void setSpeed(float s);
 private:
 	void updateMaterial_( float delta );
+	void renderImpT0();
+	void renderImpT2();
 public:
 	static EntityInstance* getNullObject()
 	{

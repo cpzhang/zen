@@ -182,8 +182,8 @@ void ViewWindow::onIdle()
 		}
 		getRenderContex()->createDevice(m_hWnd, index, 0, true, true, Vector2::Zero);
 		getGlobal()->create();
-		camera_.speed(0.50f);
-		camera_.turboSpeed(0.50f);
+		camera_.speed(500.0f);
+		camera_.turboSpeed(500.0f);
 		Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
 		Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
 		camera_.limit_ =  BoundingBox( minBound, maxBound );

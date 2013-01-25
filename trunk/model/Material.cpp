@@ -217,7 +217,7 @@ void Material::apply(const Matrix& uvMat, const Vector4& tf)
 	//Texture
 	Fx_->getDxEffect()->SetTexture(TextureVariableName_.c_str(), getTextureManager()->getTexture(TextureFileName_)->getDxTexture());
 	//固定管道渲染 D3DTA_CURRENT
-	if (getFxManager()->getShaderType() == eFx_Shader0)
+	//if (getFxManager()->getShaderType() == eFx_Shader0)
 	{
 		for (size_t i = 0; i != TextureStageStates_.size(); ++i)
 		{
@@ -235,7 +235,24 @@ void Material::apply(const Matrix& uvMat, const Vector4& tf)
 			dx->SetRenderState(D3DRS_TEXTUREFACTOR, tf.getARGB());
 		}
 	}
-	dx->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+	//else 
+	if(0)
+	{
+		for (size_t i = 0; i != TextureStageStates_.size(); ++i)
+		{
+			sTextureStageState& tss = TextureStageStates_[i];
+			dx->SetTextureStageState(tss.stage_, tss.type_, tss.value_);
+		}
+		//
+		if (RotationKFs_.numKeyFrames() > 0 || FlowUKFs_.numKeyFrames() > 0 || FlowVKFs_.numKeyFrames() > 0 || mRows > 1 || mCols > 1)
+		{
+			Fx_->getDxEffect()->SetMatrix("gUV", &uvMat);
+		}
+		if (!AlphaKFs_.empty() || !ColorKFs_.empty())
+		{
+			Fx_->getDxEffect()->SetVector("g_TFactor", &tf);
+		}
+	}
 }
 
 Material::Material()
@@ -260,7 +277,7 @@ void Material::cancel()
 	//Texture
 	Fx_->getDxEffect()->SetTexture(TextureVariableName_.c_str(), NULL);
 	//固定管道渲染
-	if (getFxManager()->getShaderType() == eFx_Shader0)
+	//if (getFxManager()->getShaderType() == eFx_Shader0)
 	{
 		for (size_t i = 0; i != TextureStageStates_.size(); ++i)
 		{

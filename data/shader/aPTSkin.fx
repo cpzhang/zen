@@ -46,7 +46,14 @@ VS_OUTPUT VS(VS_INPUT ip)
 	op.Tex  = ip.Tex;
 	return op;
 }
-
+float4x4 gUV= 
+{
+1,0,0,0,
+0,1,0,0,
+0,0,1,0,
+0,0,0,1
+};
+float4 g_TFactor = {1.0, 1.0, 1.0, 1.0};
 texture g_Texture0 < 
 string UIName = "Texture0";
 string ResourceType = "2D";
@@ -57,7 +64,8 @@ sampler gSampler0 = Zen_Sampler(g_Texture0, Wrap);
 float4 PS(VS_OUTPUT In) : COLOR
 {
   float4 color = (float4)0;
-  color = tex2D(gSampler0, In.Tex);
+  float2 uv = mul(float4(In.Tex, 1.0, 0.0), gUV);
+  color = tex2D(gSampler0, uv) * g_TFactor;
   return  color;
 }
 
@@ -80,7 +88,9 @@ technique T2
     pass P0
     {
 		VertexShader = compile vs_2_0 VS();
-		PixelShader  = compile ps_2_0 PS();
+		//
+		Texture[0] = <g_Texture0>;
+		PixelShader  = NULL;//compile ps_2_0 PS();
     }  
 }
 

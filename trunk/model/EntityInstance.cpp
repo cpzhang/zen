@@ -12,6 +12,8 @@
 #include "ParticleEmitter.h"
 void EntityInstance::render()
 {
+	getRenderContex()->getDxDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	getRenderContex()->getDxDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 	for (size_t i = 0; i != Parts_.size(); ++i)
 	{
 		Mesh* ms = Meshes_[i];
@@ -68,23 +70,38 @@ void EntityInstance::render()
 					matrices.push_back(Matrix::Identity);
 				}
 			}
-			if (!matrices.empty())
-			{
-				ef->SetMatrixArray("gSkinPalette", &matrices[0], matrices.size());
-			}
 			tl->apply(MatricesMaterial_[i], ColorsCurrent_[i]);
-			ef->CommitChanges();
-			for (int p = 0; p != passes; ++p)
+			if (getFxManager()->getShaderType() == eFx_Shader0)
 			{
-				ef->BeginPass(p);
-				ms->render();
-				ef->EndPass();
+				ef->CommitChanges();
+				for (int p = 0; p != passes; ++p)
+				{
+					ef->BeginPass(p);
+					ms->render();
+					ef->EndPass();
+				}
+			}
+			else
+			{
+				if (!matrices.empty())
+				{
+					ef->SetMatrixArray("gSkinPalette", &matrices[0], matrices.size());
+				}
+				ef->CommitChanges();
+				for (int p = 0; p != passes; ++p)
+				{
+					ef->BeginPass(p);
+					ms->render();
+					ef->EndPass();
+				}
 			}
 			tl->cancel();
 		}
 		ef->End();
 	}
 	//
+	getRenderContex()->getDxDevice()->SetVertexShader(NULL);
+	getRenderContex()->getDxDevice()->SetPixelShader(NULL);
 	for (size_t i = 0; i != Particles_.size(); ++i)
 	{
 		ParticleCluster& c = Particles_[i];
@@ -339,6 +356,16 @@ void EntityInstance::updateMaterial_( float delta )
 void EntityInstance::setSpeed( float s )
 {
 	Speed_ = s;
+}
+
+void EntityInstance::renderImpT0()
+{
+
+}
+
+void EntityInstance::renderImpT2()
+{
+
 }
 
 Create_Singleton_Imp(EntityInstanceManager, ApiModel_)

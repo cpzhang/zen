@@ -22,10 +22,11 @@
 	void ParticleCluster::render()
 	{
 		//
-		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ZENABLE, true);
-		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ZWRITEENABLE, false);
+		//getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ZENABLE, true);
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 		//
-		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 		//
 		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
 		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
@@ -35,20 +36,20 @@
 		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 		//
-		getRenderContex()->getDxDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-		getRenderContex()->getDxDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+		//getRenderContex()->getDxDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+		//getRenderContex()->getDxDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 		//
 		switch(mEmitter->mBlendMode)
 		{
 		case 4:
 			{
-				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, false);
+				//getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, false);
 				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 			}break;
 		case 2:
 			{
-				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, false);
+				//getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, false);
 				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 				getRenderContex()->getDxDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 			}break;
@@ -77,7 +78,10 @@
 // 			fx->end();
  		}
 		//
-		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+		getRenderContex()->getDxDevice()->SetTexture(0, NULL);
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 		getRenderContex()->getDxDevice()->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
 		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
