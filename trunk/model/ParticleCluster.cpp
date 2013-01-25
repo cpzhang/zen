@@ -108,7 +108,7 @@
 		ParticleList::iterator it;
 		for (it = mParticles.begin(); it != mParticles.end(); ++it)
 		{
-			it->update(delta, right, up, forward);
+			it->update(delta, right, up, forward, m);
 		}
 
 		//

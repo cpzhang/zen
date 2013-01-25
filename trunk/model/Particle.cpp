@@ -21,7 +21,7 @@ void Particle::render()
 	getRenderContex()->drawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, 4, 2, s_indices, D3DFMT_INDEX16, mVertices, sVDT_PositionColorTexture::getSize());
 }
 
-void Particle::update(float delta, const Vector3& right, const Vector3& up, const Vector3& forword)
+void Particle::update(float delta, const Vector3& right, const Vector3& up, const Vector3& forword, const Matrix& m)
 {
 	mDelta = delta  * 0.001f;
 	mAge += mDelta;
@@ -34,18 +34,7 @@ void Particle::update(float delta, const Vector3& right, const Vector3& up, cons
 	mDeltaTime += mDelta;
 	updateUV_();
 	updateColor_();
-	if (0)
-	{
-		Vector3 r, u;
-		u = Vector3::AxisY;
-		r.crossProduct(u, forword);
-		u.crossProduct(forword, r);
-		updatePostion_(r, u, forword);
-	} 
-	else
-	{
-		updatePostion_(right, up, forword);
-	}
+	updatePostion_(right, up, forword, m);
 }
 
 bool Particle::isAlive()
@@ -140,7 +129,7 @@ void Particle::updateColor_()
 	mVertices[3].color_ = c;
 }
 
-void Particle::updatePostion_(const Vector3& right, const Vector3& up, const Vector3& forword)
+void Particle::updatePostion_(const Vector3& right, const Vector3& up, const Vector3& forword, const Matrix& m)
 {
 	//首先更新中心位置
 	//如果是Wander粒子
@@ -180,7 +169,7 @@ void Particle::updatePostion_(const Vector3& right, const Vector3& up, const Vec
 		//否则处理传统的流程
 		if(!mStopMove)
 		{
-			Vector3 vOrigin = Vector3::Zero;
+			Vector3 vOrigin = m.applyToOrigin();
 			if(mExplosiveForce < 0)
 			{
 				Vector3 posOrigin = mPosition;
@@ -203,18 +192,26 @@ void Particle::updatePostion_(const Vector3& right, const Vector3& up, const Vec
 			}
 			else
 			{
-				//mVelocity += (mPosition - vOrigin) * timeFactor * mExplosiveForce;
+				mVelocity += (mPosition - vOrigin) * mDelta * mExplosiveForce;
 				mVelocity.y += (mGravity * mDelta);
 				mPosition += (mVelocity * mDelta);
 			}
 		}
 	}
+	Vector3 p = mPosition;
 	//attachToEmitter优先于moveWithEmitter
 	if(mEmitter->mAttatchEmitter)
 	{
+		p = m.applyToOrigin();
 	}
 	else if(mEmitter->mMoveWithEmitter)
 	{
+		Vector3 v =  m.applyToOrigin();
+		//随着挂接的对象的移动而移动
+		p += (v - mNodeOriginalPosition);
+		mOriginalPosition += (v - mNodeOriginalPosition);
+		mNodeOriginalPosition = v;
+		mPosition = p;
 	}
 	//然后，以中心为坐标原点，以摄像机的基，构建正方形，旋转缩放之
 	mAngle += mRotateSpeed * mDelta;
@@ -233,67 +230,42 @@ void Particle::updatePostion_(const Vector3& right, const Vector3& up, const Vec
 	if(mEmitter->mHead)
 	{
 		float us = 1.0f;
-		if (mEmitter->mAspectRadio >= 0.0001f)
+		if (!almostEqual(mEmitter->mAspectRadio, 0.0f))
 		{
 			us = 1.0f / mEmitter->mAspectRadio;
 		}
-		Vector3 v0;
-		Vector3 v1;
-		Vector3 v2;
-		Vector3 v3;
-		float al = 0.0f;
+		Vector3 finalUp = up;
+		Vector3 finalRight = right;
+		float al = mAngle;
 		if (mEmitter->mForSword)
 		{
 			Vector3 v = mVelocity;
-			Vector3 r;
-			r.crossProduct(v, forword);
-			r.normalise();
-			Vector3 u;
-			u.crossProduct(forword, r);
-			u.normalise();
-			Vector3 np = u * us;
-			v0 = -r + np;
-			v1 = -r - np;
-			v2 = r - np;
-			v3 = r + np;
+			finalRight.crossProduct(v, forword);
+			finalRight.normalise();
+			finalUp.crossProduct(forword, finalRight);
+			finalUp.normalise();
 			//
-			al = mEmitter->mSwordInitAngle;// + 90;
+			al = mEmitter->mSwordInitAngle;
 		}
-		else
+		
+		Vector3 vt = finalUp * us;
+		Vector3 v0 = finalRight + vt;
+		Vector3 v1 = finalRight - vt;
+		if(!almostEqual (al, 0.0f))
 		{
-			Vector3 np = up * us;
-			v0 = -right + np;
-			v1 = -right - np;
-			v2 = right - np;
-			v3 = right + np;
-			//
-			al = mAngle;// + 90;
-		}
-		//if(0)
-		{
-			Matrix ms;
-			ms.setScale(scale, scale, scale);
-			//绕vAxis旋转angle角度
 			Quaternion q;
 			q.fromAngleAxis(al * TwoPI / 360.f, forword);
 			Matrix mr;
 			mr.setRotate(&q);
-			Matrix m = mr * ms;
-			v0 = m.applyVector(v0);
-			v1 = m.applyVector(v1);
-			v2 = m.applyVector(v2);
-			v3 = m.applyVector(v3);
+			v0 = mr.applyVector(v0);
+			v1 = mr.applyVector(v1);
 		}
-		{
-			mVertices[0].position_ = mPosition + v0;
-			mVertices[1].position_ = mPosition + v1;
-			mVertices[2].position_ = mPosition + v2;
-			mVertices[3].position_ = mPosition + v3;
-		}
-		//
-		//std::ostringstream ss;
-		//ss<<mPosition.x<<","<<mPosition.y<<","<<mPosition.z;
-		//::OutputDebugString(ss.str().c_str());
+		Vector3 vt2 = v0 * scale;
+		Vector3 vt3 = v1 * scale;
+		mVertices[0].position_ = p - vt2;
+		mVertices[1].position_ = p + vt3;
+		mVertices[2].position_ = p + vt2;
+		mVertices[3].position_ = p - vt3;
 	}
 	if(mEmitter->mTail)
 	{
@@ -303,7 +275,7 @@ void Particle::updatePostion_(const Vector3& right, const Vector3& up, const Vec
 		Vector3 v4 = v2 * scale;
 		mVertices[0].position_ = mOriginalPosition - v3;
 		mVertices[1].position_ = mOriginalPosition + v4;
-		mVertices[2].position_ = mPosition + v3;
-		mVertices[3].position_ = mPosition - v4;
+		mVertices[2].position_ = p + v3;
+		mVertices[3].position_ = p - v4;
 	}
 }

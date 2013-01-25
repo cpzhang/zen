@@ -62,7 +62,7 @@ void ParticleEmitter::spawn(float delta, const AnimationTime& at, ParticleList& 
 		p.mPosition = Vector3(randomReal(-width,width), randomReal(-height,height), randomReal(-length,length));
 		p.mPosition = m.applyVector(p.mPosition);
 		p.mOriginalPosition = p.mPosition;
-
+		p.mNodeOriginalPosition = m.applyToOrigin();
 		Matrix mtxX;
 		{
 			Quaternion q;

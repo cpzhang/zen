@@ -8,13 +8,13 @@ public:
 	~Particle();
 public:
 	void render();
-	void update(float delta, const Vector3& right, const Vector3& up, const Vector3& forword);
+	void update(float delta, const Vector3& right, const Vector3& up, const Vector3& forword, const Matrix& m);
 	bool isAlive();
 private:
 	void _clear();
 	void updateUV_();
 	void updateColor_();
-	void updatePostion_(const Vector3& right, const Vector3& up, const Vector3& forword);
+	void updatePostion_(const Vector3& right, const Vector3& up, const Vector3& forword, const Matrix& m);
 public:
 	sVDT_PositionColorTexture mVertices[4];
 	float mRate;//age / life
@@ -25,6 +25,7 @@ public:
 	bool mStopMove;
 	Vector3 mPosition;
 	Vector3 mOriginalPosition;
+	Vector3 mNodeOriginalPosition;
 	Vector3 mVelocity;
 	float mLife;
 	float mAge;
