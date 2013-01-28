@@ -1364,6 +1364,12 @@ public:
 		::CoTaskMemFree(m_pidlSelected);
 
 		INT_PTR nRet = IDCANCEL;
+		/*
+		You must initialize Component Object Model (COM) before you call SHBrowseForFolder. 
+		If you initialize COM using CoInitializeEx, you must set the COINIT_APARTMENTTHREADED flag in its dwCoInit parameter. 
+		You can also use CoInitialize or OleInitialize, which always use apartment threading. 
+		If you require drag-and-drop functionality, OleInitialize is recommended because it initializes the required OLE as well as COM.
+		*/
 		m_pidlSelected = ::SHBrowseForFolder(&m_bi);
 
 		if(m_pidlSelected != NULL)

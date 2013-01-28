@@ -4,7 +4,7 @@ class IdleHandler
 {
 #define InterfaceIdleHandler(terminal)\
 public:\
-	virtual void onIdle() ##terminal\
+	virtual void onIdle(const float delta) ##terminal\
 	virtual void onRefreshLuaScript() ##terminal
 
 #define IdleHandler_Base InterfaceIdleHandler(=0;)

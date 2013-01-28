@@ -35,6 +35,8 @@ public:
 	Decal* createDecal(const tstring& name);
 	QuadNode* getTerrainQuadTreeRoot();
 	void getChunks(ChunkVec& cs, QuadNode* n, RectangleT& rc);
+public:
+	void save(const tstring& path, const tstring& name);
 private:
 	void clear_();
 	void destroyTerrain_();
@@ -49,6 +51,7 @@ private:
 	bool allChunksVisible_;
 	DecalMap decals_;
 	QuadNode* terrainQuadTreeRoot_;
+	tstring name_;
 };
 ApiScene_ SceneManager* createSceneManager();
 ApiScene_ void destroySceneManager();

@@ -156,7 +156,7 @@ void renderAxisXYZ()
 	renderAxis(Colour::Blue, Vector3::AxisZ);
 }
 
-void ViewWindow::onIdle()
+void ViewWindow::onIdle(const float delta)
 {
 	if (NULL == getRenderContex())
 	{
@@ -182,8 +182,8 @@ void ViewWindow::onIdle()
 		}
 		getRenderContex()->createDevice(m_hWnd, index, 0, true, true, Vector2::Zero);
 		getGlobal()->create();
-		camera_.setSpeed(5.0f);
-		camera_.turboSpeed(10.0f);
+		camera_.setSpeed(500.0f);
+		camera_.turboSpeed(500.0f);
 		Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
 		Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
 		camera_.limit_ =  BoundingBox( minBound, maxBound );
@@ -198,10 +198,6 @@ void ViewWindow::onIdle()
 		getSceneManager()->setAllChunksVisible(true);
 	}
 	//
-	static float lastTick = GetTickCount();
-	float currentTick = GetTickCount();
-	float delta = currentTick - lastTick;
-	lastTick = currentTick;
 	camera_.update(delta);
 	getSceneManager()->update();
 	{

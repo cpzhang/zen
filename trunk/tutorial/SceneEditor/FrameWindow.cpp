@@ -1,6 +1,7 @@
 #include "FrameWindow.h"
 #include "SceneNewDlg.h"
 #include "StateManager.h"
+#include "scene/SceneManager.h"
 FrameWindow::FrameWindow()
 {
 
@@ -58,16 +59,18 @@ LRESULT FrameWindow::onCreate( UINT, WPARAM, LPARAM, BOOL& )
 LRESULT FrameWindow::OnNewscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	// TODO: 在此添加命令处理程序代码
-	SceneNewDlg dlg;
-	dlg.DoModal();
+	if (dlgSceneNew.DoModal())
+	{
+		scenePath_ = dlgSceneNew.getScenePath();
+	}
 
 	return 0;
 }
 
-void FrameWindow::onIdle()
+void FrameWindow::onIdle(const float delta)
 {
 	UIUpdateToolBar(FALSE);
-	canvas_.onIdle();
+	canvas_.onIdle(delta);
 }
 
 void FrameWindow::onRefreshLuaScript()
@@ -116,4 +119,11 @@ void FrameWindow::tabSwitch(WORD id)
 	UISetCheck(ID_BUTTON_PaintTerrain, false);
 	//
 	UISetCheck(id, true);
+}
+
+LRESULT FrameWindow::OnSavescene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	// TODO: 在此添加命令处理程序代码
+	getSceneManager()->save(scenePath_, dlgSceneNew.getSceneName());
+	return 0;
 }

@@ -107,7 +107,7 @@ LRESULT HeightDlg::OnBnClickedCheckSmoothAverage( WORD wNotifyCode, WORD wID, HW
 	return 0;
 }
 
-void HeightDlg::onIdle()
+void HeightDlg::onIdle(const float delta)
 {
 }
 

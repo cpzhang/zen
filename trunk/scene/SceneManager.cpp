@@ -2,6 +2,7 @@
 #include "Terrain.h"
 #include "render/vector3.h"
 #include "QuadNode.h"
+#include "tinyXML2/tinyxml2.h"
 SceneManager::SceneManager()
 {
 	clear_();
@@ -422,6 +423,22 @@ void SceneManager::getChunks( ChunkVec& cs, QuadNode* n, RectangleT& rc )
 			getChunks(cs, c, rc);
 		}
 	}
+}
+
+void SceneManager::save(const tstring& path, const tstring& name)
+{
+	name_ = name;
+	//============================================================================
+	tinyxml2::XMLDocument doc;
+	// 
+	tinyxml2::XMLDeclaration* dec = doc.NewDeclaration("xml version=\"1.0\"");
+	doc.LinkEndChild(dec);
+	//
+	tinyxml2::XMLElement* ele = doc.NewElement("ParticleEmitter");
+	doc.LinkEndChild(ele);
+	//
+	tstring sf = path + "/" + name_ + "/setting.xml";
+	doc.SaveFile(sf.c_str());
 }
 
 ApiScene_ SceneManager* createSceneManager()

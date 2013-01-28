@@ -58,6 +58,11 @@ bool Global::create()
 
 void Global::destroy()
 {
+	if (pi_)
+	{
+		delete pi_;
+		pi_ = NULL;
+	}
 	//destroySkeletonManager();
 //	destroyEntityManager();
 	//destroyMeshManager();
@@ -72,6 +77,7 @@ void Global::destroy()
 	//
 	destroyStateManager();
 	//
+	ModelResManager::getInstance()->destroy();
 	destroyLuaScript();
 	//
 	if (getRenderContex())
@@ -291,15 +297,9 @@ void decode(const std::string& name)
 	Mesh m;
 	std::string skeletonPath;
 	std::string skinPath;
-	for (int i = 0; i < tM.getSubMeshNumber(); ++i)
+	//
 	{
-		tM.create(i, &m);
-		std::string path = exportPath + "/" + tM.getSubMeshName(i) + ".mesh";
-		FileSystem::createFolder(path);
-		m.save(path);
 		//
-		if(i == 0)
-		{
 			skeletonPath = exportPath + "/" + fileFinalName + ".skeleton";
 			FileSystem::createFolder(skeletonPath);
 			tM.saveSkeleton(skeletonPath);
@@ -330,6 +330,12 @@ void decode(const std::string& name)
 				tM.saveSkin(skinPath);
 			}
 		}
+	for (int i = 0; i < tM.getSubMeshNumber(); ++i)
+	{
+		tM.create(i, &m);
+		std::string path = exportPath + "/" + tM.getSubMeshName(i) + ".mesh";
+		FileSystem::createFolder(path);
+		m.save(path);
 		std::string bmPath = exportPath + "/" + tM.getSubMeshName(i) + ".boneMapping";
 		FileSystem::createFolder(bmPath);
 		m.saveBoneMapping(bmPath, &tM);
@@ -354,6 +360,17 @@ void decode(const std::string& name)
 			meshPath += tM.getSubMeshName(i);
 			meshPath += ".part";
 			a->SetAttribute("file", meshPath.c_str());
+			ele->LinkEndChild(a);
+		}
+		for (int i = 0; i < tM.getParticleSystemNumber(); ++i)
+		{
+			tstring n = FileSystem::removeParent(fileName);
+			n = FileSystem::removeFileExtension(n);
+			std::ostringstream ss;
+			ss<<"particle/"<<n<<"_"<<i<<".particle";
+			tinyxml2::XMLElement* a = doc.NewElement("particle");
+			a->SetAttribute("file", ss.str().c_str());
+			a->SetAttribute("bone", tM.getParticleSystemBone(i).c_str());
 			ele->LinkEndChild(a);
 		}
 		{

@@ -1,6 +1,7 @@
 #include "SceneNewDlg.h"
 #include "scene/SceneManager.h"
 #include "scene/Terrain.h"
+#include "misc/FileSystem.h"
 void SceneNewDlg::clear()
 {
 	mWidth = 1;
@@ -8,9 +9,12 @@ void SceneNewDlg::clear()
 	mN = 5;
 	mName.clear();
 	mPath.clear();
+	tName[0] = NULL;
+	tPath[0] = NULL;
 }
 
 SceneNewDlg::SceneNewDlg()
+:mcstrName(' ', 512)
 {
 
 }
@@ -39,7 +43,13 @@ LRESULT SceneNewDlg::OnBnClickedOk( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*h
 	if (DoDataExchange(true))
 	{
 		//
+		//创建场景
 		getSceneManager()->createTerrain(mWidth, mHeight, mN);
+		//保存路径
+		if (mPath.empty())
+		{
+			mPath = FileSystem::getDataDirectory() + "/scene";
+		}
 		Terrain* tn = SceneManager::getInstancePtr()->getTerrain();
 		if (tn)
 		{
@@ -47,8 +57,8 @@ LRESULT SceneNewDlg::OnBnClickedOk( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*h
 			tstring fxName(TEXT("e:/ZenBin/data/shader/Terrain.fx"));
 			tn->setFX(fxName);
 		}
-		//
-		EndDialog(0);
+		//1，否则domodel处条件判断失败，估计enddialog的参数即domodel的返回值
+		EndDialog(1);
 		//
 	}
 	return 0;
@@ -65,4 +75,64 @@ void SceneNewDlg::OnDataValidateError( UINT nCtrlID, BOOL bSave, _XData& data )
 {
 	MessageBox(TEXT("width and height range [1, 200], lod range [0, 6]"));
 	return;
+}
+int CALLBACK BrowseCallbackProc(          HWND hwnd,
+								UINT uMsg,
+								LPARAM lParam,
+								LPARAM lpData
+								)
+{
+	switch(uMsg)
+	{
+	case BFFM_INITIALIZED:
+		SendMessage(hwnd,BFFM_SETSELECTIONA,1,(LPARAM)lpData);
+		break;
+	}
+	return 0;
+}
+tstring selectDirectory(HWND hWnd, tstring caption, tstring initPath)
+{
+	char pszDisplayName[MAX_PATH];
+	tstring dir;
+	BROWSEINFO BrowseInfo;
+	LPITEMIDLIST pidlBrowse;
+	LPMALLOC pMalloc;
+
+	if( !SUCCEEDED(SHGetMalloc(&pMalloc)) ) 
+		return FALSE; 
+	BrowseInfo.hwndOwner = hWnd; 
+	BrowseInfo.pidlRoot = NULL; 
+	BrowseInfo.pszDisplayName = (LPSTR)initPath.c_str(); 
+	BrowseInfo.lpszTitle = caption.c_str();
+	BrowseInfo.ulFlags = BIF_DONTGOBELOWDOMAIN | BIF_USENEWUI; 
+	BrowseInfo.lpfn = 0; 
+	BrowseInfo.lParam = 0; 
+	if(!initPath.empty())
+	{
+		BrowseInfo.lpfn = BrowseCallbackProc; 
+		BrowseInfo.lParam = (LPARAM)initPath.c_str(); 
+	}
+	BrowseInfo.iImage = 0; 
+	pidlBrowse = SHBrowseForFolder(&BrowseInfo); 
+	if( pidlBrowse!=NULL ) 
+	{ 
+		if( SHGetPathFromIDList(pidlBrowse,pszDisplayName) ) 
+		{ 
+			dir = pszDisplayName;
+			pMalloc->Free(pidlBrowse); 
+			pMalloc->Release(); 
+		} 
+	}
+	else
+		pMalloc->Release(); 
+	return dir;
+}
+LRESULT SceneNewDlg::OnBnClickedButtonScenepath(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	//mPath = selectDirectory(m_hWnd, TEXT("选择场景保存路径"), FileSystem::getDataDirectory());
+	mPath = selectDirectory(m_hWnd, TEXT("选择场景保存路径"), TEXT("f:\\zen\\data\\scene"));
+
+	mPathEdit.InsertText(0, mPath.c_str());
+	//IFileDialog d;
+	return 0;
 }

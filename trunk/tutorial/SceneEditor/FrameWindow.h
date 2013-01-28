@@ -6,7 +6,7 @@
 #include "HeightDlg.h"
 #include "DataDlg.h"
 #include "AnimationDlg.h"
-
+#include "SceneNewDlg.h"
 class FrameWindow : 
 	public CFrameWindowImpl<FrameWindow>
 	,public CUpdateUI<FrameWindow>
@@ -22,6 +22,7 @@ public:
 		COMMAND_ID_HANDLER(ID_BUTTON_PaintTerrain, OnToobarChangeTexture)
 		COMMAND_ID_HANDLER(ID_BUTTON_Data, OnToobarData)
 		COMMAND_ID_HANDLER(ID_BUTTON_Options, OnToobarOptions)
+		COMMAND_ID_HANDLER(ID_SaveScene, OnSavescene)
 		CHAIN_MSG_MAP(CFrameWindowImpl<FrameWindow>)
 		CHAIN_MSG_MAP(CUpdateUI<FrameWindow>)
 		REFLECT_NOTIFICATIONS()// to child
@@ -58,4 +59,7 @@ private:
 	TerrainTextureDlg dlgTerrainTexture_;
 	OptionsDlg dlgOptions_;
 	AnimationDlg dlgAnimation_;
+	SceneNewDlg dlgSceneNew;
+	tstring scenePath_;
+	LRESULT OnSavescene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 };

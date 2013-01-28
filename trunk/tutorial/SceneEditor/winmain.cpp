@@ -1,8 +1,12 @@
 #include "FrameWindow.h"
 #include "Global.h"
+
 CAppModule _Module;
+
 int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE , LPTSTR lpstrCmdLine, int nCmdShow)
 {
+	
+	//
 	createGlobal();
 	FrameWindow mw;
 	mw.CreateEx();
@@ -27,13 +31,15 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE , LPTSTR lpstrCmdLine, int n
 		{
 			static float lastTick = GetTickCount();
 			float currentTick = GetTickCount();
-			if (currentTick - lastTick >= 33.33f)
+			float delta = currentTick - lastTick;
+			if (delta >= 33.33f)
 			{
-				mw.onIdle();
+				mw.onIdle(delta);
 				lastTick = currentTick;
 			}
 		}
 	}
 	destroyGlobal();
+
 	return 0;
 }
