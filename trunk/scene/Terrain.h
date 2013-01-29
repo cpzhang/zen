@@ -17,7 +17,7 @@ public:
 	void renderDecal(Decal* dc);
 	void create(int xChunks, int zChunks);
 	void destroy();
-	void save();
+	void save(const tstring& path);
 	void setFileName(const tstring& fn);
 	void setFX(const tstring& fn);
 	Chunk* getChunkFromWorldSpacePostion(float x, float z);
@@ -29,6 +29,14 @@ public:
 	//
 	Vector4 getBlendFromImage(int x, int z);
 	void setBlendFromImage(int x, int z, Vector4 b);
+	int getXChunkNumber()
+	{
+		return xChunkNumber_;
+	}
+	int getZChunkNumber()
+	{
+		return zChunkNumber_;
+	}
 private:
 	void clear_();
 	void destroyChunks_();

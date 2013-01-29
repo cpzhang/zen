@@ -1,4 +1,6 @@
 #pragma once
+//DDX_TEXT处，需要此宏
+#define _WTL_USE_CSTRING
 #include <atlbase.h>
 #include <atlapp.h>
 #include <atlctrls.h>

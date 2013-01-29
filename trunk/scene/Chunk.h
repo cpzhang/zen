@@ -44,6 +44,8 @@ public:
 	Vector4 getBlendFromTopology(int x, int z);
 	void setBlendFromTopology(int x, int z, Vector4 h);
 	void refreshBlend();
+	//
+	void save(const tstring& path);
 private:
 	void clear_();
 	void calcMaxMinHeight_();

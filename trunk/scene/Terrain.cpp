@@ -7,9 +7,30 @@
 #include "render/rendercontext.h"
 #include "LOD.h"
 #include "scene/SceneManager.h"
-void Terrain::save()
+void Terrain::save(const tstring& path)
 {
-
+	//保存高度及混合系数，一次读出
+	tstring heightmapfile(path + "heightmap.raw");
+	std::ofstream f(heightmapfile.c_str());
+	for (size_t i = 0; i != heights_.size(); ++i)
+	{
+		//浮点数，是否归一化至区间[0,255]？
+		f<<heights_[i];
+	}
+	for (size_t i = 0; i != blends_.size(); ++i)
+	{
+		f<<blends_[i][0]<<blends_[i][1]<<blends_[i][2]<<blends_[i][3];
+	}
+	f.close();
+	//保存chunk
+	{
+		for (size_t i = 0; i != chunks_.size(); ++i)
+		{
+			std::stringstream ss;
+			ss<<path<<chunks_[i]->getNumberX()<<"_"<<chunks_[i]->getNumberZ()<<".xml";
+			chunks_[i]->save(ss.str());
+		}
+	}
 }
 
 void Terrain::setFileName( const tstring& fn )

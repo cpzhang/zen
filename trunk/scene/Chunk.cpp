@@ -5,6 +5,7 @@
 #include "render/TextureManager.h"
 #include "Terrain.h"
 #include "render/Colour.h"
+#include "tinyXML2/tinyxml2.h"
 Chunk::Chunk( int x, int z )
 {
 	clear_();
@@ -231,4 +232,28 @@ eTerrainLayer Chunk::getNextLayer()
 		}
 	}
 	return eTerrainLayer_Size;
+}
+
+void Chunk::save( const tstring& path )
+{
+	//============================================================================
+	tinyxml2::XMLDocument doc;
+	// 
+	tinyxml2::XMLDeclaration* dec = doc.NewDeclaration("xml version=\"1.0\"");
+	doc.LinkEndChild(dec);
+	//
+	tinyxml2::XMLElement* ele = doc.NewElement("chunk");
+	//
+	doc.LinkEndChild(ele);
+	//
+	for (int i = 0; i != eTerrainLayer_Size; ++i)
+	{
+		if (layers_[i] && !layers_[i]->getFileName().empty())
+		{
+			tinyxml2::XMLElement* e = doc.NewElement("layer");
+			e->SetAttribute("texture", layers_[i]->getFileName().c_str());
+			ele->LinkEndChild(e);		
+		}
+	}	
+	doc.SaveFile(path.c_str());
 }

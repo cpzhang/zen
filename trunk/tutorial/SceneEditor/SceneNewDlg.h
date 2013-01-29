@@ -20,9 +20,9 @@ private:
 	int			mHeight;
 	//
 	CEditImpl	mNameEdit;
-	tstring mName;
+	//tstring mName;
 	CString mcstrName;
-	TCHAR tName[512];
+	//TCHAR tName[512];
 	//
 	CEditImpl	mPathEdit;
 	tstring		mPath;
@@ -51,7 +51,7 @@ public:
 		DDX_CONTROL(IDC_ScenePath, mPathEdit)//功能等价于SubclassWindow，接管消息回调
 		//DDX_TEXT(IDC_ScenePath, tPath)
 		DDX_CONTROL(IDC_SceneName, mNameEdit)//功能等价于SubclassWindow，接管消息回调
-		DDX_TEXT(IDC_SceneName, mcstrName.GetBuffer(512))
+		DDX_TEXT(IDC_SceneName, mcstrName)
 	END_DDX_MAP()
 
 	LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
@@ -67,6 +67,6 @@ public:
 	}
 	tstring getSceneName()
 	{
-		return mcstrName.GetBuffer(512);
+		return mcstrName.GetBuffer(0);
 	}
 };

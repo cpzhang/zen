@@ -7,16 +7,12 @@ void SceneNewDlg::clear()
 	mWidth = 1;
 	mHeight = 1;
 	mN = 5;
-	mName.clear();
 	mPath.clear();
-	tName[0] = NULL;
 	tPath[0] = NULL;
 }
 
 SceneNewDlg::SceneNewDlg()
-:mcstrName(' ', 512)
 {
-
 }
 
 SceneNewDlg::~SceneNewDlg()
@@ -42,7 +38,6 @@ LRESULT SceneNewDlg::OnBnClickedOk( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*h
 	// Transfer data from the controls to member variables.
 	if (DoDataExchange(true))
 	{
-		//
 		//创建场景
 		getSceneManager()->createTerrain(mWidth, mHeight, mN);
 		//保存路径
@@ -53,7 +48,7 @@ LRESULT SceneNewDlg::OnBnClickedOk( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*h
 		Terrain* tn = SceneManager::getInstancePtr()->getTerrain();
 		if (tn)
 		{
-			tn->setFileName(mPath + TEXT("/") + mName);
+			tn->setFileName(mPath + TEXT("/") + getSceneName());
 			tstring fxName(TEXT("e:/ZenBin/data/shader/Terrain.fx"));
 			tn->setFX(fxName);
 		}

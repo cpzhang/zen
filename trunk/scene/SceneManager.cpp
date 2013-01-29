@@ -434,11 +434,25 @@ void SceneManager::save(const tstring& path, const tstring& name)
 	tinyxml2::XMLDeclaration* dec = doc.NewDeclaration("xml version=\"1.0\"");
 	doc.LinkEndChild(dec);
 	//
-	tinyxml2::XMLElement* ele = doc.NewElement("ParticleEmitter");
+	tinyxml2::XMLElement* ele = doc.NewElement("scene");
+	//
+	ele->SetAttribute("name", name_.c_str());
 	doc.LinkEndChild(ele);
+	//
+	{
+		tinyxml2::XMLElement* e = doc.NewElement("terrain");
+		e->SetAttribute("XChunkNumber", terrainCurrent_->getXChunkNumber());
+		e->SetAttribute("ZChunkNumber", terrainCurrent_->getZChunkNumber());
+		e->SetAttribute("Lod", lod_.getN());
+		ele->LinkEndChild(e);
+	}
 	//
 	tstring sf = path + "/" + name_ + "/setting.xml";
 	doc.SaveFile(sf.c_str());
+	//
+	{
+		terrainCurrent_->save(path + "/" + name_ + "/");
+	}
 }
 
 ApiScene_ SceneManager* createSceneManager()
