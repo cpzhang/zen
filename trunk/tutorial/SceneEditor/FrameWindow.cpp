@@ -124,6 +124,19 @@ void FrameWindow::tabSwitch(WORD id)
 LRESULT FrameWindow::OnSavescene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	// TODO: 在此添加命令处理程序代码
-	getSceneManager()->save(scenePath_, dlgSceneNew.getSceneName());
+	getSceneManager()->save(scenePath_);
+	return 0;
+}
+
+LRESULT FrameWindow::OnOpenscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	// TODO: 在此添加命令处理程序代码
+	CFolderDialog d;
+	d.SetInitialFolder(TEXT("f:\\zen\\data\\scene\\bornland"));
+	if (d.DoModal())
+	{
+		scenePath_ = d.m_szFolderPath;
+		getSceneManager()->open(d.m_szFolderPath);
+	}
 	return 0;
 }

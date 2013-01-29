@@ -114,3 +114,29 @@ void writeSequence(ChunkSet& cs, T &t)
 		cs.write(&(*i),sizeof(*i));
 	}
 }
+
+template<class T>
+void writeSequenceEx(ChunkSet& cs, T &t)
+{
+	u32 nBones = t.size();
+	cs.write(&nBones, sizeof(nBones));		
+	T::iterator i = t.begin();
+	for(; i != t.end(); ++i)
+	{
+		cs.write(&(*i),sizeof(*i));
+	}
+}
+
+template<class T, class Ele>
+void readSequenceEx(std::ifstream& f, T &t)
+{
+	u32 nBones;
+	f.read((char*)&nBones, sizeof(nBones));		
+	t.resize(nBones);
+	for(int i = 0; i < nBones; ++i)
+	{
+		Ele e;
+		f.read((char*)&e, sizeof(Ele));
+		t[i] = e;
+	}
+}

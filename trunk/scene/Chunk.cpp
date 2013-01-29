@@ -212,7 +212,7 @@ void Chunk::refreshVB_()
 		v.position_.z = z*s;
 		v.position_.y = int(getHeightFromTopology(x, z));
 		//
-		v.color_ = Colour::getUint32(getBlendFromTopology(x,z));
+		v.color_ = Colour::getUint32FromNormalised(getBlendFromTopology(x,z));
 		//
 		v.texture_.x = x == vn-1 ? 1.0f : (float)x * fv;
 		v.texture_.y = z == vn-1 ? 1.0f : (float)z * fv;
@@ -256,4 +256,33 @@ void Chunk::save( const tstring& path )
 		}
 	}	
 	doc.SaveFile(path.c_str());
+}
+
+void Chunk::open( const tstring& path )
+{
+	tinyxml2::XMLDocument doc;
+	if (tinyxml2::XML_SUCCESS != doc.LoadFile(path.c_str()))
+	{
+		return;
+	}
+	tinyxml2::XMLElement* ele = doc.RootElement();
+	if (NULL == ele)
+	{
+		return;
+	}
+	tinyxml2::XMLElement* tex= ele->FirstChildElement("layer");
+	eTerrainLayer l = eTerrainLayer_0;
+	while (tex)
+	{
+		//
+		{
+			const char* n = tex->Attribute("texture");
+			if (NULL != n)
+			{
+				setLayer(l, n);
+			}
+		}
+		tex = tex->NextSiblingElement("layer");
+		l = (eTerrainLayer)(l + 1);
+	}
 }

@@ -39,11 +39,15 @@ LRESULT SceneNewDlg::OnBnClickedOk( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*h
 	if (DoDataExchange(true))
 	{
 		//创建场景
-		getSceneManager()->createTerrain(mWidth, mHeight, mN);
+		getSceneManager()->createTerrain(mWidth, mHeight, mN, 3);
 		//保存路径
 		if (mPath.empty())
 		{
 			mPath = FileSystem::getDataDirectory() + "/scene";
+		}
+		if (mcstrName.IsEmpty())
+		{
+			mcstrName = "BornLand";
 		}
 		Terrain* tn = SceneManager::getInstancePtr()->getTerrain();
 		if (tn)

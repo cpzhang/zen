@@ -3,6 +3,7 @@
 #include "render/vector3.h"
 #include "QuadNode.h"
 #include "tinyXML2/tinyxml2.h"
+#include "misc/FileSystem.h"
 SceneManager::SceneManager()
 {
 	clear_();
@@ -13,10 +14,11 @@ SceneManager::~SceneManager()
 	clear_();
 }
 
-void SceneManager::createTerrain( int xChunks, int zChunks, int n)
+void SceneManager::createTerrain( int xChunks, int zChunks, int n, float unit)
 {
 	lod_.destroy();
 	lod_.setN(n);
+	lod_.setScale(unit);
 	lod_.create();
 	destroyTerrain_();
 	destroyTerrainQuadTree();
@@ -425,9 +427,9 @@ void SceneManager::getChunks( ChunkVec& cs, QuadNode* n, RectangleT& rc )
 	}
 }
 
-void SceneManager::save(const tstring& path, const tstring& name)
+void SceneManager::save(const tstring& path)
 {
-	name_ = name;
+	name_ = FileSystem::removeParent(path);
 	//============================================================================
 	tinyxml2::XMLDocument doc;
 	// 
@@ -444,14 +446,82 @@ void SceneManager::save(const tstring& path, const tstring& name)
 		e->SetAttribute("XChunkNumber", terrainCurrent_->getXChunkNumber());
 		e->SetAttribute("ZChunkNumber", terrainCurrent_->getZChunkNumber());
 		e->SetAttribute("Lod", lod_.getN());
+		e->SetAttribute("Unit", lod_.getScale());
 		ele->LinkEndChild(e);
 	}
 	//
-	tstring sf = path + "/" + name_ + "/setting.xml";
+	{
+		tinyxml2::XMLElement* e = doc.NewElement("material");
+		e->SetAttribute("fx", terrainCurrent_->getFXFileName().c_str());
+		ele->LinkEndChild(e);
+	}
+	//
+	tstring sf = path + "/setting.xml";
 	doc.SaveFile(sf.c_str());
 	//
 	{
-		terrainCurrent_->save(path + "/" + name_ + "/");
+		terrainCurrent_->save(path + "/");
+	}
+}
+
+void SceneManager::open( const tstring& resID )
+{
+	tinyxml2::XMLDocument doc;
+	tstring settingFile(resID + "/setting.xml");
+	if (tinyxml2::XML_SUCCESS != doc.LoadFile(settingFile.c_str()))
+	{
+		return;
+	}
+	tinyxml2::XMLElement* ele = doc.RootElement();
+	if (NULL == ele)
+	{
+		return;
+	}
+	name_ = ele->Attribute("name");
+	//
+	int xChunks;
+	int zChunks;
+	int n;
+	float unit;
+	{
+		tinyxml2::XMLElement* tex= ele->FirstChildElement("terrain");
+		if (tex)
+		{
+			if (tinyxml2::XML_SUCCESS != tex->QueryIntAttribute("XChunkNumber", &xChunks))
+			{
+				return;
+			}
+			if (tinyxml2::XML_SUCCESS != tex->QueryIntAttribute("ZChunkNumber", &zChunks))
+			{
+				return;
+			}
+			if (tinyxml2::XML_SUCCESS != tex->QueryIntAttribute("Lod", &n))
+			{
+				return;
+			}
+			if (tinyxml2::XML_SUCCESS != tex->QueryFloatAttribute("Unit", &unit))
+			{
+				return;
+			}
+		}
+	}
+	//
+	createTerrain(xChunks, zChunks, n, unit);
+	//
+	{
+		terrainCurrent_->open(resID);
+	}
+	//
+	{
+		tinyxml2::XMLElement* tex= ele->FirstChildElement("material");
+		if (tex)
+		{
+			const char* n = tex->Attribute("fx");
+			if (NULL != n)
+			{
+				terrainCurrent_->setFX(n);
+			}
+		}
 	}
 }
 

@@ -175,7 +175,6 @@ void MouseCamera::handleInput( float dTime )
 	else
 		movementSpeed *= 0.1f;
 
-
 	if ( isKeyDown('W'))
 	{
 		if ( keyDown_['W'] )

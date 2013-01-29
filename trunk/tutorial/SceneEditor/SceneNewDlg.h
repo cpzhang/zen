@@ -63,7 +63,7 @@ public:
 public:
 	tstring getScenePath()
 	{
-		return mPath;
+		return mPath + "/" + getSceneName();
 	}
 	tstring getSceneName()
 	{

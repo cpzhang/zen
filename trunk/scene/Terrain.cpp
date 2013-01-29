@@ -7,21 +7,33 @@
 #include "render/rendercontext.h"
 #include "LOD.h"
 #include "scene/SceneManager.h"
+#include "misc/DataChunk.h"
 void Terrain::save(const tstring& path)
 {
-	//保存高度及混合系数，一次读出
-	tstring heightmapfile(path + "heightmap.raw");
-	std::ofstream f(heightmapfile.c_str());
-	for (size_t i = 0; i != heights_.size(); ++i)
+	//
 	{
-		//浮点数，是否归一化至区间[0,255]？
-		f<<heights_[i];
+		//保存高度及混合系数，一次读出
+		tstring heightmapfile(path + "heightmap.raw");
+		// 开始写入数据 
+		ChunkSet cs;
+		//============================================================================
+		// 版本号
+		cs.beginChunk("MVER");	
+		cs.write(&mVersion, sizeof(mVersion));
+		cs.endChunk();
+		//============================================================================
+		// 高度
+		cs.beginChunk("HEIG");
+		writeSequenceEx(cs, heights_);
+		cs.endChunk();
+		// 混合因子
+		cs.beginChunk("BLEN");
+		writeSequenceEx(cs, blends_);
+		cs.endChunk();
+		//============================================================================
+		// 保存文件，结束
+		cs.save(heightmapfile);
 	}
-	for (size_t i = 0; i != blends_.size(); ++i)
-	{
-		f<<blends_[i][0]<<blends_[i][1]<<blends_[i][2]<<blends_[i][3];
-	}
-	f.close();
 	//保存chunk
 	{
 		for (size_t i = 0; i != chunks_.size(); ++i)
@@ -371,6 +383,7 @@ void Terrain::clear_()
 	fx_ = NULL;
 	heights_.clear();
 	blends_.clear();
+	mVersion = 1;
 }
 
 Vector4 Terrain::getBlendFromImage( int x, int z )
@@ -392,8 +405,82 @@ void Terrain::setBlendFromImage( int x, int z, Vector4 b )
 	}
 	Vector3 p(b.x, b.y, b.z);
 	p.normalise();
-	b.x = p.x * 255.0f;
-	b.y = p.y * 255.0f;
-	b.z = p.z * 255.0f;
+	b.x = p.x;
+	b.y = p.y;
+	b.z = p.z;
 	blends_[index] = b;
+}
+
+void Terrain::open( const tstring& path )
+{
+	//保存高度及混合系数，一次读出
+	tstring heightmapfile(path + "/heightmap.raw");
+	//
+	{
+		//
+		std::ifstream f(heightmapfile.c_str(), std::ios::binary);
+		if (!f.good())
+		{
+			return;
+		}
+
+		u32 version = 0;
+		//	[Tag Size Data]
+		int t;
+		int s;
+		while(f.good())
+		{
+			t = 0;
+			s = 0;
+			f.read((char*)&t, sizeof(int));
+			f.read((char*)&s, sizeof(int));
+
+			if (s <= 0)
+			{
+				continue;
+			}
+
+			char c[5];
+			c[0] = *((char*)&t + 3);
+			c[1] = *((char*)&t + 2);
+			c[2] = *((char*)&t + 1);
+			c[3] = *((char*)&t + 0);
+			c[4] = 0;
+
+			switch (t)
+			{
+			case 'MVER':
+				{
+					f.read((char*)&mVersion, sizeof(mVersion));
+				}break;
+			case 'HEIG':
+				{
+					readSequenceEx<std::vector<float>, float>(f, heights_);
+				}break;
+			case 'BLEN':
+				{
+					readSequenceEx<std::vector<Vector4>, Vector4>(f, blends_);
+				}break;
+			default:
+				{
+					f.ignore(s);
+				}break;
+			}
+		}
+	}
+	//保存chunk
+	{
+		for (size_t i = 0; i != chunks_.size(); ++i)
+		{
+			std::stringstream ss;
+			ss<<path<<"/"<<chunks_[i]->getNumberX()<<"_"<<chunks_[i]->getNumberZ()<<".xml";
+			chunks_[i]->open(ss.str());
+			chunks_[i]->refreshHeight();
+		}
+	}
+}
+
+tstring Terrain::getFXFileName()
+{
+	return fx_->getFilePath();
 }

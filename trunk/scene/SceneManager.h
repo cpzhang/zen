@@ -23,7 +23,7 @@ public:
 	void update();
 	void render();
 	void destroy();
-	void createTerrain(int xChunks, int zChunks, int n);
+	void createTerrain(int xChunks, int zChunks, int n, float unit);
 	Terrain* getTerrain();
 	LOD* getLOD();
 	Hero* getHero();
@@ -36,7 +36,8 @@ public:
 	QuadNode* getTerrainQuadTreeRoot();
 	void getChunks(ChunkVec& cs, QuadNode* n, RectangleT& rc);
 public:
-	void save(const tstring& path, const tstring& name);
+	void save(const tstring& path);
+	void open(const tstring& path);
 private:
 	void clear_();
 	void destroyTerrain_();

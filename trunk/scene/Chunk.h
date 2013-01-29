@@ -46,6 +46,7 @@ public:
 	void refreshBlend();
 	//
 	void save(const tstring& path);
+	void open(const tstring& path);
 private:
 	void clear_();
 	void calcMaxMinHeight_();

@@ -16,6 +16,10 @@ public:
 	IndexBuffer* getIndexBuffer();
 	int getPrimitiveNumber();
 	float getScale();
+	void setScale(float s)
+	{
+		scale_ = s;
+	}
 	float getLengthOneSide();
 	int getN();
 	void setN(int n);

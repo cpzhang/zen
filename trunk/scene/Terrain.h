@@ -18,6 +18,7 @@ public:
 	void create(int xChunks, int zChunks);
 	void destroy();
 	void save(const tstring& path);
+	void open(const tstring& path);
 	void setFileName(const tstring& fn);
 	void setFX(const tstring& fn);
 	Chunk* getChunkFromWorldSpacePostion(float x, float z);
@@ -37,6 +38,7 @@ public:
 	{
 		return zChunkNumber_;
 	}
+	tstring getFXFileName();
 private:
 	void clear_();
 	void destroyChunks_();
@@ -55,4 +57,5 @@ private:
 	int totalNumberX_;
 	int totalNumberZ_;
 	TerrainTextureSetter textureSetter_;
+	int mVersion;
 };
