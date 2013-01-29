@@ -49,6 +49,7 @@ add_subdirectory(luaScript)
 add_subdirectory("tinyxml2")
 add_subdirectory("scene")
 add_subdirectory("model")
+add_subdirectory("font")
 #add_subdirectory("client")
 
 # add_subdirectory(tool)

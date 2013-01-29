@@ -175,8 +175,12 @@ bool Skeleton::hasBoneNode( const std::string& name )
 	return true;
 }
 
-void Skeleton::update( const AnimationTime& at, Skin* s )
+void Skeleton::update( const AnimationTime& a, Skin* s )
 {
+	AnimationTime at = a;
+	at.current = at.current * 3 / 100;
+	at.current++;
+	at.current = at.current * 33.33333333f;
 	for (size_t i = 0; i != _roots.size(); ++i)
 	{
 		BoneNodeMap::iterator it = _boneNodes.find(_roots[i]);

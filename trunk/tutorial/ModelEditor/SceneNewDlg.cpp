@@ -39,7 +39,7 @@ LRESULT SceneNewDlg::OnBnClickedOk( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*h
 	if (DoDataExchange(true))
 	{
 		//
-		getSceneManager()->createTerrain(mWidth, mHeight, mN);
+		getSceneManager()->createTerrain(mWidth, mHeight, mN, 3);
 		Terrain* tn = SceneManager::getInstancePtr()->getTerrain();
 		if (tn)
 		{

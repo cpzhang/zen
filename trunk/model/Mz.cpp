@@ -418,7 +418,7 @@ void Mz::saveMaterial( const std::string& fileName )
 		// 
 		if (s.mFlowU || s.mScale || s.mRotate || s.mRows > 1 || s.mCols > 1)
 		{
-			addTextureStageState(doc, ele, 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
+			//addTextureStageState(doc, ele, 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
 		}
 		doc.LinkEndChild(ele);
 		//

@@ -57,7 +57,8 @@ void EntityInstance::render()
 			}
 			//
 			std::vector<Matrix> matrices;
-			if(1){
+			if(1)
+			{
 				for(BoneIDReferenceMap::iterator it = ms->_bones.begin(); it != ms->_bones.end(); ++it)
 				{
 					matrices.push_back(MatricesSkin_[it->first]);
@@ -244,6 +245,7 @@ void EntityInstance::update( float delta )
 		AnimationTime_.update(delta * Speed_);
 		Skeleton_->update(AnimationTime_, SkinCurrent_);
 		//
+		MatricesSkin_.clear();
 		MatricesSkin_.resize(Skeleton_->_matrices.size());
 		if (!Skeleton_->_matrices.empty())
 		{

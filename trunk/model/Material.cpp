@@ -229,7 +229,7 @@ void Material::apply(const Matrix& uvMat, const Vector4& tf)
 		{
 			if (getFxManager()->getShaderType() == eFx_Shader0)
 			{
-
+				dx->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
 			}
 			else
 			{
