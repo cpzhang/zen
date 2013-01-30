@@ -59,3 +59,45 @@ tstring ManagedTexture::getFileName()
 {
 	return resourceID_;
 }
+
+bool ManagedTexture::createTexture( u32 Width, u32 Height, u32 MipLevels, DWORD Usage, D3DFORMAT Format, D3DPOOL Pool )
+{
+	if (SUCCEEDED(D3DXCreateTexture (getRenderContex()->getDxDevice(), 
+		Width, 
+		Height,
+		MipLevels,
+		Usage, 
+		Format,
+		Pool,
+		&dxTexture_)))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool ManagedTexture::setSubData(int left, int top, int width, int height, void* pData, D3DFORMAT pf, int pitch)
+{
+	if(!dxTexture_)return false;
+
+	IDirect3DSurface9 *pSurface = 0;
+	dxTexture_->GetSurfaceLevel(0,&pSurface);
+	if(NULL == pSurface)
+	{
+		return false;
+	}
+	RECT rc = {0,0,width,height};
+	RECT drc = {left,top,width + left,height + top};
+	HRESULT hr = D3DXLoadSurfaceFromMemory(pSurface,
+		NULL,
+		&drc,
+		pData,
+		pf,
+		pitch,
+		NULL,
+		&rc,
+		D3DX_DEFAULT,
+		0);
+	pSurface->Release();
+	return SUCCEEDED(hr);
+}

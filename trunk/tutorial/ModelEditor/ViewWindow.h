@@ -7,6 +7,8 @@
 #include "render/rendercontext.h"
 class Decal;
 class Texture;
+class FreeType;
+
 class ViewWindow: 
 	public CWindowImpl<ViewWindow>
 	,public IdleHandler
@@ -44,5 +46,6 @@ public:
 private:
 	float					_fps;
 	OrbitCamera camera_;
+	FreeType* font_;
 };
 

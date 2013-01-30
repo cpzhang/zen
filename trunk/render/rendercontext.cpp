@@ -130,7 +130,7 @@ bool RenderContext::changeModePriv( u32 modeIndex, bool windowed, bool testCoope
 
 	lost_ = false;
 
-	UINT availTexMem = Direct3DDevice9_->GetAvailableTextureMem();
+	u32 availTexMem = Direct3DDevice9_->GetAvailableTextureMem();
 
 	updateDeviceInfo();
 	updateProjectionMatrix();
@@ -453,7 +453,7 @@ bool RenderContext::createDevice( HWND hWnd, u32 deviceIndex, u32 modeIndex, boo
 		(devicesInfo_[ deviceIndex_ ].caps_.PrimitiveMiscCaps & D3DPMISCCAPS_INDEPENDENTWRITEMASKS);
 
 	setGammaCorrection();
-	UINT availTexMem = Direct3DDevice9_->GetAvailableTextureMem();
+	u32 availTexMem = Direct3DDevice9_->GetAvailableTextureMem();
 	updateDeviceInfo();
 	updateProjectionMatrix();
 	initRenderStates();
@@ -842,7 +842,7 @@ Matrix& RenderContext::getViewProjectionMatrix()
 	return viewProjectionMatrix_;
 }
 
-u32 RenderContext::drawIndexedPrimitive( D3DPRIMITIVETYPE type, INT baseVertexIndex, UINT minIndex, UINT numVertices, UINT startIndex, UINT primitiveCount )
+u32 RenderContext::drawIndexedPrimitive( D3DPRIMITIVETYPE type, INT baseVertexIndex, u32 minIndex, u32 numVertices, u32 startIndex, u32 primitiveCount )
 {
 	return Direct3DDevice9_->DrawIndexedPrimitive( type, baseVertexIndex, minIndex, numVertices, startIndex, primitiveCount );
 }
@@ -943,8 +943,8 @@ void RenderContext::initVertexDeclarations_()
 		},
 		//	eVertexDeclarationType_PositionTTexture
 		{
-		{ 0,	0,	D3DDECLTYPE_FLOAT4,		D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITIONT,	0},
-		{ 0,	16, D3DDECLTYPE_FLOAT2,		D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD,	0},
+		{ 0,	0,	D3DDECLTYPE_FLOAT3,		D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITIONT,	0},
+		{ 0,	12, D3DDECLTYPE_FLOAT2,		D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD,	0},
 		D3DDECL_END()
 		},
 
@@ -1031,12 +1031,12 @@ Ray RenderContext::getPickingRay()
 	return r;
 }
 
-u32 RenderContext::drawIndexedPrimitiveUP( D3DPRIMITIVETYPE primitiveType,UINT minIndex, UINT numVertices, UINT primitiveCount, CONST void* pIndexData, D3DFORMAT indexDataFormat, CONST void* pVertexStreamZeroData, UINT vertexStreamZeroStride )
+u32 RenderContext::drawIndexedPrimitiveUP( D3DPRIMITIVETYPE primitiveType,u32 minIndex, u32 numVertices, u32 primitiveCount, CONST void* pIndexData, D3DFORMAT indexDataFormat, CONST void* pVertexStreamZeroData, u32 vertexStreamZeroStride )
 {
 	return Direct3DDevice9_->DrawIndexedPrimitiveUP( primitiveType, minIndex,numVertices, primitiveCount, pIndexData, indexDataFormat, pVertexStreamZeroData, vertexStreamZeroStride );
 }
 
-u32 RenderContext::drawPrimitiveUP( D3DPRIMITIVETYPE primitiveType, UINT primitiveCount, CONST void* pVertexStreamZeroData, UINT vertexStreamZeroStride )
+u32 RenderContext::drawPrimitiveUP( D3DPRIMITIVETYPE primitiveType, u32 primitiveCount, CONST void* pVertexStreamZeroData, u32 vertexStreamZeroStride )
 {
 	return Direct3DDevice9_->DrawPrimitiveUP( primitiveType, primitiveCount,pVertexStreamZeroData, vertexStreamZeroStride );
 }

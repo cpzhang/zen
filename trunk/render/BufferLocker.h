@@ -17,7 +17,7 @@ public:
 		if(vertices_)
 			vb_.unlock();
 	}
-	BufferLocker( BufferType& vb, UINT offset, UINT size, DWORD flags )
+	BufferLocker( BufferType& vb, u32 offset, u32 size, DWORD flags )
 		: vertices_( 0 ), vb_( vb )
 	{
 		if( FAILED( vb.lock( offset, size, &vertices_, flags ) ) )

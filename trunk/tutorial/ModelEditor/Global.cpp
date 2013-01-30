@@ -21,6 +21,7 @@
 #include "misc/FileSystem.h"
 #include "tinyXML2/tinyxml2.h"
 #include "model/EntityInstance.h"
+#include "font/FontManager.h"
 extern int tolua_LuaAPI_open (lua_State* tolua_S);
 Global::Global()
 {
@@ -63,11 +64,7 @@ void Global::destroy()
 		delete pi_;
 		pi_ = NULL;
 	}
-	//destroySkeletonManager();
-	//	destroyEntityManager();
-	//destroyMeshManager();
-	//destroyMaterialManager();
-	//destroyPartManager();
+	FontManager::getFontManager()->destroy();
 	//
 	destroySceneManager();
 	//

@@ -1,6 +1,7 @@
 #pragma once
 #include "Texture.h"
 #include "misc/stdHead.h"
+#include "misc/dxHead.h"
 class ApiRender_ ManagedTexture: public Texture
 {
 public:
@@ -8,6 +9,13 @@ public:
 	~ManagedTexture();
 public:
 	bool load(const tstring & resourceID);
+	bool createTexture(u32 Width,
+		u32 Height,
+		u32 MipLevels,
+		DWORD Usage,
+		D3DFORMAT Format,
+		D3DPOOL Pool);
+	bool setSubData(int left, int top, int width, int height, void* pData, D3DFORMAT pf, int pitch);
 public:
 	virtual IDirect3DTexture9*	getDxTexture();
 	virtual tstring getFileName();

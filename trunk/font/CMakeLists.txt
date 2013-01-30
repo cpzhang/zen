@@ -27,6 +27,7 @@ else()
   target_link_libraries(${ItemName}
     render
     tinyxml2
+    ${CMAKE_SOURCE_DIR}/dependence/freetype-2.4.4/lib/freetype.lib
     )
   set_target_properties(${ItemName} PROPERTIES 
   # DEFINE_SYMBOL "${ItemName}_EXPORTS"
@@ -38,4 +39,5 @@ endif(StaticLibrary_)
 
 include_directories(
   ${CMAKE_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/dependence/freetype-2.4.4/include
 )

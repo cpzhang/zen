@@ -36,12 +36,12 @@ VertexBuffer::~VertexBuffer()
 	clear_();
 }
 
-HRESULT VertexBuffer::apply( UINT streamNumber /*= 0*/, UINT offsetInBytes /*= 0*/, UINT stride /*= 0 */ ) const
+HRESULT VertexBuffer::apply( u32 streamNumber /*= 0*/, u32 offsetInBytes /*= 0*/, u32 stride /*= 0 */ ) const
 {
 	return getRenderContex()->getDxDevice()->SetStreamSource( streamNumber, vertexBuffer_, offsetInBytes, stride );
 }
 
-HRESULT VertexBuffer::lock( UINT offset, UINT size, VOID** data, DWORD flags )
+HRESULT VertexBuffer::lock( u32 offset, u32 size, VOID** data, DWORD flags )
 {
 	HRESULT hr = 0;
 	if (vertexBuffer_)

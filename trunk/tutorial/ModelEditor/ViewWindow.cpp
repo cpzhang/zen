@@ -8,9 +8,11 @@
 #include "render/Colour.h"
 #include "render/TextureManager.h"
 #include "render/Texture.h"
+#include "font/FontManager.h"
+#include "font/FreeType.h"
 ViewWindow::ViewWindow()
 {
-
+	_fps = 0.0f;
 }
 
 ViewWindow::~ViewWindow()
@@ -195,6 +197,10 @@ void ViewWindow::onIdle(const float delta)
 		getRenderContex()->updateProjectionMatrix();
 		getSceneManager()->setRunType(eRunType_Editor);
 		getSceneManager()->setAllChunksVisible(true);
+		//
+		{
+			font_ = FontManager::getFontManager()->createFont(std::string("freetype\\LuYaHeiMb.TTF"), 18, eFontProperty_Normal, "freeNormal");
+		}
 	}
 	//
 	camera_.update(delta);
@@ -218,6 +224,13 @@ void ViewWindow::onIdle(const float delta)
 		getSceneManager()->render();
 		getGlobal()->render();
 	}
+	//ÆÁÄ»×Ö£¬×îºó»­
+	{
+		std::ostringstream ss;
+		ss<<"FPS = "<<_fps;
+		font_->render(Vector3(10, 10, 0), Vector3(1, 1, 0), Vector4(1, 0, 0, 1), ss.str());
+	}
+	
 	getRenderContex()->endScene();
 	getRenderContex()->present();
 }

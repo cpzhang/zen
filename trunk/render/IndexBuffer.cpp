@@ -42,7 +42,7 @@ HRESULT IndexBuffer::apply() const
 	return getRenderContex()->getDxDevice()->SetIndices( indexBuffer_);
 }
 
-HRESULT IndexBuffer::lock( UINT offset, UINT size, VOID** data, DWORD flags )
+HRESULT IndexBuffer::lock( u32 offset, u32 size, VOID** data, DWORD flags )
 {
 	HRESULT hr = 0;
 	if (indexBuffer_)

@@ -1,8 +1,9 @@
 #pragma once
 #include "misc/helper.h"
 #include "misc/stdHead.h"
+#include "misc/dxHead.h"
 #include "ConfigRender.h"
-struct IDirect3DTexture9;
+
 class ApiRender_ Texture
 {
 public:
@@ -24,6 +25,10 @@ public:\
 		return 0;
 	}
 	virtual bool load(const tstring & resourceID)
+	{
+		return false;
+	}
+	virtual bool setSubData(int left, int top, int width, int height, void* pData, D3DFORMAT pf, int pitch)
 	{
 		return false;
 	}

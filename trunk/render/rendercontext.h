@@ -49,11 +49,24 @@ struct sVDT_PositionTexture
 	Vector2 texture_;
 	static eVertexDeclarationType getType()
 	{
-		return eVertexDeclarationType_PositionColorTexture;
+		return eVertexDeclarationType_PositionTexture;
 	}
 	static size_t getSize()
 	{
 		return sizeof(sVDT_PositionTexture);
+	}
+};
+struct sVDT_PositionTTexture
+{
+	Vector3 position_;
+	Vector2 texture_;
+	static eVertexDeclarationType getType()
+	{
+		return eVertexDeclarationType_PositionTTexture;
+	}
+	static size_t getSize()
+	{
+		return sizeof(sVDT_PositionTTexture);
 	}
 };
 struct sVDT_PositionColor
@@ -206,9 +219,9 @@ public:
 	bool isMixedVertexProcessing() const;
 	bool changeMode( u32 modeIndex, bool windowed, bool testCooperative = false, u32 backBufferWidthOverride = 0);
 	bool isInitialized();
-	u32 drawIndexedPrimitive( D3DPRIMITIVETYPE type,	INT  baseVertexIndex, UINT minIndex, UINT numVertices, UINT startIndex, UINT primitiveCount );
-	u32 drawIndexedPrimitiveUP( D3DPRIMITIVETYPE primitiveType,UINT minIndex, UINT numVertices, UINT primitiveCount, CONST void* pIndexData, D3DFORMAT indexDataFormat, CONST void* pVertexStreamZeroData, UINT vertexStreamZeroStride );
-	u32 drawPrimitiveUP( D3DPRIMITIVETYPE primitiveType, UINT primitiveCount, CONST void* pVertexStreamZeroData, UINT vertexStreamZeroStride );
+	u32 drawIndexedPrimitive( D3DPRIMITIVETYPE type,	INT  baseVertexIndex, u32 minIndex, u32 numVertices, u32 startIndex, u32 primitiveCount );
+	u32 drawIndexedPrimitiveUP( D3DPRIMITIVETYPE primitiveType,u32 minIndex, u32 numVertices, u32 primitiveCount, CONST void* pIndexData, D3DFORMAT indexDataFormat, CONST void* pVertexStreamZeroData, u32 vertexStreamZeroStride );
+	u32 drawPrimitiveUP( D3DPRIMITIVETYPE primitiveType, u32 primitiveCount, CONST void* pVertexStreamZeroData, u32 vertexStreamZeroStride );
 
 	bool setVertexDeclaration( eVertexDeclarationType e );
 	void setCamera(Camera& c);

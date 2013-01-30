@@ -57,6 +57,16 @@ Texture* TextureManager::getTexture( const tstring & resourceID )
 	return t;
 }
 
+Texture* TextureManager::createTexture( u32 Width, u32 Height, u32 MipLevels, DWORD Usage, D3DFORMAT Format, D3DPOOL Pool )
+{
+	ManagedTexture* mt = new ManagedTexture;
+	if (mt->createTexture(Width, Height, MipLevels, Usage, Format, Pool))
+	{
+		return mt;
+	}
+	return NULL;
+}
+
 ApiRender_ TextureManager* createTextureManager()
 {
 	new TextureManager;

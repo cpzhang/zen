@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <map>
+#include <hash_map>
 #include <stack>
 #include <cmath>
 #include <algorithm>
