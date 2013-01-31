@@ -12,6 +12,7 @@
 #include "ParticleEmitter.h"
 #include "font/FontManager.h"
 #include "font/FreeType.h"
+#include "misc/Logger.h"
 void EntityInstance::render()
 {
 	getRenderContex()->getDxDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
@@ -241,10 +242,11 @@ void EntityInstance::setAnimation( const tstring& resourceId )
 
 void EntityInstance::update( float delta )
 {
+	delta *= Speed_;
 	//skin
 	if (SkinCurrent_)
 	{
-		AnimationTime_.update(delta * Speed_);
+		AnimationTime_.update(delta);
 		{
 			if (FontManager::getPointer()->getFont())
 			{
@@ -262,6 +264,21 @@ void EntityInstance::update( float delta )
 		if (!Skeleton_->_matrices.empty())
 		{
 			memcpy(&MatricesSkin_[0], &Skeleton_->_matrices[0], Skeleton_->_matrices.size() * sizeof(Matrix));
+			for (size_t i = 0; i != MatricesSkin_.size(); ++i)
+			{
+				Matrix& m = MatricesSkin_[i];
+				std::ostringstream ss;
+				ss<<"current = "<<AnimationTime_.current<<"</br>";
+				ss<<m[0][0]<<"  "<<m[0][1]<<"  "<<m[0][2]<<"  "<<m[0][3]<<"</br>";
+				ss<<m[1][0]<<"  "<<m[1][1]<<"  "<<m[1][2]<<"  "<<m[1][3]<<"</br>";
+				ss<<m[2][0]<<"  "<<m[2][1]<<"  "<<m[2][2]<<"  "<<m[2][3]<<"</br>";
+				ss<<m[3][0]<<"  "<<m[3][1]<<"  "<<m[3][2]<<"  "<<m[3][3]<<"</br>";
+				if (m[3][1] > 2000)
+				{
+					breakable;
+				}
+				Record(ss);
+			}
 		}
 	}
 	//material

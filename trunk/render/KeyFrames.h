@@ -161,7 +161,7 @@ public:
 		while(b < e)
 		{
 			int middle = ((b + e) >> 1);
-			if (t == middle)
+			if (t == _keyFrames[middle].time)
 			{
 				return _keyFrames[middle].v;
 			}
