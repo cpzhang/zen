@@ -1,10 +1,10 @@
 #include "FreeType.h"
-#include "render/rendercontext.h"
 #include "render/Fx.h"
 #include "render/FxManager.h"
 #include "render/Texture.h"
 #include "render/TextureManager.h"
 #include "misc/FileSystem.h"
+#include "render/Colour.h"
 //
 FreeType::FreeType()
 	: _activeTex(0), _baseX(0), _fx(0)
@@ -89,7 +89,7 @@ bool FreeType::destroy()
 }	
 
 
-bool FreeType::render( Vector3& basePoint, Vector3& direction, const Vector4& color, std::string& text )
+bool FreeType::render( Vector2& basePoint, const Vector4& color, std::string& text )
 {
 	if (text.size() == 0)
 	{
@@ -145,7 +145,45 @@ bool FreeType::render( Vector3& basePoint, Vector3& direction, const Vector4& co
 	return true;
 }
 
-void FreeType::_renderImpl( FTex* fft, const Vector4& color, Vector3& basePoint )
+void FreeType::render()
+{
+	if (_caches.empty())
+	{
+		return;
+	}
+	//渲染缓存的字，根据纹理与颜色分类，渲染批次可减少很多
+	getRenderContex()->setVertexDeclaration(sVDT_PositionTTexture::getType());
+	u32 passes = 0;
+	_fx->getDxEffect()->Begin(&passes, 0);
+	for (u32 i = 0; i != passes; ++i)
+	{
+		_fx->getDxEffect()->BeginPass(i);
+		for (FontCacheMHashMap::iterator it = _caches.begin(); it != _caches.end(); ++it)
+		{
+			Texture* tex = it->first;
+			_fx->getDxEffect()->SetTexture("g_MeshTexture", tex->getDxTexture());
+			ColorVertexMHashMap& cv = it->second;
+			for (ColorVertexMHashMap::iterator ju = cv.begin(); ju != cv.end(); ++ju)
+			{
+				Vector4 color = Colour::getVector4Normalised(ju->first);
+				_fx->getDxEffect()->SetVector("g_diffuse", &color);
+				//
+				_fx->getDxEffect()->CommitChanges();
+				//
+				std::vector<sVDT_PositionTTexture>& vs = ju->second;
+				getRenderContex()->drawPrimitiveUP(D3DPT_TRIANGLELIST, vs.size()/3, &vs[0], sVDT_PositionTTexture::getSize());
+			}
+		}
+		_fx->getDxEffect()->EndPass();
+	}
+	_fx->getDxEffect()->End();
+	//
+	getRenderContex()->setVertexDeclaration(eVertexDeclarationType_Null);
+	//
+	_caches.clear();
+}
+
+void FreeType::_renderImpl( FTex* fft, const Vector4& color, Vector2& basePoint )
 {
 	static unsigned short sIndices[6] = {0, 1, 2, 0, 2, 3};
 	//
@@ -162,29 +200,14 @@ void FreeType::_renderImpl( FTex* fft, const Vector4& color, Vector3& basePoint 
 
 	vertices[3].position_ = Vector3(_baseX + fft->_bearingX, basePoint.y + fft->_height - fft->_bearingY, 0.f);
 	vertices[3].texture_ = Vector2(fft->_uv0.x, fft->_uv2.y);
+	//缓存起来
+	_caches[fft->_tex][color.getARGB()].push_back(vertices[0]);
+	_caches[fft->_tex][color.getARGB()].push_back(vertices[1]);
+	_caches[fft->_tex][color.getARGB()].push_back(vertices[2]);
 	//
-	// render
-	{
-		//
-		getRenderContex()->setVertexDeclaration(sVDT_PositionTTexture::getType());
-		u32 passes = 0;
-		_fx->getDxEffect()->SetTexture("g_MeshTexture", fft->_tex->getDxTexture());
-		_fx->getDxEffect()->SetVector("g_diffuse", &color);
-		_fx->getDxEffect()->Begin(&passes, 0);
-		for (u32 i = 0; i != passes; ++i)
-		{
-			_fx->getDxEffect()->BeginPass(i);
-			//
-			getRenderContex()->drawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, 4, 2, sIndices, D3DFMT_INDEX16, vertices, sVDT_PositionTTexture::getSize());
-	
-			_fx->getDxEffect()->EndPass();
-		}
-		_fx->getDxEffect()->End();
-	}
-	
-	//
-	getRenderContex()->setVertexDeclaration(eVertexDeclarationType_Null);
-
+	_caches[fft->_tex][color.getARGB()].push_back(vertices[0]);
+	_caches[fft->_tex][color.getARGB()].push_back(vertices[2]);
+	_caches[fft->_tex][color.getARGB()].push_back(vertices[3]);
 	//
 	_baseX += fft->_width;
 }

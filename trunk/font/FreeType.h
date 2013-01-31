@@ -6,6 +6,7 @@
 #include "render/vector2.h"
 #include "render/vector3.h"
 #include "render/vector4.h"
+#include "render/rendercontext.h"
 //
 enum eFontProperty
 {
@@ -34,6 +35,8 @@ struct FTex
 	float			_width;
 	float			_height;
 };
+typedef stdext::hash_map<u32, std::vector<sVDT_PositionTTexture>> ColorVertexMHashMap;
+typedef stdext::hash_map<Texture*, ColorVertexMHashMap> FontCacheMHashMap;
 
 class ApiFont_ FreeType
 {
@@ -44,18 +47,21 @@ public:
 public:
 	virtual bool create(std::string& faceFile, unsigned int fontSize, eFontProperty fontProperty);
 	virtual bool destroy();
-	virtual bool render(Vector3& basePoint, Vector3& direction, const Vector4& color, std::string& text);
+	virtual bool render(Vector2& basePoint, const Vector4& color, std::string& text);
+public:
 	void onInvalidateDevice();
 	void onRestoreDevice();
+	void render();
 private:
 	//
 	unsigned short _computeUnicode(std::string& character);
 	FTex* _parse(unsigned short unicode, bool chinese = false);
 	void _addCode(unsigned short unicode, bool chinese = false);
-	void _renderImpl(FTex* fft, const Vector4& color, Vector3& direction);
+	void _renderImpl(FTex* fft, const Vector4& color, Vector2& direction);
 
 	//
 private:
+	FontCacheMHashMap _caches;
 	//
 	static const unsigned int	_TEXTURE_SIZE;
 	unsigned int				_OFFSET_VERTICAL;

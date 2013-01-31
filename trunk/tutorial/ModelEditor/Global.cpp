@@ -64,7 +64,7 @@ void Global::destroy()
 		delete pi_;
 		pi_ = NULL;
 	}
-	FontManager::getFontManager()->destroy();
+	FontManager::getPointer()->destroy();
 	//
 	destroySceneManager();
 	//

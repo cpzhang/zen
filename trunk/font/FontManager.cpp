@@ -39,6 +39,15 @@ FreeType* FontManager::getFont( const std::string& fontName)
 	return _fonts[fontName];
 }
 
+FreeType* FontManager::getFont()
+{
+	if (_fonts.empty())
+	{
+		return NULL;
+	}
+	return _fonts.begin()->second;
+}
+
 void FontManager::destroy()
 {
 	for (NameFreetypeMap::iterator i = _fonts.begin(); i != _fonts.end(); ++i)

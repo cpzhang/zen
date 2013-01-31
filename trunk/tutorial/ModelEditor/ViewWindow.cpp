@@ -199,7 +199,7 @@ void ViewWindow::onIdle(const float delta)
 		getSceneManager()->setAllChunksVisible(true);
 		//
 		{
-			font_ = FontManager::getFontManager()->createFont(std::string("freetype\\LuYaHeiMb.TTF"), 18, eFontProperty_Normal, "freeNormal");
+			font_ = FontManager::getPointer()->createFont(std::string("freetype\\LuYaHeiMb.TTF"), 18, eFontProperty_Normal, "freeNormal");
 		}
 	}
 	//
@@ -228,9 +228,9 @@ void ViewWindow::onIdle(const float delta)
 	{
 		std::ostringstream ss;
 		ss<<"FPS = "<<_fps;
-		font_->render(Vector3(10, 10, 0), Vector3(1, 1, 0), Vector4(1, 0, 0, 1), ss.str());
+		font_->render(Vector2(10, 10), Vector4(1, 0, 0, 1), ss.str());
 	}
-	
+	font_->render();
 	getRenderContex()->endScene();
 	getRenderContex()->present();
 }

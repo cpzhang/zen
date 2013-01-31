@@ -10,6 +10,8 @@
 #include "render/FxManager.h"
 #include "render/rendercontext.h"
 #include "ParticleEmitter.h"
+#include "font/FontManager.h"
+#include "font/FreeType.h"
 void EntityInstance::render()
 {
 	getRenderContex()->getDxDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
@@ -243,6 +245,16 @@ void EntityInstance::update( float delta )
 	if (SkinCurrent_)
 	{
 		AnimationTime_.update(delta * Speed_);
+		{
+			if (FontManager::getPointer()->getFont())
+			{
+				std::ostringstream ss;
+				ss<<"begin = "<<AnimationTime_.start<<std::endl;
+				ss<<"end = "<<AnimationTime_.end<<std::endl;
+				ss<<"current = "<<AnimationTime_.current<<std::endl;
+				FontManager::getPointer()->getFont()->render(Vector2(10, 30), Vector4(1, 0, 0, 1), ss.str());
+			}
+		}
 		Skeleton_->update(AnimationTime_, SkinCurrent_);
 		//
 		MatricesSkin_.clear();

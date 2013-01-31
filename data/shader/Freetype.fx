@@ -36,7 +36,7 @@ PS_OUTPUT RenderScenePS( VS_INPUT In )
     PS_OUTPUT Output;
     // Lookup mesh texture and modulate it with diffuse
     float4 t = tex2D(MeshTextureSampler, In.TexCoord);
-    Output.RGBColor = float4(g_diffuse.x, g_diffuse.y, g_diffuse.z, t.w);
+    Output.RGBColor = float4(g_diffuse.x, g_diffuse.y, g_diffuse.z, t.w * g_diffuse.w);
 
     return Output;
 }
