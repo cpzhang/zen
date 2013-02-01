@@ -4,6 +4,7 @@
 #include "misc/ConstBaseIterator.h"
 #include "misc/singleton.h"
 #include "ModelResManager.h"
+#include "render/matrix.h"
 class BoneNode;
 class Skin;
 typedef stdext::hash_map<std::string, BoneNode*> BoneNodeMap;

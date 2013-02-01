@@ -22,29 +22,19 @@ OrbitCamera::~OrbitCamera()
 
 }
 
-float OrbitCamera::speed() const
+float OrbitCamera::getSpeed() const
 {
-	return speed_[0];
+	return speed_;
 }
 
-void OrbitCamera::speed( float s )
+void OrbitCamera::setSpeed( float s )
 {
-	speed_[0] = s;
-}
-
-float OrbitCamera::turboSpeed() const
-{
-	return speed_[1];
-}
-
-void OrbitCamera::turboSpeed( float s )
-{
-	speed_[1] = s;
+	speed_ = s;
 }
 
 void OrbitCamera::update( float dTime )
 {
-	if (handleKeyEvent())
+	if (0  && handleKeyEvent())
 	{
 		handleInput(dTime);
 	}
@@ -108,6 +98,9 @@ bool OrbitCamera::handleMouseEvent()
 			handled = true;
 		}
 	}
+	if (isKeyDown(VK_MBUTTON))
+	{
+	}
 	lastPos.x = pt.x;
 	lastPos.y = pt.y;
 	return handled;
@@ -170,13 +163,7 @@ void OrbitCamera::polarToView()
 
 void OrbitCamera::handleInput( float dTime )
 {
-	float movementSpeed;
-
-	if (isKeyDown(VK_CAPITAL))
-		movementSpeed = speed();
-	else
-		movementSpeed = turboSpeed();
-
+	float movementSpeed = speed_;
 	//frame rate independent speed, but capped
 	if ( dTime < 0.1f )
 		movementSpeed *= dTime;

@@ -55,7 +55,7 @@ void EntityInstance::render()
 			if (w)
 			{
 				Matrix m = Matrix::Identity;
-				m.setScale(0.01f, 0.01f, 0.01f);
+				m.make(Position_, Scale_, AngleY_);
 				ef->SetMatrix(w, &m);
 			}
 			//
@@ -247,7 +247,7 @@ void EntityInstance::update( float delta )
 	if (SkinCurrent_)
 	{
 		AnimationTime_.update(delta);
-		{
+		/*{
 			if (FontManager::getPointer()->getFont())
 			{
 				std::ostringstream ss;
@@ -256,7 +256,7 @@ void EntityInstance::update( float delta )
 				ss<<"current = "<<AnimationTime_.current<<std::endl;
 				FontManager::getPointer()->getFont()->render(Vector2(10, 30), Vector4(1, 0, 0, 1), ss.str());
 			}
-		}
+		}*/
 		Skeleton_->update(AnimationTime_, SkinCurrent_);
 		//
 		MatricesSkin_.clear();
@@ -264,7 +264,7 @@ void EntityInstance::update( float delta )
 		if (!Skeleton_->_matrices.empty())
 		{
 			memcpy(&MatricesSkin_[0], &Skeleton_->_matrices[0], Skeleton_->_matrices.size() * sizeof(Matrix));
-			for (size_t i = 0; i != MatricesSkin_.size(); ++i)
+			/*for (size_t i = 0; i != MatricesSkin_.size(); ++i)
 			{
 				Matrix& m = MatricesSkin_[i];
 				std::ostringstream ss;
@@ -278,7 +278,7 @@ void EntityInstance::update( float delta )
 					breakable;
 				}
 				Record(ss);
-			}
+			}*/
 		}
 	}
 	//material
@@ -397,6 +397,16 @@ void EntityInstance::renderImpT0()
 void EntityInstance::renderImpT2()
 {
 
+}
+
+void EntityInstance::setPosition( const Vector3& p )
+{
+	Position_ = p;
+}
+
+void EntityInstance::rotateY( float p )
+{
+	AngleY_ = p;
 }
 
 Create_Singleton_Imp(EntityInstanceManager, ApiModel_)

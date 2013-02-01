@@ -1,12 +1,8 @@
 #include "FrameWindow.h"
 #include "Global.h"
-
 CAppModule _Module;
-
 int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE , LPTSTR lpstrCmdLine, int nCmdShow)
 {
-	
-	//
 	createGlobal();
 	FrameWindow mw;
 	mw.CreateEx();
@@ -29,10 +25,11 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE , LPTSTR lpstrCmdLine, int n
 		}
 		else
 		{
+			//Retrieves the number of milliseconds that have elapsed since the system was started, up to 49.7 days.
 			static float lastTick = GetTickCount();
 			float currentTick = GetTickCount();
 			float delta = currentTick - lastTick;
-			if (delta >= 33.33f)
+			if (delta >= 33.f)
 			{
 				mw.onIdle(delta);
 				lastTick = currentTick;

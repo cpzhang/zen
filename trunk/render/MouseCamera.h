@@ -37,7 +37,7 @@ public:
 	void init( const Matrix & v );
 	void init( const Vector3 & eye, const Vector3 & lookAt, const Vector3 & up );
 	void viewToPolar();
-
+	void setPosition(const Vector3 & eye);
 	void polarToView();
 
 	void handleInput( float dTime );

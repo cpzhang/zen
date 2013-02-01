@@ -7,6 +7,7 @@
 #include "misc/Singleton.h"
 #include "render/Fx.h"
 #include "render/KeyFrames.h"
+#include "render/matrix.h"
 #include "ModelResManager.h"
 class Fx;
 /*

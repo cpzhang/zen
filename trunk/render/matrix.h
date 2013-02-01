@@ -3,7 +3,7 @@
 #include "vector4.h"
 #include "vector3.h"
 #include "ConfigRender.h"
-class Quaternion;
+#include "Quaternion.h"
 class ApiRender_ Matrix : public D3DXMATRIX
 {
 public:
@@ -118,16 +118,31 @@ public:
 	{
 		setScale( scale.x, scale.y, scale.z );
 	}
-	void	setRotate(const Quaternion* q )
+	void	build(const Quaternion* q )
 	{
 		D3DXMatrixRotationQuaternion( this, (const D3DXQUATERNION *)q );
 	}
-	void make( const Vector3& position, const Vector3& scale, Quaternion& orientation )
+	void	buildRotationY(float q )
 	{
-		setIdentity();
-		setScale(scale);
-		setRotate(&orientation);
-		setTranslate(position);
+		D3DXMatrixRotationY( this, q );
+	}
+	void make( const Vector3& position, const Vector3& scale, const float angleY)
+	{
+		Quaternion orientation;
+		orientation.fromAngleAxis(angleY, Vector3::AxisY);
+		make(position, scale, orientation);
+	}
+	void make( const Vector3& position, const Vector3& scale, const Quaternion& orientation )
+	{
+		D3DXMatrixTransformation(
+			this,
+			NULL,
+			NULL,
+			&scale,
+			NULL,
+			(D3DXQUATERNION*)&orientation,
+			&position
+			);
 	}
 	Vector3 applyVector( const Vector3& v2 ) const
 	{

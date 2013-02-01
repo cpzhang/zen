@@ -20,6 +20,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/wtl81/Include
   ${CMAKE_SOURCE_DIR}/tolua-5.2.0/include
   ${CMAKE_SOURCE_DIR}/lua/src
+  ${CMAKE_SOURCE_DIR}/dependence/freetype-2.4.4/include
 )
 link_directories(
   ${CMAKE_SOURCE_DIR}/dependence/directx/lib/x86
@@ -55,6 +56,7 @@ target_link_libraries(${ItemName}
   # terrain.lib
   model
   tinyxml2
+  font
   )
 
 add_custom_command(

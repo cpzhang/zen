@@ -34,14 +34,19 @@ LRESULT DataDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 LRESULT DataDlg::OnFileItemSelected( UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/ )
 {
 	LPCSTR FileName = (LPCSTR)wParam;
-	//getLuaScript()->doFile(FileName);
-	getGlobal()->setCurrentLayer(FileName);
-	//
-	IFileManager::getFile(FileName)->update(FileName, &properties_);
+	SelectFile(FileName);
 	
 	return TRUE;
 }
 
+
+void DataDlg::SelectFile( const tstring& s )
+{
+	//getLuaScript()->doFile(FileName);
+	getGlobal()->setCurrentLayer(s);
+	//
+	IFileManager::getFile(s)->update(s, &properties_);
+}
 
 void DataDlg::onIdle(const float delta)
 {

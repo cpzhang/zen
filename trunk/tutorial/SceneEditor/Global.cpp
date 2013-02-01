@@ -21,6 +21,7 @@
 #include "misc/FileSystem.h"
 #include "tinyXML2/tinyxml2.h"
 #include "model/EntityInstance.h"
+#include "font/FontManager.h"
 extern int tolua_LuaAPI_open (lua_State* tolua_S);
 Global::Global()
 {
@@ -49,10 +50,15 @@ bool Global::create()
 	{
 		return false;
 	}
-	//createEntityManager();
-	//createMeshManager();
-	//createMaterialManager();
-	//createPartManager();
+	camera_.setSpeed(5.0f);
+	Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
+	Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
+	camera_.limit_ =  BoundingBox( minBound, maxBound );
+	camera_.create(10, MATH_PI, MATH_PI_Half);
+	//
+	Camera c = getRenderContex()->getCamera();
+	c.setFarPlane(10000.0f);
+	getRenderContex()->setCamera(c);
 	return true;
 }
 
@@ -63,11 +69,7 @@ void Global::destroy()
 		delete pi_;
 		pi_ = NULL;
 	}
-	//destroySkeletonManager();
-//	destroyEntityManager();
-	//destroyMeshManager();
-	//destroyMaterialManager();
-	//destroyPartManager();
+	FontManager::getPointer()->destroy();
 	//
 	destroySceneManager();
 	//
@@ -79,7 +81,7 @@ void Global::destroy()
 	//
 	ModelResManager::getInstance()->destroy();
 	destroyLuaScript();
-	//
+	//在此以前，把VB 纹理等显存资源释放干净
 	if (getRenderContex())
 	{
 		destroyRenderContex();
@@ -89,6 +91,7 @@ void Global::destroy()
 void Global::clear_()
 {
 	pi_ = NULL;
+	movable_ = NULL;
 	isSmoothAverage_ = false;
 	absoluteHeight_ = 0;
 	isAbsoluteHeight_ = false;
@@ -112,14 +115,21 @@ Decal* Global::getBrushDecal()
 
 void Global::update(float delta)
 {
+	camera_.setCenter(heroController_.getPosition() + Vector3(0, 2, 0));
+	camera_.update(delta);
+	heroController_.setCameraAngleY(camera_.angleXZ_);
+	getRenderContex()->setViewMatrix(camera_.view_);
 	//
 	updatePickingPoint_();
 	//
 	getStateManager()->update();
 	//
+	//
+	heroController_.update(delta);
 	if (pi_)
 	{
 		pi_->update(delta);
+		heroController_.apply(movable_);
 	}
 }
 
@@ -461,6 +471,7 @@ void Global::setCurrentLayer( const tstring& name )
 				e.create(path);
 				e.setAnimation("Run");
 				pi_ = &e;
+				movable_ = &e;
 			}
 			::DeleteFile(path.c_str());
 		}
@@ -502,6 +513,7 @@ void Global::setCurrentLayer( const tstring& name )
 				e.create(path);
 				e.setAnimation("Run");
 				pi_ = &e;
+				movable_ = &e;
 			}
 			::DeleteFile(path.c_str());
 		}
@@ -512,6 +524,7 @@ void Global::setCurrentLayer( const tstring& name )
 		e.create(name);
 		e.setAnimation("Run");
 		pi_ = &e;
+		movable_ = &e;
 	}
 	else if(suffix == ".mz")
 	{
@@ -562,6 +575,11 @@ void Global::setAnimation( const tstring& name )
 	}
 }
 
+void Global::onMouseWheel( float d )
+{
+	camera_.distance_ += d;
+}
+
 void createGlobal()
 {
 	new Global;
@@ -580,4 +598,56 @@ void destroyGlobal()
 		Global::getInstancePtr()->destroy();
 		delete Global::getInstancePtr();
 	}
+}
+
+void HeroController::update(float delta)
+{
+	delta *= 0.001f;
+	bool moved = true;
+	if ( isKeyDown('W'))
+	{
+		angleY_ = cameraAngleY + MATH_PI; 
+	}
+	else if (isKeyDown('S') )
+	{
+		angleY_ = cameraAngleY;  	
+	}
+	else if (isKeyDown('A') )
+	{
+		angleY_ = cameraAngleY + MATH_PI_Half; 
+	}
+	else if ( isKeyDown('D') )
+	{
+		angleY_ = cameraAngleY - MATH_PI_Half; 
+	}
+	else
+	{
+		moved = false;
+	}
+	//
+	if (moved)
+	{
+		Vector3 v(sin(angleY_), 0.0f, cos(angleY_));
+		float s = speed_ * delta;
+		v = v * s;
+		position_ += v;
+	}
+	{
+		if (FontManager::getPointer()->getFont())
+		{
+			std::ostringstream ss;
+			ss<<"position = "<<position_.x<<", "<<position_.y<<", "<<position_.z<<std::endl;
+			FontManager::getPointer()->getFont()->render(Vector2(10, 30), Vector4(1, 0, 0, 1), ss.str());
+		}
+	}
+}
+
+void HeroController::apply( IMovable* m )
+{
+	if (NULL == m)
+	{
+		return;
+	}
+	m->setPosition(position_);
+	m->rotateY(angleY_ + MATH_PI);
 }

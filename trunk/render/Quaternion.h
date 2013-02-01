@@ -1,7 +1,7 @@
 #pragma once
 #include "ConfigRender.h"
 #include "Vector3.h"
-#include "Matrix.h"
+class Matrix;
 //
 class ApiRender_ Quaternion : public D3DXQUATERNION
 {

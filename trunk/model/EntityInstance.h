@@ -11,7 +11,14 @@ class Entity;
 class Skin;
 class Material;
 class Skeleton;
-class ApiModel_ EntityInstance : public IRender
+class ApiModel_ IMovable
+{
+public:
+	virtual ~IMovable(){}
+	virtual void setPosition(const Vector3& p) = 0;
+	virtual void rotateY(float p) = 0;
+};
+class ApiModel_ EntityInstance : public IRender, public IMovable
 {
 public:
 	~EntityInstance()
@@ -23,10 +30,17 @@ public:
 		SkinCurrent_ = NULL;
 		Entity_ = NULL;
 		Speed_ = 1.0f;
+		Position_ = Vector3::Zero;
+		AngleY_ = 0.0f;
+		Scale_ = Vector3::One;
+		Scale_ *= 0.01f;
 	}
 public:
 	virtual void render();
 	virtual void update(float delta);
+public:
+	virtual void setPosition(const Vector3& p);
+	virtual void rotateY(float p);
 public:
 	bool create(const tstring& resourceId);
 	void destroy();
@@ -74,6 +88,10 @@ private:
 	FloatVec Cols_;
 	//
 	ParticleClusterVec Particles_;
+	//
+	Vector3 Position_;
+	float AngleY_;
+	Vector3 Scale_;
 };
 
 Create_Singleton_Declaration(EntityInstanceManager, EntityInstance, ApiModel_)

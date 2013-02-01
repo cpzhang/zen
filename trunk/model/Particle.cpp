@@ -256,7 +256,7 @@ void Particle::updatePostion_(const Vector3& right, const Vector3& up, const Vec
 			Quaternion q;
 			q.fromAngleAxis(al * TwoPI / 360.f, forword);
 			Matrix mr;
-			mr.setRotate(&q);
+			mr.build(&q);
 			v0 = mr.applyVector(v0);
 			v1 = mr.applyVector(v1);
 		}

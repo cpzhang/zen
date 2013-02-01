@@ -289,3 +289,12 @@ void MouseCamera::handleInput( float dTime )
 		view_ = oldView;
 	}
 }
+
+void MouseCamera::setPosition( const Vector3 & eye )
+{
+	view_.invert();
+	view_._41 = eye.x;
+	view_._42 = eye.x;
+	view_._43 = eye.x;
+	view_.invert();
+}

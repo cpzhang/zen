@@ -2,11 +2,12 @@
 #include "misc/atlHead.h"
 #include "misc/stdHead.h"
 #include "IdleHandler.h"
-#include "render/MouseCamera.h"
 #include "render/orbitcamera.h"
 #include "render/rendercontext.h"
 class Decal;
 class Texture;
+class FreeType;
+
 class ViewWindow: 
 	public CWindowImpl<ViewWindow>
 	,public IdleHandler
@@ -44,6 +45,6 @@ public:
 private:
 	float					_fps;
 	//OrbitCamera camera_;
-	MouseCamera	camera_;
+	FreeType* font_;
 };
 

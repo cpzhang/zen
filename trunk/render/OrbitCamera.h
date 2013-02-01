@@ -10,7 +10,7 @@ class ApiRender_ OrbitCamera
 {
 public:
 	Matrix	view_;
-	float	speed_[2];
+	float	speed_;
 	//Stuff to handle key events correctly
 	typedef std::map< int, bool>	KeyDownMap;
 	KeyDownMap	keyDown_;
@@ -29,13 +29,8 @@ public:
 	OrbitCamera();
 	~OrbitCamera();
 public:
-	float speed() const;
-
-	void speed( float s );
-
-	float turboSpeed() const;
-
-	void turboSpeed( float s );
+	float getSpeed() const;
+	void setSpeed( float s );
 	void update( float dTime);
 	bool handleKeyEvent( );
 	bool handleMouseEvent();
@@ -43,7 +38,14 @@ public:
 	void viewToPolar();
 
 	void polarToView();
-
+	Vector3 getCenter()
+	{
+		return center_;
+	}
+	void setCenter(const Vector3& p)
+	{
+		center_ = p;
+	}
 	void handleInput( float dTime );
 private:
 	void polarToViewImp_();

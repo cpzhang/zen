@@ -1,4 +1,5 @@
 #include "Quaternion.h"
+#include "Matrix.h"
 void Quaternion::set( const Vector3 &v, float _w )
 {
 	this->x	    = v.x;

@@ -1,9 +1,38 @@
 #pragma once
 #include "misc/Singleton.h"
 #include "misc/stdHead.h"
+#include "render/MouseCamera.h"
+#include "render/OrbitCamera.h"
 class Decal;
 class IdleHandler;
 class IRender;
+class IMovable;
+class HeroController
+{
+public:
+	HeroController()
+	{
+		angleY_ = 0.0f;
+		position_ = Vector3::Zero;
+		speed_ = 1.0f;
+	}
+public:
+	void update(float delta);
+	void apply(IMovable* m);
+	Vector3 getPosition()
+	{
+		return position_;
+	}
+	void setCameraAngleY(float a)
+	{
+		cameraAngleY = a;
+	}
+private:
+	float cameraAngleY;
+	float angleY_;
+	Vector3 position_;
+	float speed_;
+};
 // tolua_begin
 class Global : public Singleton<Global>
 {
@@ -44,6 +73,8 @@ public:
 	void refreshDataRoot();
 	//
 	void setAnimation(const tstring& name);
+	//
+	void onMouseWheel(float d);
 private:
 	void clear_();
 	bool createBrushDecal();
@@ -60,6 +91,9 @@ private:
 	//
 	tstring layer_;
 	IRender* pi_;
+	IMovable* movable_;
+	HeroController heroController_;
+	OrbitCamera	camera_;
 	// tolua_begin
 };
 	// tolua_end

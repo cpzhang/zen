@@ -8,9 +8,11 @@
 #include "render/Colour.h"
 #include "render/TextureManager.h"
 #include "render/Texture.h"
+#include "font/FontManager.h"
+#include "font/FreeType.h"
 ViewWindow::ViewWindow()
 {
-
+	_fps = 0.0f;
 }
 
 ViewWindow::~ViewWindow()
@@ -53,6 +55,10 @@ LRESULT ViewWindow::onDestroy( UINT, WPARAM, LPARAM, BOOL& )
 
 LRESULT ViewWindow::onMouseWheel( UINT, WPARAM wParam, LPARAM, BOOL& b )
 {
+	//
+	float delta = ( short )HIWORD( wParam );
+	delta /= 120.0f;
+	getGlobal()->onMouseWheel(delta);
 	return 1;
 }
 
@@ -182,29 +188,19 @@ void ViewWindow::onIdle(const float delta)
 		}
 		getRenderContex()->createDevice(m_hWnd, index, 0, true, true, Vector2::Zero);
 		getGlobal()->create();
-		camera_.setSpeed(5.0f);
-		camera_.turboSpeed(5.0f);
-		Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
-		Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
-		camera_.limit_ =  BoundingBox( minBound, maxBound );
-		camera_.create(10, MATH_PI, MATH_PI_Half);
-		camera_.init(Vector3(0, 0, -20), Vector3(0, 0, 0), Vector3::AxisY);
-		//
-		Camera c = getRenderContex()->getCamera();
-		c.setFarPlane(10000.0f);
-		getRenderContex()->setCamera(c);
 		getRenderContex()->updateProjectionMatrix();
 		getSceneManager()->setRunType(eRunType_Editor);
 		getSceneManager()->setAllChunksVisible(true);
+		//
+		{
+			font_ = FontManager::getPointer()->createFont(std::string("freetype\\LuYaHeiMb.TTF"), 18, eFontProperty_Normal, "freeNormal");
+		}
 	}
 	//
-	camera_.update(delta);
 	getSceneManager()->update();
-	{
-		getGlobal()->update(delta);
-	}
+	getGlobal()->update(delta);
 	//
-	getRenderContex()->setViewMatrix(camera_.view_);
+	
 	//
 	u32 clearFlags = D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER;
 	if ( getRenderContex()->isStencilAvailable() )
@@ -216,9 +212,18 @@ void ViewWindow::onIdle(const float delta)
 	//poem();
 	if (getSceneManager())
 	{
+		//画地表
 		getSceneManager()->render();
+		//画人
 		getGlobal()->render();
 	}
+	//屏幕字，最后画
+	{
+		std::ostringstream ss;
+		ss<<"FPS = "<<_fps;
+		font_->render(Vector2(10, 10), Vector4(1, 0, 0, 1), ss.str());
+	}
+	font_->render();
 	getRenderContex()->endScene();
 	getRenderContex()->present();
 }

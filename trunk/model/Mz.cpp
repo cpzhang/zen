@@ -29,7 +29,7 @@ Vector3 yz2dx(const Vector3& m)
 Quaternion yz2dx(const Quaternion& m)
 {
 	Matrix t;
-	t.setRotate(&m);
+	t.build(&m);
 	t = yz2dx(t);
 	Quaternion q(t);
 	return q;
