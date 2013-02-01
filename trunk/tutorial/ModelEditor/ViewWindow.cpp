@@ -217,7 +217,7 @@ void ViewWindow::onIdle(const float delta)
 	getRenderContex()->getDxDevice()->Clear( 0, NULL, clearFlags, scc.getARGB(), 1, 0 );
 	getRenderContex()->beginScene();
 	renderAxisXYZ();
-	//poem();
+	//
 	if (getSceneManager())
 	{
 		getSceneManager()->render();

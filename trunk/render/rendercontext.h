@@ -8,6 +8,7 @@
 #include "vector2.h"
 #include "misc\Singleton.h"
 #include "Ray.h"
+#include "Texture.h"
 enum eVertexDeclarationType
 {
 	eVertexDeclarationType_Null,
@@ -156,6 +157,21 @@ struct DeviceInfo
 	std::vector< D3DDISPLAYMODE >	displayModes_;
 	u32							compatibilityFlags_;
 };
+enum eRenderTarget
+{
+	eRenderTarget_Implicit,
+	eRenderTarget_Additional,
+	eRenderTarget_Texture,
+	eRenderTarget_Size,
+};
+class IRenderTarget
+{
+public:
+	virtual ~IRenderTarget(){};
+public:
+	virtual void apply() = 0;
+	virtual HRESULT present() = 0;
+};
 
 class ApiRender_ RenderContext: public Singleton<RenderContext>
 {
@@ -165,6 +181,20 @@ public:
 private:
 	void clear_();
 public:
+	u32 createRenderTarget(eRenderTarget e);
+	IRenderTarget* getRenderTarget(u32 k)
+	{
+		return renderTargets_[k];
+	}
+	void releaseRenderTarget(u32 k)
+	{
+		IRenderTarget* t = renderTargets_[k];
+		if (t)
+		{
+			delete t;
+			renderTargets_.erase(k);
+		}
+	}
 	Ray getPickingRay();
 	IDirect3DSurface9* getScreenCopy();
 
@@ -179,7 +209,6 @@ public:
 	bool create();
 	void destroy();
 	bool createDevice(HWND hWnd, u32 deviceIndex, u32 modeIndex, bool windowed,bool requireStencil,const Vector2 & windowedSize,bool forceRef = false);
-//	u32 setVertexDeclaration( IDirect3DVertexDeclaration9* pVD );
 	u32 setFVF( u32 fvf );
 	void resetWorldMatricesStack();
 	void updateViewProjectionMatrix();
@@ -284,6 +313,11 @@ private:
 	D3DDEVTYPE					deviceType_;
 	LONG						windowedStyle_;
 	bool						initialized_;
+	typedef stdext::hash_map<u32, IRenderTarget*> RenderTargetHashMap;
+	RenderTargetHashMap renderTargets_;
+	IRenderTarget* currentRenderTarget_;
+	u32 currentRenderTargetKey_;
+	u32 implicitRenderTargetKey_;
 };
 
 ApiRender_ bool createRenderContex();
@@ -291,3 +325,56 @@ ApiRender_ bool createRenderContex();
 ApiRender_ void destroyRenderContex();
 
 ApiRender_ RenderContext* getRenderContex();
+
+class ImplicitRenderTarget : public IRenderTarget
+{
+public:
+	virtual void apply()
+	{
+		IDirect3DSurface9 *pBackBuffer = 0;
+		getRenderContex()->getDxDevice()->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO,&pBackBuffer);
+		getRenderContex()->getDxDevice()->SetRenderTarget(0,pBackBuffer);
+		pBackBuffer->Release();
+	}
+	virtual HRESULT present()
+	{
+		return getRenderContex()->getDxDevice()->Present(0,0,0,0);
+	}
+};
+class AdditionalRenderTarget : public IRenderTarget
+{
+public:
+	virtual void apply()
+	{
+		IDirect3DSurface9 *pBackBuffer = 0;
+		m_pSwapChain->GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO,&pBackBuffer);
+		getRenderContex()->getDxDevice()->SetRenderTarget(0,pBackBuffer);
+		pBackBuffer->Release();
+	}
+	virtual HRESULT present()
+	{
+		return m_pSwapChain->Present(0,0,0,0,0);
+	}
+private:
+	IDirect3DSwapChain9*	m_pSwapChain;
+};
+class TextureRenderTarget : public IRenderTarget
+{
+public:
+	virtual void apply()
+	{
+		IDirect3DSurface9 *pSurface = 0;
+		m_pTexture->getDxTexture()->GetSurfaceLevel(0,&pSurface);
+		if(pSurface)
+		{
+			getRenderContex()->getDxDevice()->SetRenderTarget(0,pSurface);
+			pSurface->Release();
+		}
+	}
+	virtual HRESULT present()
+	{
+		return S_OK;
+	};
+private:
+	Texture*				m_pTexture;
+};

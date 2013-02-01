@@ -173,6 +173,9 @@ void RenderContext::clear_()
 	backBufferWidthOverride_ = 0;
 	halfScreenWidth_ = 320.f;
 	halfScreenHeight_ = 240.f;
+	currentRenderTargetKey_ = 0;
+	currentRenderTarget_ = NULL;
+	implicitRenderTargetKey_ = 0;
 }
 
 IDirect3DSurface9* RenderContext::getScreenCopy()
@@ -240,7 +243,8 @@ void RenderContext::clearBindings()
 HRESULT RenderContext::present()
 {
 	clearBindings();
-	return Direct3DDevice9_->Present(NULL, NULL, 0, NULL);
+	//return Direct3DDevice9_->Present(NULL, NULL, 0, NULL);
+	return currentRenderTarget_->present();
 }
 
 bool RenderContext::create()
@@ -334,6 +338,8 @@ bool RenderContext::create()
 
 void RenderContext::destroy()
 {
+	//
+	releaseRenderTarget(implicitRenderTargetKey_);
 	//
 	for (unsigned char i = eVertexDeclarationType_Null; i != eVertexDeclarationType_Size; ++i)
 	{
@@ -462,19 +468,14 @@ bool RenderContext::createDevice( HWND hWnd, u32 deviceIndex, u32 modeIndex, boo
 		Direct3DDevice9_->SetSoftwareVertexProcessing( TRUE );
 	}
 	initVertexDeclarations_();
+	//
+	implicitRenderTargetKey_ = createRenderTarget(eRenderTarget_Implicit);
+	currentRenderTarget_ = getRenderTarget(implicitRenderTargetKey_);
+	currentRenderTargetKey_ = implicitRenderTargetKey_;
+	currentRenderTarget_->apply();
+	//
 	return true;
 }
-
-// u32 RenderContext::setVertexDeclaration( IDirect3DVertexDeclaration9* pVD )
-// {
-// 	if (pVD != vertexDeclaration_)
-// 	{
-// 		vertexDeclaration_ = pVD;
-// 		fvf_ = 0;
-// 		return Direct3DDevice9_->SetVertexDeclaration( pVD );
-// 	}
-// 	return D3D_OK;
-// }
 
 bool RenderContext::setVertexDeclaration( eVertexDeclarationType e )
 {
@@ -1059,6 +1060,31 @@ HRESULT RenderContext::applyProjectionMatrix()
 HRESULT RenderContext::LightEnable( DWORD LightIndex, BOOL bEnable )
 {
 	return Direct3DDevice9_->LightEnable(LightIndex, bEnable);
+}
+
+u32 RenderContext::createRenderTarget( eRenderTarget e)
+{
+	static u32 tCounter = 0;
+	u32 n = 0;
+	IRenderTarget* t = NULL;
+	switch (e)
+	{
+	case eRenderTarget_Implicit:
+		t = new ImplicitRenderTarget;
+		break;
+	case eRenderTarget_Additional:
+		t = new AdditionalRenderTarget;
+		break;
+	case eRenderTarget_Texture:
+		t = new TextureRenderTarget;
+		break;
+	}
+	if (NULL != t)
+	{
+		n = ++tCounter;
+		renderTargets_[n] = t;
+	}
+	return n;
 }
 
 ApiRender_ bool createRenderContex()
