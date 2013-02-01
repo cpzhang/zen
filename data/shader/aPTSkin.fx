@@ -95,6 +95,3 @@ technique T2
 		PixelShader  = NULL;//compile ps_2_0 PS();
     }  
 }
-
-
-

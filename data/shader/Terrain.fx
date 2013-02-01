@@ -81,10 +81,7 @@ technique T0
       WorldTransform[0] = <gWorld>;
       ViewTransform = <gView>;
       ProjectionTransform = <gProjection>;
-      
-	  CullMode = None;
-      FillMode = Wireframe;
-
+    
       Texture[0] = <gLayer0>;
       ColorOP[0] = SelectArg1;
       ColorArg1[0] = Texture;
@@ -101,9 +98,6 @@ technique T0
       ViewTransform = <gView>;
       ProjectionTransform = <gProjection>;
       
-	  CullMode = None;
-      FillMode = Wireframe;
-
       Texture[0] = <gLayer0>;
       ColorOP[0] = SelectArg1;
       ColorArg1[0] = Texture;
@@ -120,9 +114,7 @@ technique T2
 {
     pass P0
     {          
-		AlphaBlendEnable = False;
 		CullMode = None;
-		FillMode = Solid;
 		VertexShader = compile vs_2_0 RenderSceneVS();
 		PixelShader  = compile ps_2_0 RenderScenePS();
     }

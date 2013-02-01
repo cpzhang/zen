@@ -102,8 +102,8 @@ void Global::clear_()
 bool Global::createBrushDecal()
 {
 	brushDecal_ = getSceneManager()->createDecal(TEXT("HeightBrush"));
-	brushDecal_->setFxFile(TEXT("e:/ZenBin/data/shader/PositionDecal.fx"));
-	brushDecal_->setTexture(TEXT("e:/ZenBin/data/image/heighttool.dds"));
+	brushDecal_->setFxFile(TEXT("shader/PositionDecal.fx"));
+	brushDecal_->setTexture(TEXT("brush/heighttool.dds"));
 	brushDecal_->setRadius(100.0f);
 	return true;
 }

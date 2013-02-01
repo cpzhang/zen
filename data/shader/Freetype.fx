@@ -50,15 +50,17 @@ technique RenderScene
 {
     pass P0
     {
-     /* The default value is D3DCULL_CCW. */
-      CullMode = None;
       AlphaBlendEnable = true;
       SrcBlend = SrcAlpha;
       DestBlend = InvSrcAlpha;
   
-     VertexShader = null;//compile vs_2_0 RenderSceneVS();
-      
+	VertexShader = NULL;
       PixelShader  = compile ps_2_0 RenderScenePS();
-      FillMode = Solid;
+    }
+	 pass P1
+    {
+      AlphaBlendEnable = false;
+      SrcBlend = One;
+      DestBlend = Zero;
     }
 }

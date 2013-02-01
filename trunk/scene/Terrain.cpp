@@ -321,7 +321,10 @@ void Terrain::renderDecal( Decal* dc )
 		for (int p = 0; p != passes; ++p)
 		{
 			ef->BeginPass(p);
-			ck->render();
+			if (p != passes - 1)
+			{
+				ck->render();
+			}
 			ef->EndPass();
 		}
 	}

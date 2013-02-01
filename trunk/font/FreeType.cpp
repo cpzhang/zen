@@ -158,20 +158,23 @@ void FreeType::render()
 	for (u32 i = 0; i != passes; ++i)
 	{
 		_fx->getDxEffect()->BeginPass(i);
-		for (FontCacheMHashMap::iterator it = _caches.begin(); it != _caches.end(); ++it)
+		if (i != passes - 1)
 		{
-			Texture* tex = it->first;
-			_fx->getDxEffect()->SetTexture("g_MeshTexture", tex->getDxTexture());
-			ColorVertexMHashMap& cv = it->second;
-			for (ColorVertexMHashMap::iterator ju = cv.begin(); ju != cv.end(); ++ju)
+			for (FontCacheMHashMap::iterator it = _caches.begin(); it != _caches.end(); ++it)
 			{
-				Vector4 color = Colour::getVector4Normalised(ju->first);
-				_fx->getDxEffect()->SetVector("g_diffuse", &color);
-				//
-				_fx->getDxEffect()->CommitChanges();
-				//
-				std::vector<sVDT_PositionTTexture>& vs = ju->second;
-				getRenderContex()->drawPrimitiveUP(D3DPT_TRIANGLELIST, vs.size()/3, &vs[0], sVDT_PositionTTexture::getSize());
+				Texture* tex = it->first;
+				_fx->getDxEffect()->SetTexture("g_MeshTexture", tex->getDxTexture());
+				ColorVertexMHashMap& cv = it->second;
+				for (ColorVertexMHashMap::iterator ju = cv.begin(); ju != cv.end(); ++ju)
+				{
+					Vector4 color = Colour::getVector4Normalised(ju->first);
+					_fx->getDxEffect()->SetVector("g_diffuse", &color);
+					//
+					_fx->getDxEffect()->CommitChanges();
+					//
+					std::vector<sVDT_PositionTTexture>& vs = ju->second;
+					getRenderContex()->drawPrimitiveUP(D3DPT_TRIANGLELIST, vs.size()/3, &vs[0], sVDT_PositionTTexture::getSize());
+				}
 			}
 		}
 		_fx->getDxEffect()->EndPass();

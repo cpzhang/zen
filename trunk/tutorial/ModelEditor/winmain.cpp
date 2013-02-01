@@ -37,5 +37,6 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE , LPTSTR lpstrCmdLine, int n
 		}
 	}
 	destroyGlobal();
+
 	return 0;
 }

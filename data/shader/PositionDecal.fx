@@ -100,9 +100,14 @@ technique T2
 		SrcBlend = SrcColor;
 		DestBlend = InvSrcColor;
 		CullMode = None;
-		FillMode = Solid;
 		VertexShader = compile vs_2_0 RenderSceneVS();
 		PixelShader  = compile ps_2_0 RenderScenePS();
+    }
+	 pass P1
+    {
+      AlphaBlendEnable = false;
+      SrcBlend = One;
+      DestBlend = Zero;
     }
 }
 

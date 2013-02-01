@@ -22,6 +22,7 @@ public:
 		COMMAND_ID_HANDLER(ID_BUTTON_PaintTerrain, OnToobarChangeTexture)
 		COMMAND_ID_HANDLER(ID_BUTTON_Data, OnToobarData)
 		COMMAND_ID_HANDLER(ID_BUTTON_Options, OnToobarOptions)
+		COMMAND_ID_HANDLER(ID_BUTTON_Go, OnGo)
 		CHAIN_MSG_MAP(CFrameWindowImpl<FrameWindow>)
 		CHAIN_MSG_MAP(CUpdateUI<FrameWindow>)
 		REFLECT_NOTIFICATIONS()// to child
@@ -47,6 +48,7 @@ private:
 	LRESULT OnToobarData(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnToobarChangeTexture(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnToobarOptions(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnGo(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	//
 	void tabSwitch(WORD id);
 private:

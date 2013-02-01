@@ -58,9 +58,7 @@ LRESULT FrameWindow::onCreate( UINT, WPARAM, LPARAM, BOOL& )
 LRESULT FrameWindow::OnNewscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	// TODO: 在此添加命令处理程序代码
-	SceneNewDlg dlg;
-	dlg.DoModal();
-
+	
 	return 0;
 }
 
@@ -116,4 +114,9 @@ void FrameWindow::tabSwitch(WORD id)
 	UISetCheck(ID_BUTTON_PaintTerrain, false);
 	//
 	UISetCheck(id, true);
+}
+LRESULT FrameWindow::OnGo( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
+{
+	dlgData_.SelectFile(TEXT("f:\\zen\\data\\model\\Character_1015\\Character_1015.entity"));
+	return 0;
 }

@@ -54,6 +54,7 @@
 #define ID_BUTTON_PaintTerrain          40015
 #define ID_BUTTON40016                  40016
 #define ID_BUTTON_Options               40017
+#define ID_BUTTON_Go                    40018
 
 // Next default values for new objects
 // 
