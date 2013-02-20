@@ -409,4 +409,16 @@ void EntityInstance::rotateY( float p )
 	AngleY_ = p;
 }
 
+void EntityInstance::scale( const Vector3& p )
+{
+	Scale_ = Scale_ * p;
+}
+
+EntityInstance* EntityInstance::clone() const
+{
+	EntityInstance* e = new EntityInstance;
+	e->create(FileName_);
+	return e;
+}
+
 Create_Singleton_Imp(EntityInstanceManager, ApiModel_)

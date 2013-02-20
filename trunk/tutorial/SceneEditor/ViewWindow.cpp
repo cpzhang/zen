@@ -10,6 +10,7 @@
 #include "render/Texture.h"
 #include "font/FontManager.h"
 #include "font/FreeType.h"
+#include "PreviewWindow.h"
 ViewWindow::ViewWindow()
 {
 	_fps = 0.0f;
@@ -169,7 +170,6 @@ void ViewWindow::onIdle(const float delta)
 		return;
 	}
 	//
-//	MessageBox("t");
 	if (!getRenderContex()->isInitialized())
 	{
 		getRenderContex()->setWaitForVBL(false);
@@ -195,6 +195,21 @@ void ViewWindow::onIdle(const float delta)
 		{
 			font_ = FontManager::getPointer()->createFont(std::string("freetype\\LuYaHeiMb.TTF"), 18, eFontProperty_Normal, "freeNormal");
 		}
+		//
+		{
+			//getGlobal()->getPreviewWindow()->Create(dlgData_.m_hWnd, CRect(0,0,300,300), NULL, WS_CHILD | WS_VISIBLE);
+			//getGlobal()->getPreviewWindow()->Create(GetDlgItem(IDC_STATIC_Previewer), CRect(0,0,300,300), NULL, WS_CHILD | WS_VISIBLE);
+			//getGlobal()->getPreviewWindow()->SubclassWindow(GetDlgItem(IDC_STATIC_Previewer));
+			getGlobal()->setPreviewWindowHandle(getGlobal()->getPreviewWindow()->m_hWnd);
+		}
+	}
+	//
+	if(0){
+		POINT pt;
+		//Retrieves the position of the mouse cursor, in screen coordinates.
+		GetCursorPos(&pt);
+		ScreenToClient(&pt);
+		getGlobal()->getPreviewWindow()->MoveWindow(pt.x, pt.y, 300, 300);
 	}
 	//
 	getSceneManager()->update();
@@ -220,12 +235,14 @@ void ViewWindow::onIdle(const float delta)
 	//ÆÁÄ»×Ö£¬×îºó»­
 	{
 		std::ostringstream ss;
-		ss<<"FPS = "<<_fps;
+		ss<<"FPS = "<<_fps<<" Delta = "<<delta;
 		font_->render(Vector2(10, 10), Vector4(1, 0, 0, 1), ss.str());
 	}
 	font_->render();
 	getRenderContex()->endScene();
 	getRenderContex()->present();
+	//
+	getGlobal()->renderPreviewWindow();
 }
 
 void ViewWindow::onRefreshLuaScript()

@@ -9,6 +9,7 @@
 #include "model/Skeleton.h"
 #include "model/Part.h"
 #include "EventManager.h"
+#include "PreviewWindow.h"
 LRESULT DataDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled )
 {
 	bHandled = TRUE;
@@ -27,6 +28,11 @@ LRESULT DataDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 	properties_.SubclassWindow(GetDlgItem(IDC_LIST_DataProperty));
 	properties_.SetExtendedListStyle(PLS_EX_CATEGORIZED);
 	//properties_.AddItem( PropCreateSimpleInt(_T("动画"), 0), CCategoryProperty::getNullObject());
+	//previewCanvas_.SubclassWindow( GetDlgItem( IDC_STATIC_Previewer ) );     
+	//previewCanvas_.SetColor(RGB(255,0,0));
+	//previewCanvas_.SetGradientColor(RGB(0,0,0));
+	//getGlobal()->getPreviewWindow()->Create(GetDlgItem( IDC_STATIC ).m_hWnd, CRect(0,0,300,300), NULL, WS_CHILD | WS_VISIBLE);
+	getGlobal()->getPreviewWindow()->SubclassWindow( GetDlgItem( IDC_STATIC ) );     
 	//
 	return bHandled;
 }
@@ -50,6 +56,7 @@ void DataDlg::SelectFile( const tstring& s )
 
 void DataDlg::onIdle(const float delta)
 {
+	
 }
 
 void DataDlg::onRefreshLuaScript()
@@ -59,6 +66,7 @@ void DataDlg::onRefreshLuaScript()
 
 LRESULT DataDlg::OnDestroyDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/ )
 {
+	
 	getGlobal()->removeHandler("DataDlg");
 	return 1;
 }
@@ -98,116 +106,11 @@ void FileNull::update( const std::string& fn, CPropertyListCtrl* pl , bool reset
 
 void FilePart::update( const std::string& fn, CPropertyListCtrl* pl , bool reset /*= true*/, CCategoryProperty* ct /*= NULL*/)
 {
-	/*
-	if (reset)
-	{
-		pl->ResetContent();
-	}
-	//部件
-	Part* p = getPartManager()->get(fn);
-	if (NULL == p)
-	{
-		return;
-	}
-	if (ct == NULL)
-	{
-		ct = CCategoryProperty::getNullObject();
-	}
-	//Mesh
-	Mesh* m = p->getMesh();
-	if (m)
-	{
-		CCategoryProperty* pCategory = NULL;
-		HPROPERTY c = pl->AddItem( PropCreateCategory(_T("Mesh")), ct);
-		pCategory = (CCategoryProperty*)(c);
-		pCategory->setCategory(ct);
-		if (!reset)
-		{
-			pCategory->SetLevel(1);
-		}
-		pl->AddItem( PropCreateSimpleString(_T("文件"), FileSystem::cutDataPath(m->getFilePath()).c_str()), pCategory);
-		pl->AddItem( PropCreateSimpleInt(_T("版本"), m->getVersion()), pCategory);
-		pl->AddItem( PropCreateSimpleInt(_T("面数"), m->getFaceNumber()), pCategory);
-		pl->AddItem( PropCreateSimpleInt(_T("顶点"), m->getVertexNumber()), pCategory);
-		pl->AddItem( PropCreateSimpleInt(_T("动画"), 0), pCategory);
-	}
-	//材质
-	Material* t = p->getMaterial();
-	if (t)
-	{
-		HPROPERTY c = pl->AddItem( PropCreateCategory(_T("Material")), ct);
-		CCategoryProperty* pCategory = NULL;
-		pCategory = (CCategoryProperty*)(c);
-		pCategory->setCategory(ct);
-		if (!reset)
-		{
-			pCategory->SetLevel(1);
-		}
-		pl->AddItem( PropCreateSimpleString(_T("文件"), FileSystem::cutDataPath(t->getFilePath()).c_str()), pCategory);
-		Fx* f = t->getFx();
-		if (f)
-		{
-			pl->AddItem( PropCreateSimpleString(_T("FX"), FileSystem::cutDataPath(f->getFilePath()).c_str()), pCategory);
-		}
-	}
-	*/
+	
 }
 void FileEntity::update( const std::string& fn, CPropertyListCtrl* pl , bool reset /*= true*/, CCategoryProperty* ct /*= NULL*/)
 {
-	/*
-	//清空
-	if (reset)
-	{
-		pl->ResetContent();
-	}
-	//部件
-	Entity* p = ModelResManager::getInstance()->get<Entity>(fn);
-	if (NULL == p)
-	{
-		return;
-	}
-	if (ct == NULL)
-	{
-		ct = CCategoryProperty::getNullObject();
-	}
-	for (size_t i = 0; i != p->getPartNumber(); ++i)
-	{
-		Part* pt = p->getPart(i);
-		if (pt)
-		{
-			HPROPERTY c = pl->AddItem( PropCreateCategory(pt->getFilePath().c_str()), ct);
-			CCategoryProperty* pCategory = (CCategoryProperty*)(c);
-			pCategory->SetLevel(0);
-			//pCategory->setCategory(NULL);
-			IFileManager::getFile(eFile_Part)->update(pt->getFilePath(), pl, false, pCategory);
-		}
-	}
-	//Skeleton
-	Skeleton* st = p->getSkeleton();
-	if (st)
-	{
-		HPROPERTY c = pl->AddItem( PropCreateCategory(_T("Skeleton")), ct);
-		CCategoryProperty* pCategory = NULL;
-		pCategory = (CCategoryProperty*)(c);
-		pCategory->setCategory(ct);
-		if (!reset)
-		{
-			pCategory->SetLevel(1);
-		}
-		pl->AddItem( PropCreateSimpleString(_T("文件"), FileSystem::cutDataPath(st->getFilePath()).c_str()), pCategory);
-		pl->AddItem( PropCreateSimpleInt(_T("骨骼"), st->getNumBoneNodes()), pCategory);
-		pl->AddItem( PropCreateSimpleInt(_T("蒙皮"), st->getSkinAnimationNumber()), pCategory);
-		for (int i = 0; i != st->getSkinAnimationNumber(); ++i)
-		{
-			sSkinAnimation* a = st->getSkinAnimation(i);
-			if (a)
-			{
-				pl->AddItem( PropCreateSimpleString(a->name.c_str(), a->skinFilePath.c_str()), pCategory);
-			}
-		}
-
-	}
-*/
+	
 }
 IFile* IFileManager::getFile( const std::string& fn )
 {

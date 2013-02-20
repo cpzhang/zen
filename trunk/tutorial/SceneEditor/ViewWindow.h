@@ -7,6 +7,7 @@
 class Decal;
 class Texture;
 class FreeType;
+class IRender;
 
 class ViewWindow: 
 	public CWindowImpl<ViewWindow>
@@ -44,7 +45,6 @@ public:
 	//
 private:
 	float					_fps;
-	//OrbitCamera camera_;
 	FreeType* font_;
 };
 

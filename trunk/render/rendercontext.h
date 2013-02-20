@@ -169,6 +169,7 @@ class IRenderTarget
 public:
 	virtual ~IRenderTarget(){};
 public:
+	virtual void create(HWND h){};
 	virtual void apply() = 0;
 	virtual HRESULT present() = 0;
 };
@@ -195,11 +196,17 @@ public:
 			renderTargets_.erase(k);
 		}
 	}
+	u32 getCurrentRenderTarget()
+	{
+		return currentRenderTargetKey_;
+	}
+	void setCurrentRenderTarget(u32 k);
 	Ray getPickingRay();
 	IDirect3DSurface9* getScreenCopy();
 
 	void setWaitForVBL( bool wait );
 	IDirect3DDevice9* getDxDevice() const;
+	IDirect3D9* getDxD3D9() const;
 	HRESULT beginScene();
 	HRESULT endScene();
 	void clearBindings();
@@ -344,19 +351,38 @@ public:
 class AdditionalRenderTarget : public IRenderTarget
 {
 public:
+	AdditionalRenderTarget()
+	{
+		SwapChain_ = NULL;
+	}
+public:
+	virtual void create(HWND h)
+	{
+		D3DPRESENT_PARAMETERS d3dpp;
+		ZeroMemory(&d3dpp,sizeof(d3dpp));
+		d3dpp.Windowed = TRUE;
+		d3dpp.SwapEffect = D3DSWAPEFFECT_COPY;
+		D3DDISPLAYMODE   mode;
+		getRenderContex()->getDxD3D9()->GetAdapterDisplayMode(D3DADAPTER_DEFAULT,&mode);
+		d3dpp.BackBufferFormat = mode.Format;
+		d3dpp.hDeviceWindow = h;
+		IDirect3DSwapChain9 *pSwapChain = 0;
+		HRESULT hr = getRenderContex()->getDxDevice()->CreateAdditionalSwapChain(&d3dpp,&SwapChain_);
+		
+	}
 	virtual void apply()
 	{
 		IDirect3DSurface9 *pBackBuffer = 0;
-		m_pSwapChain->GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO,&pBackBuffer);
+		SwapChain_->GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO,&pBackBuffer);
 		getRenderContex()->getDxDevice()->SetRenderTarget(0,pBackBuffer);
 		pBackBuffer->Release();
 	}
 	virtual HRESULT present()
 	{
-		return m_pSwapChain->Present(0,0,0,0,0);
+		return SwapChain_->Present(0,0,0,0,0);
 	}
 private:
-	IDirect3DSwapChain9*	m_pSwapChain;
+	IDirect3DSwapChain9*	SwapChain_;
 };
 class TextureRenderTarget : public IRenderTarget
 {

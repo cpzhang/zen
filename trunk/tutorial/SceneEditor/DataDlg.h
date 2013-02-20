@@ -1,12 +1,12 @@
 #pragma once
 #include "misc/atlHead.h"
+#include "dependence/GradientStatic/GradientStatic.h"
 #include "misc/FileSystem.h"
 #include "CEditImpl.h"
 #include "dependence/FileTreeCtrl/WtlFileTreeCtrl.h"
 #include "resource.h"
 #include "IdleHandler.h"
 #include "dependence/PropertyList/PropertyList.h"
-
 //
 class IFile
 {
@@ -50,6 +50,8 @@ public:
 	static IFile* getFile(eFile f);
 private:
 };
+//typedef CGradientStatic< CStatic > CGradientStatic;
+
 class DataDlg :
 	public CDialogImpl<DataDlg>
 	,public CWinDataExchange<DataDlg>
@@ -79,6 +81,8 @@ public:
 private:
 	CWtlFileTreeCtrl fileTree_;
 	CPropertyListCtrl properties_;
+	//CGradientStatic previewCanvas_; 
+	//u32 renderTargetKey_;
 };
 
 class TerrainTextureDlg :

@@ -220,6 +220,10 @@ IDirect3DDevice9* RenderContext::getDxDevice() const
 {
 	return Direct3DDevice9_;
 }
+IDirect3D9* RenderContext::getDxD3D9() const
+{
+	return Direct3D9_;
+}
 
 void RenderContext::clearBindings()
 {
@@ -244,6 +248,10 @@ HRESULT RenderContext::present()
 {
 	clearBindings();
 	//return Direct3DDevice9_->Present(NULL, NULL, 0, NULL);
+	if (currentRenderTarget_ == NULL)
+	{
+		return E_FAIL;
+	}
 	return currentRenderTarget_->present();
 }
 
@@ -470,9 +478,10 @@ bool RenderContext::createDevice( HWND hWnd, u32 deviceIndex, u32 modeIndex, boo
 	initVertexDeclarations_();
 	//
 	implicitRenderTargetKey_ = createRenderTarget(eRenderTarget_Implicit);
-	currentRenderTarget_ = getRenderTarget(implicitRenderTargetKey_);
-	currentRenderTargetKey_ = implicitRenderTargetKey_;
-	currentRenderTarget_->apply();
+	setCurrentRenderTarget(implicitRenderTargetKey_);
+	//currentRenderTarget_ = getRenderTarget(implicitRenderTargetKey_);
+	//currentRenderTargetKey_ = implicitRenderTargetKey_;
+	//currentRenderTarget_->apply();
 	//
 	return true;
 }
@@ -1085,6 +1094,16 @@ u32 RenderContext::createRenderTarget( eRenderTarget e)
 		renderTargets_[n] = t;
 	}
 	return n;
+}
+
+void RenderContext::setCurrentRenderTarget( u32 k )
+{
+	currentRenderTargetKey_ = k;
+	currentRenderTarget_ = getRenderTarget(currentRenderTargetKey_);
+	if (currentRenderTarget_)
+	{
+		currentRenderTarget_->apply();
+	}
 }
 
 ApiRender_ bool createRenderContex()

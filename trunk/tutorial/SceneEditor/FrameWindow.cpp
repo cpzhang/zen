@@ -2,6 +2,8 @@
 #include "SceneNewDlg.h"
 #include "StateManager.h"
 #include "scene/SceneManager.h"
+#include "Global.h"
+#include "PreviewWindow.h"
 FrameWindow::FrameWindow()
 {
 
@@ -52,6 +54,7 @@ LRESULT FrameWindow::onCreate( UINT, WPARAM, LPARAM, BOOL& )
   */
 	verticalSplitter_.SetSplitterPos(1024);
  
+	//
 	return 0;
 }
 
@@ -71,6 +74,7 @@ void FrameWindow::onIdle(const float delta)
 {
 	UIUpdateToolBar(FALSE);
 	canvas_.onIdle(delta);
+	dlgData_.onIdle(delta);
 }
 
 void FrameWindow::onRefreshLuaScript()

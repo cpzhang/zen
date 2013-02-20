@@ -17,6 +17,7 @@ public:
 	virtual ~IMovable(){}
 	virtual void setPosition(const Vector3& p) = 0;
 	virtual void rotateY(float p) = 0;
+	virtual void scale(const Vector3& p) = 0;
 };
 class ApiModel_ EntityInstance : public IRender, public IMovable
 {
@@ -41,12 +42,14 @@ public:
 public:
 	virtual void setPosition(const Vector3& p);
 	virtual void rotateY(float p);
+	virtual void scale(const Vector3& p);
 public:
 	bool create(const tstring& resourceId);
 	void destroy();
 	Entity* getEntity();
 	void setAnimation(const tstring& resourceId);
 	void setSpeed(float s);
+	EntityInstance* clone() const;
 private:
 	void updateMaterial_( float delta );
 	void renderImpT0();

@@ -1,33 +1,5 @@
-////////////////////////////////////////////////////////////////////////////
-//	Copyright (C): 2003, Ilya Solnyshkin
-//  www.bizon.org/ilya
-//
-//	Email :isolnyshkin@yahoo.com
-//
-//	File: 
-//	Date: 07.10.2003 16:56:01
-//	Description : NONE
-//	Update History: NONE
-//	      
-//	      
-//	Do expect bugs.
-//	Please let me know of any bugs/mods/improvements.
-//	and I will try to fix/incorporate them into this file.
-//	Enjoy!
-//
-//	Description : Programming - It's my Life 
-////////////////////////////////////////////////////////////////////////////
-#ifndef _GRADIENT_STATIC_H_
-#define _GRADIENT_STATIC_H_
-
-#if _MSC_VER > 1000 
 #pragma once
-#endif // _MSC_VER > 1000
-
-#include <atlmisc.h>
-
-template <class T> 
-class CGradientStaticT : public CWindowImpl< CGradientStaticT, T >
+class CGradientStatic : public CWindowImpl< CGradientStatic, CStatic >
 {
 protected:
 	CString m_sCaption;
@@ -61,7 +33,7 @@ private:
 	   }
 	}
 public:
-	CGradientStaticT ()
+	CGradientStatic ()
 	{
 		m_iLeftSpacing	= 10;
 		clLeft			= GetSysColor( COLOR_ACTIVECAPTION );
@@ -88,9 +60,9 @@ public:
 		clRight = cTemp;
 	}
 
-	DECLARE_WND_SUPERCLASS(0, T::GetWndClassName())
+	DECLARE_WND_SUPERCLASS(0, CStatic::GetWndClassName())
 
-	BEGIN_MSG_MAP(CGradientStaticT)
+	BEGIN_MSG_MAP(CGradientStatic)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)		
 		MESSAGE_HANDLER(WM_PAINT, OnPaint)
 	END_MSG_MAP()
@@ -101,9 +73,9 @@ public:
 		return lRet;
 	}
 
-	LRESULT OnPaint(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+	void render()
 	{
-	    CPaintDC dc(m_hWnd);
+		CPaintDC dc(m_hWnd);
 		CRect rect;
 		GetClientRect(&rect);
 
@@ -138,12 +110,10 @@ public:
 
 		if(pFont)
 			::SelectObject(dc.m_hDC, hfontOld);
-
+	}
+	LRESULT OnPaint(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+	{
+		render();
 		return 0;
 	}
 };
-
-typedef CGradientStaticT< CStatic > CGradientStatic;
-
-#endif //
-

@@ -22,6 +22,8 @@
 #include "tinyXML2/tinyxml2.h"
 #include "model/EntityInstance.h"
 #include "font/FontManager.h"
+//#include "ViewWindow.h"
+#include "PreviewWindow.h"
 extern int tolua_LuaAPI_open (lua_State* tolua_S);
 Global::Global()
 {
@@ -59,14 +61,21 @@ bool Global::create()
 	Camera c = getRenderContex()->getCamera();
 	c.setFarPlane(10000.0f);
 	getRenderContex()->setCamera(c);
+	Previewer_ = new PreviewWindow;
 	return true;
 }
 
 void Global::destroy()
 {
+	if (Previewer_)
+	{
+		delete Previewer_;
+		Previewer_ = NULL;
+	}
+	getRenderContex()->releaseRenderTarget(renderTargetKey_);
 	if (pi_)
 	{
-		delete pi_;
+		//delete pi_;
 		pi_ = NULL;
 	}
 	FontManager::getPointer()->destroy();
@@ -97,6 +106,9 @@ void Global::clear_()
 	isAbsoluteHeight_ = false;
 	brushDecal_ = 0;
 	brushStrength_ = 10;
+	//
+	renderTargetKey_ = 0;
+	previewWindowHandle_ = 0;
 }
 
 bool Global::createBrushDecal()
@@ -578,6 +590,38 @@ void Global::setAnimation( const tstring& name )
 void Global::onMouseWheel( float d )
 {
 	camera_.distance_ += d;
+}
+
+void Global::renderPreviewWindow()
+{
+	u32 rtk = getRenderContex()->getCurrentRenderTarget();
+	getRenderContex()->setCurrentRenderTarget(renderTargetKey_);
+	//
+	//
+	if (Previewer_)
+	{
+		Previewer_->render();
+	}
+	//
+	getRenderContex()->setCurrentRenderTarget(rtk);
+}
+
+void Global::setPreviewWindowHandle( HWND h )
+{
+	previewWindowHandle_ = h;
+	//
+	//
+	{
+		//
+		renderTargetKey_ = getRenderContex()->createRenderTarget(eRenderTarget_Additional);
+		IRenderTarget* rt = getRenderContex()->getRenderTarget(renderTargetKey_);
+		rt->create(previewWindowHandle_);
+	}
+}
+
+PreviewWindow* Global::getPreviewWindow()
+{
+	return Previewer_;
 }
 
 void createGlobal()

@@ -1,12 +1,15 @@
 #pragma once
 #include "misc/Singleton.h"
 #include "misc/stdHead.h"
+//#include "misc/atlHead.h"
 #include "render/MouseCamera.h"
 #include "render/OrbitCamera.h"
+//#include "ViewWindow.h"
 class Decal;
 class IdleHandler;
 class IRender;
 class IMovable;
+class PreviewWindow;
 class HeroController
 {
 public:
@@ -75,6 +78,10 @@ public:
 	void setAnimation(const tstring& name);
 	//
 	void onMouseWheel(float d);
+	void setPreviewWindowHandle(HWND h);
+	void renderPreviewWindow();
+	//
+	PreviewWindow* getPreviewWindow();
 private:
 	void clear_();
 	bool createBrushDecal();
@@ -94,6 +101,10 @@ private:
 	IMovable* movable_;
 	HeroController heroController_;
 	OrbitCamera	camera_;
+	//
+	u32 renderTargetKey_;
+	HWND previewWindowHandle_;
+	PreviewWindow* Previewer_;
 	// tolua_begin
 };
 	// tolua_end
