@@ -22,8 +22,8 @@
 #include "tinyXML2/tinyxml2.h"
 #include "model/EntityInstance.h"
 #include "font/FontManager.h"
-//#include "ViewWindow.h"
 #include "PreviewWindow.h"
+#include "scene/Node.h"
 extern int tolua_LuaAPI_open (lua_State* tolua_S);
 Global::Global()
 {
@@ -61,7 +61,7 @@ bool Global::create()
 	Camera c = getRenderContex()->getCamera();
 	c.setFarPlane(10000.0f);
 	getRenderContex()->setCamera(c);
-	
+	new NodeManager;
 	return true;
 }
 
@@ -73,11 +73,11 @@ void Global::destroy()
 		Previewer_ = NULL;
 	}
 	getRenderContex()->releaseRenderTarget(renderTargetKey_);
-	if (pi_)
-	{
-		//delete pi_;
-		pi_ = NULL;
-	}
+// 	if (pi_)
+// 	{
+// 		//delete pi_;
+// 		pi_ = NULL;
+// 	}
 	FontManager::getPointer()->destroy();
 	//
 	destroySceneManager();
@@ -99,8 +99,8 @@ void Global::destroy()
 
 void Global::clear_()
 {
-	pi_ = NULL;
-	movable_ = NULL;
+// 	pi_ = NULL;
+// 	movable_ = NULL;
 	isSmoothAverage_ = false;
 	absoluteHeight_ = 0;
 	isAbsoluteHeight_ = false;
@@ -111,6 +111,7 @@ void Global::clear_()
 	previewWindowHandle_ = 0;
 	//
 	Previewer_ = NULL;
+	Hero_ = NULL;
 }
 
 bool Global::createBrushDecal()
@@ -140,11 +141,16 @@ void Global::update(float delta)
 	//
 	//
 	heroController_.update(delta);
-	if (pi_)
+	//
+	if (Hero_)
 	{
-		pi_->update(delta);
-		heroController_.apply(movable_);
+		Hero_->update(delta);
 	}
+// 	if (pi_)
+// 	{
+// 		pi_->update(delta);
+// 		heroController_.apply(movable_);
+// 	}
 }
 
 float Global::getBrushStrength()
@@ -420,7 +426,7 @@ void decode(const std::string& name)
 		doc.SaveFile(path.c_str());
 	}
 }
-void Global::setCurrentLayer( const tstring& name )
+void Global::onSelectFile( const tstring& name )
 {
 	layer_ = name;
 	//
@@ -431,114 +437,18 @@ void Global::setCurrentLayer( const tstring& name )
 	}
 	std::string suffix = layer_.substr(dotPos, layer_.size() - dotPos);
 	std::transform(suffix.begin(), suffix.end(), suffix.begin(), tolower);
-	static EntityInstance e;
+	EntityInstance* i = NULL;
 	if(suffix == ".part")
 	{
-		// .entity 
-		{
-			tstring fileName = FileSystem::removeParent(name);
-			tstring partName = FileSystem::removeFileExtension(fileName);
-			tstring entityName = FileSystem::getParent(name);
-			entityName = FileSystem::removeParent(entityName);
-			//============================================================================
-			tinyxml2::XMLDocument doc;
-			// 
-			tinyxml2::XMLDeclaration* dec = doc.NewDeclaration("xml version=\"1.0\"");
-			doc.LinkEndChild(dec);
-			//
-			tinyxml2::XMLElement* ele = doc.NewElement("entity");
-			ele->SetAttribute("name", partName.c_str());
-
-			{
-				tinyxml2::XMLElement* a = doc.NewElement("part");
-				std::string meshPath;
-				a->SetAttribute("file", fileName.c_str());
-				ele->LinkEndChild(a);
-			}
-			{
-				tinyxml2::XMLElement* a = doc.NewElement("skeleton");
-				std::string meshPath;
-				meshPath += entityName;
-				meshPath += ".skeleton";
-				a->SetAttribute("file", meshPath.c_str());
-				ele->LinkEndChild(a);
-			}
-			{
-				tinyxml2::XMLElement* a = doc.NewElement("animation");
-				std::string meshPath;
-				meshPath += entityName;
-				meshPath += ".animation";
-				a->SetAttribute("file", meshPath.c_str());
-				ele->LinkEndChild(a);
-			}
-			doc.LinkEndChild(ele);
-			//
-			std::string path;// = exportPath + "/" + fileFinalName + ".entity";
-			{
-				path = FileSystem::getParent(name) + "/" + partName + "_t.entity";
-			}
-			//FileSystem::createFolder(path);
-			doc.SaveFile(path.c_str());
-			//
-			{
-				e.destroy();
-				e.create(path);
-				e.setAnimation("Run");
-				pi_ = &e;
-				movable_ = &e;
-			}
-			::DeleteFile(path.c_str());
-		}
+		i = selectedFilePart(name);
 	}
 	else if(suffix == ".particle")
 	{
-		// .entity 
-		{
-			tstring fileName = FileSystem::removeParent(name);
-			tstring partName = FileSystem::removeFileExtension(fileName);
-			tstring entityName = FileSystem::getParent(name);
-			entityName = FileSystem::removeParent(entityName);
-			//============================================================================
-			tinyxml2::XMLDocument doc;
-			// 
-			tinyxml2::XMLDeclaration* dec = doc.NewDeclaration("xml version=\"1.0\"");
-			doc.LinkEndChild(dec);
-			//
-			tinyxml2::XMLElement* ele = doc.NewElement("entity");
-			ele->SetAttribute("name", partName.c_str());
-			{
-				tinyxml2::XMLElement* a = doc.NewElement("particle");
-				std::string meshPath("particle/");
-				meshPath += fileName;
-				a->SetAttribute("file", meshPath.c_str());
-				ele->LinkEndChild(a);
-			}
-			doc.LinkEndChild(ele);
-			//
-			std::string path;// = exportPath + "/" + fileFinalName + ".entity";
-			{
-				path = FileSystem::getParent(name) + "/" + partName + "_t.entity";
-			}
-			//FileSystem::createFolder(path);
-			doc.SaveFile(path.c_str());
-			//
-			{
-				e.destroy();
-				e.create(path);
-				e.setAnimation("Run");
-				pi_ = &e;
-				movable_ = &e;
-			}
-			::DeleteFile(path.c_str());
-		}
+		i = selectedFileParticle(name);
 	}
 	else if(suffix == ".entity")
 	{
-		e.destroy();
-		e.create(name);
-		e.setAnimation("Run");
-		pi_ = &e;
-		movable_ = &e;
+		i = selectedFileEntity(name);
 	}
 	else if(suffix == ".mz")
 	{
@@ -548,7 +458,11 @@ void Global::setCurrentLayer( const tstring& name )
 	{
 		return;
 	}
-	Previewer_->setModel(pi_);
+	if (Hero_ && i)
+	{
+		Hero_->attach(i);
+	}
+	Previewer_->setModel(i);
 }
 
 tstring Global::getCurrentLayer()
@@ -558,9 +472,9 @@ tstring Global::getCurrentLayer()
 
 void Global::render()
 {
-	if (pi_)
+	if (Hero_)
 	{
-		pi_->render();
+		Hero_->render();
 	}
 }
 
@@ -583,11 +497,11 @@ void Global::refreshDataRoot()
 
 void Global::setAnimation( const tstring& name )
 {
-	if (pi_)
-	{
-		EntityInstance* e = (EntityInstance*)pi_;
-		e->setAnimation(name);
-	}
+// 	if (pi_)
+// 	{
+// 		EntityInstance* e = (EntityInstance*)pi_;
+// 		e->setAnimation(name);
+// 	}
 }
 
 void Global::onMouseWheel( float d )
@@ -637,10 +551,120 @@ void Global::createPreviewer()
 	setPreviewWindowHandle(Previewer_->m_hWnd);
 }
 
+void Global::setHero( const char* resID )
+{
+	if (Hero_)
+	{
+		Hero_->release();
+	}
+	Hero_ = NodeManager::getInstancePtr()->createNode("Hero");
+	onSelectFile(resID);
+}
+
+EntityInstance* Global::selectedFilePart( const tstring& name)
+{
+	// .entity 
+	{
+		tstring fileName = FileSystem::removeParent(name);
+		tstring partName = FileSystem::removeFileExtension(fileName);
+		tstring entityName = FileSystem::getParent(name);
+		entityName = FileSystem::removeParent(entityName);
+		//============================================================================
+		tinyxml2::XMLDocument doc;
+		// 
+		tinyxml2::XMLDeclaration* dec = doc.NewDeclaration("xml version=\"1.0\"");
+		doc.LinkEndChild(dec);
+		//
+		tinyxml2::XMLElement* ele = doc.NewElement("entity");
+		ele->SetAttribute("name", partName.c_str());
+
+		{
+			tinyxml2::XMLElement* a = doc.NewElement("part");
+			std::string meshPath;
+			a->SetAttribute("file", fileName.c_str());
+			ele->LinkEndChild(a);
+		}
+		{
+			tinyxml2::XMLElement* a = doc.NewElement("skeleton");
+			std::string meshPath;
+			meshPath += entityName;
+			meshPath += ".skeleton";
+			a->SetAttribute("file", meshPath.c_str());
+			ele->LinkEndChild(a);
+		}
+		{
+			tinyxml2::XMLElement* a = doc.NewElement("animation");
+			std::string meshPath;
+			meshPath += entityName;
+			meshPath += ".animation";
+			a->SetAttribute("file", meshPath.c_str());
+			ele->LinkEndChild(a);
+		}
+		doc.LinkEndChild(ele);
+		//
+		std::string path;// = exportPath + "/" + fileFinalName + ".entity";
+		{
+			path = FileSystem::getParent(name) + "/" + partName + "_t.entity";
+		}
+		//FileSystem::createFolder(path);
+		doc.SaveFile(path.c_str());
+		//
+		EntityInstance* e = getSceneManager()->createEntityInstance(path);
+		e->create(path);
+		e->setAnimation("Run");
+		::DeleteFile(path.c_str());
+		return e;
+	}
+}
+
+EntityInstance* Global::selectedFileParticle( const tstring& name )
+{
+	// .entity 
+	{
+		tstring fileName = FileSystem::removeParent(name);
+		tstring partName = FileSystem::removeFileExtension(fileName);
+		tstring entityName = FileSystem::getParent(name);
+		entityName = FileSystem::removeParent(entityName);
+		//============================================================================
+		tinyxml2::XMLDocument doc;
+		// 
+		tinyxml2::XMLDeclaration* dec = doc.NewDeclaration("xml version=\"1.0\"");
+		doc.LinkEndChild(dec);
+		//
+		tinyxml2::XMLElement* ele = doc.NewElement("entity");
+		ele->SetAttribute("name", partName.c_str());
+		{
+			tinyxml2::XMLElement* a = doc.NewElement("particle");
+			std::string meshPath("particle/");
+			meshPath += fileName;
+			a->SetAttribute("file", meshPath.c_str());
+			ele->LinkEndChild(a);
+		}
+		doc.LinkEndChild(ele);
+		//
+		std::string path;// = exportPath + "/" + fileFinalName + ".entity";
+		{
+			path = FileSystem::getParent(name) + "/" + partName + "_t.entity";
+		}
+		//FileSystem::createFolder(path);
+		doc.SaveFile(path.c_str());
+		EntityInstance* e = selectedFileParticle(path);
+		::DeleteFile(path.c_str());
+		return e;
+	}
+}
+
+EntityInstance* Global::selectedFileEntity( const tstring& name )
+{
+	EntityInstance* e = getSceneManager()->createEntityInstance(name);
+	e->create(name);
+	e->setAnimation("Run");
+	return e;
+}
+
 void createGlobal()
 {
 	new Global;
-//	Global::getInstancePtr()->create();
 }
 
 Global* getGlobal()

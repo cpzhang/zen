@@ -8,6 +8,7 @@ class Terrain;
 class Hero;
 class Decal;
 class QuadNode;
+class EntityInstance;
 enum eRunType
 {
 	eRunType_Editor,
@@ -35,6 +36,8 @@ public:
 	Decal* createDecal(const tstring& name);
 	QuadNode* getTerrainQuadTreeRoot();
 	void getChunks(ChunkVec& cs, QuadNode* n, RectangleT& rc);
+public:
+	EntityInstance* createEntityInstance(const std::string& resID);
 public:
 	void save(const tstring& path);
 	void open(const tstring& path);

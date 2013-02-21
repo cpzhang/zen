@@ -1,5 +1,10 @@
 #pragma once
 #include "misc/stdHead.h"
+class IAttachable
+{
+public:
+	virtual ~IAttachable(){};
+};
 enum eModelResType
 {
 	eModelResType_None,

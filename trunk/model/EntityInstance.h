@@ -46,6 +46,7 @@ public:
 public:
 	bool create(const tstring& resourceId);
 	void destroy();
+	void release();
 	Entity* getEntity();
 	void setAnimation(const tstring& resourceId);
 	void setSpeed(float s);

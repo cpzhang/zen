@@ -23,6 +23,7 @@ public:
 		COMMAND_ID_HANDLER(ID_BUTTON_Data, OnToobarData)
 		COMMAND_ID_HANDLER(ID_BUTTON_Options, OnToobarOptions)
 		COMMAND_ID_HANDLER(ID_BUTTON_Go, OnGo)
+		COMMAND_ID_HANDLER(ID_BUTTON_Hero, OnHero)
 		COMMAND_ID_HANDLER(ID_SaveScene, OnSavescene)
 		COMMAND_ID_HANDLER(ID_OpenScene, OnOpenscene)
 		CHAIN_MSG_MAP(CFrameWindowImpl<FrameWindow>)
@@ -51,6 +52,7 @@ private:
 	LRESULT OnToobarChangeTexture(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnToobarOptions(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnGo(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnHero(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	//
 	void tabSwitch(WORD id);
 private:

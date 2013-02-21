@@ -62,6 +62,6 @@ target_link_libraries(${ItemName}
 add_custom_command(
   TARGET ${ItemName}
   PRE_BUILD
-  #COMMAND call toLua.bat
+  COMMAND call toLua.bat
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )

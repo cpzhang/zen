@@ -46,7 +46,7 @@ LRESULT DataDlg::OnFileItemSelected( UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
 void DataDlg::SelectFile( const tstring& s )
 {
 	//getLuaScript()->doFile(FileName);
-	getGlobal()->setCurrentLayer(s);
+	getGlobal()->onSelectFile(s);
 	//
 	IFileManager::getFile(s)->update(s, &properties_);
 }

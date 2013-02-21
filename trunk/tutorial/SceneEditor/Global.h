@@ -10,6 +10,10 @@ class IdleHandler;
 class IRender;
 class IMovable;
 class PreviewWindow;
+class EntityInstance;
+class Node;
+
+//
 class HeroController
 {
 public:
@@ -65,12 +69,13 @@ public:
 	// tolua_begin
 	tstring getDataRootDirectory();
 	void setDataRootDirectory(const char* s);
+	void setHero(const char* resID);
 	// tolua_end
 	//
 	void addHandler(const tstring& name, IdleHandler* h);
 	void removeHandler(const tstring& name);
 	//
-	void setCurrentLayer(const tstring& name);
+	void onSelectFile(const tstring& name);
 	tstring getCurrentLayer();
 	//
 	void refreshDataRoot();
@@ -84,10 +89,14 @@ public:
 	PreviewWindow* getPreviewWindow();
 	void setPreviewWindow(PreviewWindow* pw);
 	void createPreviewer();
+	
 private:
 	void clear_();
 	bool createBrushDecal();
 	void updatePickingPoint_();
+	EntityInstance* selectedFilePart(const tstring& name);
+	EntityInstance* selectedFileParticle(const tstring& name);
+	EntityInstance* selectedFileEntity(const tstring& name);
 private:
 	Decal*	brushDecal_;
 	float	brushStrength_;
@@ -99,14 +108,15 @@ private:
 	NameIdleHandlerMap nameHandlers_;
 	//
 	tstring layer_;
-	IRender* pi_;
-	IMovable* movable_;
+	//IRender* pi_;
+	//IMovable* movable_;
 	HeroController heroController_;
 	OrbitCamera	camera_;
 	//
 	u32 renderTargetKey_;
 	HWND previewWindowHandle_;
 	PreviewWindow* Previewer_;
+	Node* Hero_;
 	// tolua_begin
 };
 	// tolua_end

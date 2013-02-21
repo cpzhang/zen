@@ -65,6 +65,7 @@ LRESULT ViewWindow::onMouseWheel( UINT, WPARAM wParam, LPARAM, BOOL& b )
 
 LRESULT ViewWindow::onMouseMove( UINT, WPARAM, LPARAM lParam, BOOL& b )
 {
+	b = FALSE;
 	//»ñµÃ½¹µã
 	SetFocus(); 
 	return 1;

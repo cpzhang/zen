@@ -421,4 +421,10 @@ EntityInstance* EntityInstance::clone() const
 	return e;
 }
 
+void EntityInstance::release()
+{
+	destroy();
+	delete this;
+}
+
 Create_Singleton_Imp(EntityInstanceManager, ApiModel_)

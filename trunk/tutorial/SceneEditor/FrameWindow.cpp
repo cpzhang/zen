@@ -4,6 +4,7 @@
 #include "scene/SceneManager.h"
 #include "Global.h"
 #include "PreviewWindow.h"
+#include "luaScript/LuaScript.h"
 FrameWindow::FrameWindow()
 {
 
@@ -149,5 +150,11 @@ LRESULT FrameWindow::OnGo( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/,
 {
 	getSceneManager()->open(TEXT("f:\\zen\\data\\scene\\bornland"));
 	dlgData_.SelectFile(TEXT("f:\\zen\\data\\model\\Character_1015\\Character_1015.entity"));
+	return 0;
+}
+
+LRESULT FrameWindow::OnHero( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
+{
+	getLuaScript()->doFile("lua/HeroButton.lua");
 	return 0;
 }

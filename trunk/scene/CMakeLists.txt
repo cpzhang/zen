@@ -29,6 +29,7 @@ else()
   target_link_libraries(${ItemName}
     render
     tinyxml2
+    model
     )
   set_target_properties(${ItemName} PROPERTIES 
   # DEFINE_SYMBOL "${ItemName}_EXPORTS"

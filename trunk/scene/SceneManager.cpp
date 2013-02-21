@@ -4,6 +4,7 @@
 #include "QuadNode.h"
 #include "tinyXML2/tinyxml2.h"
 #include "misc/FileSystem.h"
+#include "model/EntityInstance.h"
 SceneManager::SceneManager()
 {
 	clear_();
@@ -523,6 +524,17 @@ void SceneManager::open( const tstring& resID )
 			}
 		}
 	}
+}
+
+EntityInstance* SceneManager::createEntityInstance( const std::string& resID )
+{
+	EntityInstance* i = new EntityInstance;
+	if (!i->create(resID))
+	{
+		i->release();
+		return NULL;
+	}
+	return i;
 }
 
 ApiScene_ SceneManager* createSceneManager()

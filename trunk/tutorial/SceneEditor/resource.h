@@ -36,8 +36,6 @@
 #define IDC_LIST_DataProperty           1018
 #define IDC_LIST_Animation              1019
 #define IDC_STATIC_Previewer            1021
-#define IDC_BUTTON2                     1023
-#define IDC_BUTTON_Previewer            1023
 #define ID_40001                        40001
 #define ID_40002                        40002
 #define ID_40003                        40003
@@ -58,13 +56,14 @@
 #define ID_BUTTON40016                  40016
 #define ID_BUTTON_Options               40017
 #define ID_BUTTON_Go                    40018
+#define ID_BUTTON_Hero                  40019
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        118
-#define _APS_NEXT_COMMAND_VALUE         40019
+#define _APS_NEXT_COMMAND_VALUE         40020
 #define _APS_NEXT_CONTROL_VALUE         1024
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
