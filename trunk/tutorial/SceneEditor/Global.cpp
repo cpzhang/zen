@@ -61,7 +61,7 @@ bool Global::create()
 	Camera c = getRenderContex()->getCamera();
 	c.setFarPlane(10000.0f);
 	getRenderContex()->setCamera(c);
-	Previewer_ = new PreviewWindow;
+	
 	return true;
 }
 
@@ -109,6 +109,8 @@ void Global::clear_()
 	//
 	renderTargetKey_ = 0;
 	previewWindowHandle_ = 0;
+	//
+	Previewer_ = NULL;
 }
 
 bool Global::createBrushDecal()
@@ -546,6 +548,7 @@ void Global::setCurrentLayer( const tstring& name )
 	{
 		return;
 	}
+	Previewer_->setModel(pi_);
 }
 
 tstring Global::getCurrentLayer()
@@ -622,6 +625,16 @@ void Global::setPreviewWindowHandle( HWND h )
 PreviewWindow* Global::getPreviewWindow()
 {
 	return Previewer_;
+}
+
+void Global::setPreviewWindow( PreviewWindow* pw )
+{
+	Previewer_ = pw;
+}
+
+void Global::createPreviewer()
+{
+	setPreviewWindowHandle(Previewer_->m_hWnd);
 }
 
 void createGlobal()

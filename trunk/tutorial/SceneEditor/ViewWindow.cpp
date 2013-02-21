@@ -193,23 +193,12 @@ void ViewWindow::onIdle(const float delta)
 		getSceneManager()->setAllChunksVisible(true);
 		//
 		{
-			font_ = FontManager::getPointer()->createFont(std::string("freetype\\LuYaHeiMb.TTF"), 18, eFontProperty_Normal, "freeNormal");
+			font_ = FontManager::getPointer()->createFont(std::string("freetype\\simkai.ttf"), 16, eFontProperty_Normal, "freeNormal");
 		}
 		//
 		{
-			//getGlobal()->getPreviewWindow()->Create(dlgData_.m_hWnd, CRect(0,0,300,300), NULL, WS_CHILD | WS_VISIBLE);
-			//getGlobal()->getPreviewWindow()->Create(GetDlgItem(IDC_STATIC_Previewer), CRect(0,0,300,300), NULL, WS_CHILD | WS_VISIBLE);
-			//getGlobal()->getPreviewWindow()->SubclassWindow(GetDlgItem(IDC_STATIC_Previewer));
-			getGlobal()->setPreviewWindowHandle(getGlobal()->getPreviewWindow()->m_hWnd);
+			getGlobal()->createPreviewer();
 		}
-	}
-	//
-	if(0){
-		POINT pt;
-		//Retrieves the position of the mouse cursor, in screen coordinates.
-		GetCursorPos(&pt);
-		ScreenToClient(&pt);
-		getGlobal()->getPreviewWindow()->MoveWindow(pt.x, pt.y, 300, 300);
 	}
 	//
 	getSceneManager()->update();

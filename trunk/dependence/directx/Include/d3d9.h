@@ -321,12 +321,6 @@ DWORD WINAPI D3DPERF_GetStatus( void );
 /*
  * Direct3D interfaces
  */
-
-
-
-
-
-
 #undef INTERFACE
 #define INTERFACE IDirect3D9
 
@@ -405,21 +399,6 @@ typedef struct IDirect3D9 *LPDIRECT3D9, *PDIRECT3D9;
 
 
 /* SwapChain */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #undef INTERFACE
 #define INTERFACE IDirect3DDevice9
 

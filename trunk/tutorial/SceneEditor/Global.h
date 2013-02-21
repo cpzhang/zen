@@ -82,6 +82,8 @@ public:
 	void renderPreviewWindow();
 	//
 	PreviewWindow* getPreviewWindow();
+	void setPreviewWindow(PreviewWindow* pw);
+	void createPreviewer();
 private:
 	void clear_();
 	bool createBrushDecal();

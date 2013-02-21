@@ -2,6 +2,7 @@
 #include "render/rendercontext.h"
 #include "font/FontManager.h"
 #include "Global.h"
+#include "model/EntityInstance.h"
 void PreviewWindow::render()
 {
 	u32 clearFlags = D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER;
@@ -13,19 +14,19 @@ void PreviewWindow::render()
 	//ÆÁÄ»×Ö£¬×îºó»­
 	{
 		std::ostringstream ss;
-		ss<<"Preview Model";
+		ss<<"Preview";
 		FontManager::getPointer()->getFont()->render(Vector2(10, 10), Vector4(1, 0, 0, 1), ss.str());
 	}
 	FontManager::getPointer()->getFont()->render();
-	//if (pi_)
+	if (model_)
 	{
-		//pi_->render();
+		model_->render();
 	}
 	getRenderContex()->endScene();
 	getRenderContex()->present();
 }
 
-LRESULT PreviewWindow::OnEraseBkgnd( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled )
+LRESULT PreviewWindow::OnPaint( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled )
 {
 	//
 	bHandled = false;

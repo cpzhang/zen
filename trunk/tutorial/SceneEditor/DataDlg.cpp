@@ -27,12 +27,9 @@ LRESULT DataDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 	//
 	properties_.SubclassWindow(GetDlgItem(IDC_LIST_DataProperty));
 	properties_.SetExtendedListStyle(PLS_EX_CATEGORIZED);
-	//properties_.AddItem( PropCreateSimpleInt(_T("¶¯»­"), 0), CCategoryProperty::getNullObject());
-	//previewCanvas_.SubclassWindow( GetDlgItem( IDC_STATIC_Previewer ) );     
-	//previewCanvas_.SetColor(RGB(255,0,0));
-	//previewCanvas_.SetGradientColor(RGB(0,0,0));
-	//getGlobal()->getPreviewWindow()->Create(GetDlgItem( IDC_STATIC ).m_hWnd, CRect(0,0,300,300), NULL, WS_CHILD | WS_VISIBLE);
-	getGlobal()->getPreviewWindow()->SubclassWindow( GetDlgItem( IDC_STATIC ) );     
+	//
+	pw_.SubclassWindow( GetDlgItem( IDC_STATIC_Previewer ) );   
+	getGlobal()->setPreviewWindow(&pw_);
 	//
 	return bHandled;
 }

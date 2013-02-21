@@ -7,6 +7,7 @@
 #include "resource.h"
 #include "IdleHandler.h"
 #include "dependence/PropertyList/PropertyList.h"
+#include "PreviewWindow.h"
 //
 class IFile
 {
@@ -83,6 +84,7 @@ private:
 	CPropertyListCtrl properties_;
 	//CGradientStatic previewCanvas_; 
 	//u32 renderTargetKey_;
+	PreviewWindow pw_;
 };
 
 class TerrainTextureDlg :

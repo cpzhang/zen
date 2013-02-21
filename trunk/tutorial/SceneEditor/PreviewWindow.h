@@ -4,21 +4,21 @@
 class IRender;
 class PreviewWindow : public CWindowImpl<PreviewWindow, CStatic>
 {
-//public:
+public:
 	BEGIN_MSG_MAP(PreviewWindow)
-		MESSAGE_HANDLER(WM_CREATE, onCreate)
-		//MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBkgnd)
-		//MESSAGE_HANDLER(WM_MOVE, OnEraseBkgnd)
-		MESSAGE_HANDLER(WM_PAINT, OnEraseBkgnd)
-		//MESSAGE_HANDLER(WM_PAINT, OnEraseBkgnd)
-		FORWARD_NOTIFICATIONS()
+		MESSAGE_HANDLER(WM_PAINT, OnPaint)
 	END_MSG_MAP()
 public:
-	LRESULT OnEraseBkgnd(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-	LRESULT onCreate(UINT, WPARAM, LPARAM, BOOL&) 
-	{	//
-		return 1;
+	PreviewWindow()
+	{
+		model_ = NULL;
+	}
+	LRESULT OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	void setModel(IRender* m)
+	{
+		model_ = m;
 	}
 public:
 	void render();
+	IRender* model_;
 };
