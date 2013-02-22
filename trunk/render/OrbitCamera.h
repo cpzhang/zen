@@ -13,7 +13,7 @@ public:
 	float	speed_;
 	//Stuff to handle key events correctly
 	typedef std::map< int, bool>	KeyDownMap;
-	KeyDownMap	keyDown_;
+	//KeyDownMap	keyDown_;
 	/** The extents the camera may move to, applied in update() */
 	BoundingBox limit_;
 	float		angleYZ_;
@@ -25,15 +25,20 @@ public:
 	float distance_;
 	Vector3 center_;
 	Vector3 u_, v_, w_;
+private:
+	bool capture_;
+	bool dirty_;
 public:
 	OrbitCamera();
 	~OrbitCamera();
 public:
+	void onMouseWheel(float d);
+	void setCapture(bool b);
 	float getSpeed() const;
 	void setSpeed( float s );
 	void update( float dTime);
 	bool handleKeyEvent( );
-	bool handleMouseEvent();
+	bool onMouseMove();
 	void create( float distance, float angleXZ, float angleYZ);
 	void viewToPolar();
 
@@ -49,4 +54,6 @@ public:
 	void handleInput( float dTime );
 private:
 	void polarToViewImp_();
+	void setDirty(bool b);
+	bool isDirty_();
 };

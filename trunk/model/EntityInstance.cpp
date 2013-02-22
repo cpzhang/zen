@@ -60,7 +60,7 @@ void EntityInstance::render()
 			}
 			//
 			std::vector<Matrix> matrices;
-			if(1)
+			if(SkinCurrent_ && !MatricesSkin_.empty())
 			{
 				for(BoneIDReferenceMap::iterator it = ms->_bones.begin(); it != ms->_bones.end(); ++it)
 				{
@@ -425,6 +425,16 @@ void EntityInstance::release()
 {
 	destroy();
 	delete this;
+}
+
+Skeleton* EntityInstance::getSkeleton()
+{
+	return Skeleton_;
+}
+
+std::string EntityInstance::getResId() const
+{
+	return FileName_;
 }
 
 Create_Singleton_Imp(EntityInstanceManager, ApiModel_)

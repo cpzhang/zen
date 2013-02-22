@@ -84,18 +84,18 @@ public:
 	//
 	void onMouseWheel(float d);
 	void setPreviewWindowHandle(HWND h);
-	void renderPreviewWindow();
+	void renderPreviewWindow(const float delta);
 	//
 	PreviewWindow* getPreviewWindow();
 	void setPreviewWindow(PreviewWindow* pw);
 	void createPreviewer();
-	
+	OrbitCamera* getCamera();
 private:
 	void clear_();
 	bool createBrushDecal();
 	void updatePickingPoint_();
-	EntityInstance* selectedFilePart(const tstring& name);
-	EntityInstance* selectedFileParticle(const tstring& name);
+	std::string selectedFilePart(const tstring& name);
+	std::string selectedFileParticle(const tstring& name);
 	EntityInstance* selectedFileEntity(const tstring& name);
 private:
 	Decal*	brushDecal_;
@@ -108,8 +108,6 @@ private:
 	NameIdleHandlerMap nameHandlers_;
 	//
 	tstring layer_;
-	//IRender* pi_;
-	//IMovable* movable_;
 	HeroController heroController_;
 	OrbitCamera	camera_;
 	//

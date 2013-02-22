@@ -13,6 +13,7 @@ public:
 //	bool load(const std::string& resID);
 //	void addChild();
 	void attach(EntityInstance* e);
+	EntityInstance* getEntityInstance();
 	void setName(const std::string& name);
 	void render();
 	void update(float delta);

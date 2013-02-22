@@ -12,11 +12,6 @@ Node::~Node()
 
 void Node::release()
 {
-	if (EntityInstance_)
-	{
-		EntityInstance_->release();
-		EntityInstance_ = NULL;
-	}
 	delete this;
 }
 
@@ -55,6 +50,11 @@ void Node::update( float delta )
 	{
 		EntityInstance_->update(delta);
 	}
+}
+
+EntityInstance* Node::getEntityInstance()
+{
+	return EntityInstance_;
 }
 
 Node* NodeManager::createNode( const std::string& name)

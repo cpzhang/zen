@@ -146,11 +146,11 @@ void Global::update(float delta)
 	{
 		Hero_->update(delta);
 	}
-// 	if (pi_)
-// 	{
-// 		pi_->update(delta);
-// 		heroController_.apply(movable_);
-// 	}
+	//
+	if (isKeyDown(VK_SPACE) && Previewer_ && !Previewer_->getModelResID().empty())
+	{
+		getSceneManager()->addEntityInstance(Previewer_->getModelResID());
+	}
 }
 
 float Global::getBrushStrength()
@@ -313,7 +313,7 @@ void Global::removeHandler( const tstring& name )
 		nameHandlers_.erase(it);
 	}
 }
-void decode(const std::string& name)
+std::string decode(const std::string& name)
 {
 	std::string fileName(name);
 	fileName = FileSystem::standardFilePath(fileName);
@@ -424,7 +424,22 @@ void decode(const std::string& name)
 		std::string path = exportPath + "/" + fileFinalName + ".entity";
 		FileSystem::createFolder(path);
 		doc.SaveFile(path.c_str());
+		return path;
 	}
+}
+void Global::setHero( const char* resID )
+{
+	if (Hero_)
+	{
+		EntityInstance* i = Hero_->getEntityInstance();
+		if (i)
+		{
+			i->release();
+		}
+		Hero_->release();
+	}
+	Hero_ = NodeManager::getInstancePtr()->createNode("Hero");
+	Hero_->attach(getSceneManager()->createEntityInstance(resID));
 }
 void Global::onSelectFile( const tstring& name )
 {
@@ -438,31 +453,31 @@ void Global::onSelectFile( const tstring& name )
 	std::string suffix = layer_.substr(dotPos, layer_.size() - dotPos);
 	std::transform(suffix.begin(), suffix.end(), suffix.begin(), tolower);
 	EntityInstance* i = NULL;
+	std::string finalEntityName;
 	if(suffix == ".part")
 	{
-		i = selectedFilePart(name);
+		finalEntityName = selectedFilePart(name);
 	}
 	else if(suffix == ".particle")
 	{
-		i = selectedFileParticle(name);
+		finalEntityName = selectedFileParticle(name);
 	}
 	else if(suffix == ".entity")
 	{
-		i = selectedFileEntity(name);
+		finalEntityName = name;
 	}
 	else if(suffix == ".mz")
 	{
-		decode(name);
+		finalEntityName = decode(name);
 	}
 	else
 	{
 		return;
 	}
-	if (Hero_ && i)
+	if (!finalEntityName.empty())
 	{
-		Hero_->attach(i);
+		Previewer_->setModel(finalEntityName);
 	}
-	Previewer_->setModel(i);
 }
 
 tstring Global::getCurrentLayer()
@@ -506,10 +521,10 @@ void Global::setAnimation( const tstring& name )
 
 void Global::onMouseWheel( float d )
 {
-	camera_.distance_ += d;
+	camera_.onMouseWheel(d);
 }
 
-void Global::renderPreviewWindow()
+void Global::renderPreviewWindow(const float delta)
 {
 	u32 rtk = getRenderContex()->getCurrentRenderTarget();
 	getRenderContex()->setCurrentRenderTarget(renderTargetKey_);
@@ -517,7 +532,7 @@ void Global::renderPreviewWindow()
 	//
 	if (Previewer_)
 	{
-		Previewer_->render();
+		Previewer_->onIdle(delta);
 	}
 	//
 	getRenderContex()->setCurrentRenderTarget(rtk);
@@ -551,115 +566,104 @@ void Global::createPreviewer()
 	setPreviewWindowHandle(Previewer_->m_hWnd);
 }
 
-void Global::setHero( const char* resID )
+std::string Global::selectedFilePart( const tstring& name)
 {
-	if (Hero_)
+	tstring fileName = FileSystem::removeParent(name);
+	tstring partName = FileSystem::removeFileExtension(fileName);
+	tstring entityName = FileSystem::getParent(name);
+	entityName = FileSystem::removeParent(entityName);
+	//============================================================================
+	tinyxml2::XMLDocument doc;
+	// 
+	tinyxml2::XMLDeclaration* dec = doc.NewDeclaration("xml version=\"1.0\"");
+	doc.LinkEndChild(dec);
+	//
+	tinyxml2::XMLElement* ele = doc.NewElement("entity");
+	ele->SetAttribute("name", partName.c_str());
+
 	{
-		Hero_->release();
+		tinyxml2::XMLElement* a = doc.NewElement("part");
+		std::string meshPath;
+		a->SetAttribute("file", fileName.c_str());
+		ele->LinkEndChild(a);
 	}
-	Hero_ = NodeManager::getInstancePtr()->createNode("Hero");
-	onSelectFile(resID);
+	{
+		tinyxml2::XMLElement* a = doc.NewElement("skeleton");
+		std::string meshPath;
+		meshPath += entityName;
+		meshPath += ".skeleton";
+		a->SetAttribute("file", meshPath.c_str());
+		ele->LinkEndChild(a);
+	}
+	{
+		tinyxml2::XMLElement* a = doc.NewElement("animation");
+		std::string meshPath;
+		meshPath += entityName;
+		meshPath += ".animation";
+		a->SetAttribute("file", meshPath.c_str());
+		ele->LinkEndChild(a);
+	}
+	doc.LinkEndChild(ele);
+	//
+	std::string path;
+	{
+		path = FileSystem::getParent(name) + "/" + partName + "_t.entity";
+	}
+	doc.SaveFile(path.c_str());
+	
+	return path;
 }
 
-EntityInstance* Global::selectedFilePart( const tstring& name)
+std::string Global::selectedFileParticle( const tstring& name )
 {
-	// .entity 
+	tstring fileName = FileSystem::removeParent(name);
+	tstring partName = FileSystem::removeFileExtension(fileName);
+	tstring entityName = FileSystem::getParent(name);
+	entityName = FileSystem::removeParent(entityName);
+	//============================================================================
+	tinyxml2::XMLDocument doc;
+	// 
+	tinyxml2::XMLDeclaration* dec = doc.NewDeclaration("xml version=\"1.0\"");
+	doc.LinkEndChild(dec);
+	//
+	tinyxml2::XMLElement* ele = doc.NewElement("entity");
+	ele->SetAttribute("name", partName.c_str());
 	{
-		tstring fileName = FileSystem::removeParent(name);
-		tstring partName = FileSystem::removeFileExtension(fileName);
-		tstring entityName = FileSystem::getParent(name);
-		entityName = FileSystem::removeParent(entityName);
-		//============================================================================
-		tinyxml2::XMLDocument doc;
-		// 
-		tinyxml2::XMLDeclaration* dec = doc.NewDeclaration("xml version=\"1.0\"");
-		doc.LinkEndChild(dec);
-		//
-		tinyxml2::XMLElement* ele = doc.NewElement("entity");
-		ele->SetAttribute("name", partName.c_str());
-
-		{
-			tinyxml2::XMLElement* a = doc.NewElement("part");
-			std::string meshPath;
-			a->SetAttribute("file", fileName.c_str());
-			ele->LinkEndChild(a);
-		}
-		{
-			tinyxml2::XMLElement* a = doc.NewElement("skeleton");
-			std::string meshPath;
-			meshPath += entityName;
-			meshPath += ".skeleton";
-			a->SetAttribute("file", meshPath.c_str());
-			ele->LinkEndChild(a);
-		}
-		{
-			tinyxml2::XMLElement* a = doc.NewElement("animation");
-			std::string meshPath;
-			meshPath += entityName;
-			meshPath += ".animation";
-			a->SetAttribute("file", meshPath.c_str());
-			ele->LinkEndChild(a);
-		}
-		doc.LinkEndChild(ele);
-		//
-		std::string path;// = exportPath + "/" + fileFinalName + ".entity";
-		{
-			path = FileSystem::getParent(name) + "/" + partName + "_t.entity";
-		}
-		//FileSystem::createFolder(path);
-		doc.SaveFile(path.c_str());
-		//
-		EntityInstance* e = getSceneManager()->createEntityInstance(path);
-		e->create(path);
-		e->setAnimation("Run");
-		::DeleteFile(path.c_str());
-		return e;
+		tinyxml2::XMLElement* a = doc.NewElement("particle");
+		std::string meshPath("particle/");
+		meshPath += fileName;
+		a->SetAttribute("file", meshPath.c_str());
+		ele->LinkEndChild(a);
 	}
-}
-
-EntityInstance* Global::selectedFileParticle( const tstring& name )
-{
-	// .entity 
+	doc.LinkEndChild(ele);
+	//
+	std::string path;// = exportPath + "/" + fileFinalName + ".entity";
 	{
-		tstring fileName = FileSystem::removeParent(name);
-		tstring partName = FileSystem::removeFileExtension(fileName);
-		tstring entityName = FileSystem::getParent(name);
-		entityName = FileSystem::removeParent(entityName);
-		//============================================================================
-		tinyxml2::XMLDocument doc;
-		// 
-		tinyxml2::XMLDeclaration* dec = doc.NewDeclaration("xml version=\"1.0\"");
-		doc.LinkEndChild(dec);
-		//
-		tinyxml2::XMLElement* ele = doc.NewElement("entity");
-		ele->SetAttribute("name", partName.c_str());
-		{
-			tinyxml2::XMLElement* a = doc.NewElement("particle");
-			std::string meshPath("particle/");
-			meshPath += fileName;
-			a->SetAttribute("file", meshPath.c_str());
-			ele->LinkEndChild(a);
-		}
-		doc.LinkEndChild(ele);
-		//
-		std::string path;// = exportPath + "/" + fileFinalName + ".entity";
-		{
-			path = FileSystem::getParent(name) + "/" + partName + "_t.entity";
-		}
-		//FileSystem::createFolder(path);
-		doc.SaveFile(path.c_str());
-		EntityInstance* e = selectedFileParticle(path);
-		::DeleteFile(path.c_str());
-		return e;
+		path = FileSystem::getParent(name) + "/" + partName + "_t.entity";
 	}
+	//FileSystem::createFolder(path);
+	doc.SaveFile(path.c_str());
+	return path;
 }
 
 EntityInstance* Global::selectedFileEntity( const tstring& name )
 {
 	EntityInstance* e = getSceneManager()->createEntityInstance(name);
 	e->create(name);
-	e->setAnimation("Run");
+	//
+	/*Skeleton* s = e->getSkeleton();
+	for (int i = 0; i != s->getSkinAnimationNumber(); ++i)
+	{
+		e->setAnimation(s->getSkinAnimation(i)->name);
+		break;
+	}*/
+	e->setAnimation("Stand");
 	return e;
+}
+
+OrbitCamera* Global::getCamera()
+{
+	return &camera_;
 }
 
 void createGlobal()

@@ -24,11 +24,10 @@ LRESULT DataDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 	//
 	getGlobal()->addHandler("DataDlg", this);
 	//
-	//
 	properties_.SubclassWindow(GetDlgItem(IDC_LIST_DataProperty));
 	properties_.SetExtendedListStyle(PLS_EX_CATEGORIZED);
 	//
-	pw_.SubclassWindow( GetDlgItem( IDC_STATIC_Previewer ) );   
+	pw_.SubclassWindow( GetDlgItem( IDC_BUTTON_Previewer ) );   
 	getGlobal()->setPreviewWindow(&pw_);
 	//
 	return bHandled;
@@ -91,6 +90,25 @@ LRESULT DataDlg::OnBnClickedButtonDatarefresh(WORD /*wNotifyCode*/, WORD /*wID*/
 	fileTree_.ReLoad();
 	//getGlobal()->refreshDataRoot();
 	return 0;
+}
+
+LRESULT DataDlg::onMouseMove( UINT, WPARAM, LPARAM lParam, BOOL& b )
+{
+	b = FALSE;
+	//»ñµÃ½¹µã
+	SetFocus(); 
+	//SetCapture();
+	return 1;
+}
+LRESULT DataDlg::onMouseLeftButtonDown( UINT, WPARAM, LPARAM lParam, BOOL& b )
+{
+	SetCapture();
+	return 1;
+}
+LRESULT DataDlg::onMouseLeftButtonUp( UINT, WPARAM, LPARAM lParam, BOOL& b )
+{
+	ReleaseCapture();
+	return 1;
 }
 
 void FileNull::update( const std::string& fn, CPropertyListCtrl* pl , bool reset /*= true*/, CCategoryProperty* ct /*= NULL*/)

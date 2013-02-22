@@ -67,12 +67,8 @@ LRESULT ViewWindow::onMouseMove( UINT, WPARAM, LPARAM lParam, BOOL& b )
 {
 	b = FALSE;
 	//»ñµÃ½¹µã
-	SetFocus(); 
-	return 1;
-}
-
-LRESULT ViewWindow::onMouseLeftButtonUp( UINT, WPARAM, LPARAM lParam, BOOL& b )
-{
+	SetFocus();
+	getGlobal()->getCamera()->onMouseMove();
 	return 1;
 }
 
@@ -202,7 +198,7 @@ void ViewWindow::onIdle(const float delta)
 		}
 	}
 	//
-	getSceneManager()->update();
+	getSceneManager()->update(delta);
 	getGlobal()->update(delta);
 	//
 	
@@ -232,10 +228,36 @@ void ViewWindow::onIdle(const float delta)
 	getRenderContex()->endScene();
 	getRenderContex()->present();
 	//
-	getGlobal()->renderPreviewWindow();
+	getGlobal()->renderPreviewWindow(delta);
 }
 
 void ViewWindow::onRefreshLuaScript()
 {
 
+}
+
+LRESULT ViewWindow::onMouseLeftButtonDown( UINT, WPARAM, LPARAM lParam, BOOL& b )
+{
+	getGlobal()->getCamera()->setCapture(true);
+	SetCapture();
+	return 1;
+}
+LRESULT ViewWindow::onMouseLeftButtonUp( UINT, WPARAM, LPARAM lParam, BOOL& b )
+{
+	getGlobal()->getCamera()->setCapture(false);
+	ReleaseCapture();
+	return 1;
+}
+LRESULT ViewWindow::onMouseRightButtonDown( UINT, WPARAM, LPARAM lParam, BOOL& b )
+{
+	SetCapture();
+	getGlobal()->getCamera()->setCapture(true);
+	return 1;
+}
+
+LRESULT ViewWindow::onMouseRightButtonUp( UINT, WPARAM, LPARAM lParam, BOOL& b )
+{
+	ReleaseCapture();
+	getGlobal()->getCamera()->setCapture(false);
+	return 1;
 }

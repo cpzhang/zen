@@ -21,7 +21,7 @@ public:
 	SceneManager();
 	~SceneManager();
 public:
-	void update();
+	void update(const float delta);
 	void render();
 	void destroy();
 	void createTerrain(int xChunks, int zChunks, int n, float unit);
@@ -38,6 +38,7 @@ public:
 	void getChunks(ChunkVec& cs, QuadNode* n, RectangleT& rc);
 public:
 	EntityInstance* createEntityInstance(const std::string& resID);
+	EntityInstance* addEntityInstance(const std::string& resID);
 public:
 	void save(const tstring& path);
 	void open(const tstring& path);
@@ -47,6 +48,7 @@ private:
 	void destroyDecals();
 	void constructTerrainQuadTree(int xChunks, int zChunks );
 	void destroyTerrainQuadTree();
+	void destroyEntityInstances_();
 private:
 	Terrain* terrainCurrent_;
 	LOD		lod_;
@@ -56,6 +58,8 @@ private:
 	DecalMap decals_;
 	QuadNode* terrainQuadTreeRoot_;
 	tstring name_;
+	typedef std::vector<EntityInstance*> EntityInstanceVec;
+	EntityInstanceVec entityInstances_;
 };
 ApiScene_ SceneManager* createSceneManager();
 ApiScene_ void destroySceneManager();

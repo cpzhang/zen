@@ -65,6 +65,9 @@ public:
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroyDialog)
 		MESSAGE_HANDLER( WM_ITEM_SELECTED, OnFileItemSelected )
 		COMMAND_HANDLER(IDC_BUTTON_DataRefresh, BN_CLICKED, OnBnClickedButtonDatarefresh)
+		MESSAGE_HANDLER(WM_MOUSEMOVE, onMouseMove)
+		MESSAGE_HANDLER(WM_LBUTTONDOWN, onMouseLeftButtonDown)
+		MESSAGE_HANDLER(WM_LBUTTONUP, onMouseLeftButtonUp)
 		REFLECT_NOTIFICATIONS()
 	END_MSG_MAP()
 
@@ -72,6 +75,11 @@ public:
 	END_DDX_MAP()
 
 	IdleHandler_Derived
+private:
+	LRESULT onMouseMove(UINT, WPARAM, LPARAM lParam, BOOL& b) ;
+	LRESULT onMouseLeftButtonUp(UINT, WPARAM, LPARAM lParam, BOOL& b) ;
+	LRESULT onMouseLeftButtonDown(UINT, WPARAM, LPARAM lParam, BOOL& b) ;
+
 public:
 	void SelectFile(const tstring& s);
 

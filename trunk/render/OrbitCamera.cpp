@@ -2,12 +2,12 @@
 
 OrbitCamera::OrbitCamera()
 {
-	keyDown_.insert( std::make_pair( 'W', false ) );
+	/*keyDown_.insert( std::make_pair( 'W', false ) );
 	keyDown_.insert( std::make_pair( 'S', false ) );
 	keyDown_.insert( std::make_pair( 'A', false ) );
 	keyDown_.insert( std::make_pair( 'D', false ) );
 	keyDown_.insert( std::make_pair( 'Q', false ) );
-	keyDown_.insert( std::make_pair( 'E', false ) );
+	keyDown_.insert( std::make_pair( 'E', false ) );*/
 	angleYZ_ = 0.f;
 	angleXZ_ =  0.f;
 	invert_ = false;
@@ -15,6 +15,8 @@ OrbitCamera::OrbitCamera()
 	lastYaw_ = 0.0f;;
 	lastPitch_ = 0.0f;
 	center_ = Vector3::Zero;
+	capture_ = false;
+	dirty_ = true;
 }
 
 OrbitCamera::~OrbitCamera()
@@ -34,15 +36,19 @@ void OrbitCamera::setSpeed( float s )
 
 void OrbitCamera::update( float dTime )
 {
+// 	if (!capture_)
+// 	{
+// 		return;
+// 	}
 	if (0  && handleKeyEvent())
 	{
 		handleInput(dTime);
 	}
-	if (handleMouseEvent())
+	if (isDirty_())
 	{
-		
+		polarToViewImp_();	
+		setDirty(false);
 	}
-	polarToViewImp_();
 }
 
 bool OrbitCamera::handleKeyEvent()
@@ -50,7 +56,7 @@ bool OrbitCamera::handleKeyEvent()
 	//update the key down map.
 	bool handled = false;
 
-	KeyDownMap::iterator found = keyDown_.begin();
+	/*KeyDownMap::iterator found = keyDown_.begin();
 
 	while ( found != keyDown_.end() )
 	{
@@ -68,12 +74,15 @@ bool OrbitCamera::handleKeyEvent()
 			}
 		}
 		++found;
+	}*/
+	if (handled)
+	{
+		setDirty(true);
 	}
-
 	return handled;
 }
 
-bool OrbitCamera::handleMouseEvent()
+bool OrbitCamera::onMouseMove()
 {
 	bool handled = false;
 
@@ -103,6 +112,10 @@ bool OrbitCamera::handleMouseEvent()
 	}
 	lastPos.x = pt.x;
 	lastPos.y = pt.y;
+	if (handled)
+	{
+		setDirty(true);
+	}
 	return handled;
 }
 
@@ -163,95 +176,120 @@ void OrbitCamera::polarToView()
 
 void OrbitCamera::handleInput( float dTime )
 {
-	float movementSpeed = speed_;
-	//frame rate independent speed, but capped
-	if ( dTime < 0.1f )
-		movementSpeed *= dTime;
-	else
-		movementSpeed *= 0.1f;
+	//float movementSpeed = speed_;
+	////frame rate independent speed, but capped
+	//if ( dTime < 0.1f )
+	//	movementSpeed *= dTime;
+	//else
+	//	movementSpeed *= 0.1f;
 
+	////根据距离调整移动速度，距离越远，速度越快；反之，越慢
+	//{
+	//	float r = distance_ / 1000.0f;
+	//	float a = r * MATH_PI_Half;
+	//	movementSpeed *= sin(a);
+	//}
+
+	//if ( isKeyDown('W'))
+	//{
+	//	if ( keyDown_['W'] )
+	//	{
+	//		//move forward
+	//		distance_ -= movementSpeed;
+	//	}
+	//}
+	//else
+	//{
+	//	keyDown_['W'] = false;
+	//}
+
+	//if (isKeyDown('S') )
+	//{
+	//	if ( keyDown_['S'] )
+	//	{
+	//		//move back
+	//		distance_ += movementSpeed;
+	//	}
+	//}
+	//else
+	//{
+	//	keyDown_['S'] = false;
+	//}
+
+	//if (isKeyDown('A') )
+	//{
+	//	if ( keyDown_['A'] )
+	//	{
+	//		//center_ -= movementSpeed*u_;
+	//		angleXZ_ -= movementSpeed;
+	//	}
+	//}
+	//else
+	//{
+	//	keyDown_['A'] = false;
+	//}
+
+	//if ( isKeyDown('D') )
+	//{
+	//	if ( keyDown_['D'] )
+	//	{
+	//		//center_ += movementSpeed*u_;
+	//		angleXZ_ += movementSpeed;
+	//	}
+	//}
+	//else
+	//{
+	//	keyDown_['D'] = false;
+	//}
+
+	//if (isKeyDown('E') )
+	//{
+	//	if ( keyDown_['E'] )
+	//	{
+	//		//center_ -= movementSpeed*v_;
+	//		angleYZ_ -= movementSpeed;
+	//	}
+	//}
+	//else
+	//{
+	//	keyDown_['E'] = false;
+	//}
+
+	//if (isKeyDown('Q') )
+	//{
+	//	if ( keyDown_['Q'] )
+	//	{
+	//		//center_ += movementSpeed*v_;
+	//		angleYZ_ += movementSpeed;
+	//	}
+	//}
+	//else
+	//{
+	//	keyDown_['Q'] = false;
+	//}
+}
+
+void OrbitCamera::setCapture( bool b )
+{
+	capture_ = b;
+}
+
+void OrbitCamera::setDirty( bool b )
+{
+	dirty_ = b;
+}
+
+bool OrbitCamera::isDirty_()
+{
+	return dirty_;
+}
+
+void OrbitCamera::onMouseWheel( float d )
+{
 	//根据距离调整移动速度，距离越远，速度越快；反之，越慢
-	{
-		float r = distance_ / 1000.0f;
-		float a = r * MATH_PI_Half;
-		movementSpeed *= sin(a);
-	}
-
-	if ( isKeyDown('W'))
-	{
-		if ( keyDown_['W'] )
-		{
-			//move forward
-			distance_ -= movementSpeed;
-		}
-	}
-	else
-	{
-		keyDown_['W'] = false;
-	}
-
-	if (isKeyDown('S') )
-	{
-		if ( keyDown_['S'] )
-		{
-			//move back
-			distance_ += movementSpeed;
-		}
-	}
-	else
-	{
-		keyDown_['S'] = false;
-	}
-
-	if (isKeyDown('A') )
-	{
-		if ( keyDown_['A'] )
-		{
-			//center_ -= movementSpeed*u_;
-			angleXZ_ -= movementSpeed;
-		}
-	}
-	else
-	{
-		keyDown_['A'] = false;
-	}
-
-	if ( isKeyDown('D') )
-	{
-		if ( keyDown_['D'] )
-		{
-			//center_ += movementSpeed*u_;
-			angleXZ_ += movementSpeed;
-		}
-	}
-	else
-	{
-		keyDown_['D'] = false;
-	}
-
-	if (isKeyDown('E') )
-	{
-		if ( keyDown_['E'] )
-		{
-			//center_ -= movementSpeed*v_;
-			angleYZ_ -= movementSpeed;
-		}
-	}
-	else
-	{
-		keyDown_['E'] = false;
-	}
-
-	if (isKeyDown('Q') )
-	{
-		if ( keyDown_['Q'] )
-		{
-			//center_ += movementSpeed*v_;
-			angleYZ_ += movementSpeed;
-		}
-	}
-	else
-	{
-		keyDown_['Q'] = false;
-	}
+	float r = distance_ / 1000.0f;
+	float a = r * MATH_PI_Half;
+	d = d * speed_ * sin(a);
+	distance_ += d;
+	setDirty(true);
 }

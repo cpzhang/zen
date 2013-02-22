@@ -48,9 +48,11 @@ public:
 	void destroy();
 	void release();
 	Entity* getEntity();
+	Skeleton* getSkeleton();
 	void setAnimation(const tstring& resourceId);
 	void setSpeed(float s);
 	EntityInstance* clone() const;
+	std::string getResId() const;
 private:
 	void updateMaterial_( float delta );
 	void renderImpT0();

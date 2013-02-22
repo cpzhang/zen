@@ -54,6 +54,7 @@ void SceneManager::destroy()
 
 void SceneManager::render()
 {
+	//1.地表
 	if (terrainCurrent_)
 	{
 		terrainCurrent_->render();
@@ -65,6 +66,11 @@ void SceneManager::render()
 				terrainCurrent_->renderDecal(d);
 			}
 		}
+	}
+	//2.装饰
+	for (size_t i = 0; i != entityInstances_.size(); ++i)
+	{
+		entityInstances_[i]->render();
 	}
 }
 
@@ -93,16 +99,22 @@ void SceneManager::setHero( Hero* h )
 	hero_ = h;
 }
 
-void SceneManager::update()
+void SceneManager::update(const float delta)
 {
 	if (hero_ && terrainCurrent_ && !allChunksVisible_)
 	{
 	//	Vector3 p = hero_->getPosition();
 	//	terrainCurrent_->updateVisibleChunks(p.x, p.z);
 	}
+	//1.地表
 	if (terrainCurrent_)
 	{
 		terrainCurrent_->clearSelected();
+	}
+	//2.装饰
+	for (size_t i = 0; i != entityInstances_.size(); ++i)
+	{
+		entityInstances_[i]->update(delta);
 	}
 }
 
@@ -535,6 +547,22 @@ EntityInstance* SceneManager::createEntityInstance( const std::string& resID )
 		return NULL;
 	}
 	return i;
+}
+
+EntityInstance* SceneManager::addEntityInstance( const std::string& resID )
+{
+	EntityInstance* i = createEntityInstance(resID);
+	entityInstances_.push_back(i);
+	return i;
+}
+
+void SceneManager::destroyEntityInstances_()
+{
+	for (size_t i = 0; i != entityInstances_.size(); ++i)
+	{
+		entityInstances_[i]->release();
+	}
+	entityInstances_.clear();
 }
 
 ApiScene_ SceneManager* createSceneManager()

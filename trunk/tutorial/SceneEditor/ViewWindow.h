@@ -21,7 +21,10 @@ public:
 		MESSAGE_HANDLER(WM_SIZE, onSize)
 		MESSAGE_HANDLER(WM_MOUSEWHEEL, onMouseWheel)
 		MESSAGE_HANDLER(WM_MOUSEMOVE, onMouseMove)
+		MESSAGE_HANDLER(WM_LBUTTONDOWN, onMouseLeftButtonDown)
 		MESSAGE_HANDLER(WM_LBUTTONUP, onMouseLeftButtonUp)
+		MESSAGE_HANDLER(WM_RBUTTONDOWN, onMouseRightButtonDown)
+		MESSAGE_HANDLER(WM_RBUTTONUP, onMouseRightButtonUp)
 		MESSAGE_HANDLER(WM_KEYDOWN, onKeyDown)
 	END_MSG_MAP()
 
@@ -29,13 +32,18 @@ public:
 public:
 	ViewWindow();
 	~ViewWindow();
+private:
+	LRESULT onMouseLeftButtonUp(UINT, WPARAM, LPARAM lParam, BOOL& b) ;
+	LRESULT onMouseLeftButtonDown(UINT, WPARAM, LPARAM lParam, BOOL& b) ;
+	LRESULT onMouseRightButtonDown(UINT, WPARAM, LPARAM lParam, BOOL& b);
+	LRESULT onMouseRightButtonUp(UINT, WPARAM, LPARAM lParam, BOOL& b);
 public:
 	LRESULT onKeyDown( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled );
 	LRESULT onCreate(UINT, WPARAM, LPARAM, BOOL&) ;
 //	LRESULT onPaint(UINT, WPARAM, LPARAM, BOOL& b) ;
 	LRESULT onMouseWheel(UINT, WPARAM wParam, LPARAM, BOOL& b);
 	LRESULT onMouseMove(UINT, WPARAM, LPARAM lParam, BOOL& b) ;
-	LRESULT onMouseLeftButtonUp(UINT, WPARAM, LPARAM lParam, BOOL& b) ;
+	
 	LRESULT onSize(UINT, WPARAM, LPARAM lParam, BOOL& b) ;
 	LRESULT onDestroy(UINT, WPARAM, LPARAM, BOOL&) ;
 	//
