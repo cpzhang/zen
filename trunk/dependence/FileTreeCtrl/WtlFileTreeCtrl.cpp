@@ -481,13 +481,18 @@ LRESULT CWtlFileTreeCtrl::OnPopulateTree(UINT uMsg, WPARAM wParam, LPARAM lParam
 	return 0L;
 }
 
+LRESULT CWtlFileTreeCtrl::OnRButtonUp(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	std::string path = GetSelectedPath();
+	::SendMessage( GetParent(), WM_ITEM_RightButtonUp, (WPARAM)path.c_str(), 0 );
+	return 0;	
+}
 LRESULT CWtlFileTreeCtrl::OnLButtonDblClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	std::string path = GetSelectedPath();
 	::SendMessage( GetParent(), WM_ITEM_SELECTED, (WPARAM)path.c_str(), 0 );
 	return 0;	
 }
-
 LRESULT CWtlFileTreeCtrl::OnItemExpanding(int /*idCtrl*/, LPNMHDR pnmh, BOOL& /*bHandled*/)
 {
 	NM_TREEVIEW* pNMTreeView = (NM_TREEVIEW*)pnmh;

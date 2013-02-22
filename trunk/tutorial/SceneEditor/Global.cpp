@@ -146,11 +146,6 @@ void Global::update(float delta)
 	{
 		Hero_->update(delta);
 	}
-	//
-	if (isKeyDown(VK_SPACE) && Previewer_ && !Previewer_->getModelResID().empty())
-	{
-		getSceneManager()->addEntityInstance(Previewer_->getModelResID());
-	}
 }
 
 float Global::getBrushStrength()
@@ -664,6 +659,16 @@ EntityInstance* Global::selectedFileEntity( const tstring& name )
 OrbitCamera* Global::getCamera()
 {
 	return &camera_;
+}
+
+void Global::addEntityInstance( const std::string& resID )
+{
+	std::string finalEntityName = resID;
+	if (!finalEntityName.empty())
+	{
+		Previewer_->setModel(finalEntityName);
+		getSceneManager()->addEntityInstance(finalEntityName);
+	}
 }
 
 void createGlobal()

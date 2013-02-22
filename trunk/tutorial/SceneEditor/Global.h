@@ -90,6 +90,8 @@ public:
 	void setPreviewWindow(PreviewWindow* pw);
 	void createPreviewer();
 	OrbitCamera* getCamera();
+	//
+	void addEntityInstance(const std::string& resID);
 private:
 	void clear_();
 	bool createBrushDecal();

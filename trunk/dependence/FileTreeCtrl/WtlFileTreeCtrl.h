@@ -25,6 +25,7 @@ All rights reserved.
 
 const UINT WM_POPULATE_TREE = WM_APP + 1;
 const UINT WM_ITEM_SELECTED = WM_APP + 2;
+const UINT WM_ITEM_RightButtonUp = WM_APP + 3;
 
 class CSystemImageList
 {
@@ -64,12 +65,14 @@ public:
 
 	BEGIN_MSG_MAP(CWtlFileTreeCtrl)
 		MESSAGE_HANDLER(WM_LBUTTONDBLCLK, OnLButtonDblClick)
+		MESSAGE_HANDLER(WM_RBUTTONDBLCLK, OnRButtonUp)
 		MESSAGE_HANDLER(WM_POPULATE_TREE, OnPopulateTree)
 		REFLECTED_NOTIFY_CODE_HANDLER(TVN_ITEMEXPANDING, OnItemExpanding )
 		DEFAULT_REFLECTION_HANDLER()
 	END_MSG_MAP()
 	
 	LRESULT OnLButtonDblClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	LRESULT OnRButtonUp(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnPopulateTree(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnItemExpanding(int /*idCtrl*/, LPNMHDR pnmh, BOOL& /*bHandled*/);
 

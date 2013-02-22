@@ -10,6 +10,7 @@
 #include "model/Part.h"
 #include "EventManager.h"
 #include "PreviewWindow.h"
+#include "scene/SceneManager.h"
 LRESULT DataDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled )
 {
 	bHandled = TRUE;
@@ -40,7 +41,12 @@ LRESULT DataDlg::OnFileItemSelected( UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
 	
 	return TRUE;
 }
-
+LRESULT DataDlg::OnFileItemRightButtonUp( UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/ )
+{
+	LPCSTR FileName = (LPCSTR)wParam;
+	getGlobal()->addEntityInstance(FileName);
+	return TRUE;
+}
 
 void DataDlg::SelectFile( const tstring& s )
 {
