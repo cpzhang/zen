@@ -1,4 +1,16 @@
 <?xml version="1.0"?>
 <chunk>
-    <layer texture="D:\work\zen\data\brush\db_007_c005.dds"/>
+    <layer texture="brush\db_007_c005.dds"/>
+    <model file="model\dafangzi\dafangzi.entity" position="(20.0, 0.0, 10.0)">
+    </model>
+    <model file="model\liaowangta\liaowangta.entity" position="(20.0, 0.0, 40.0)">
+    </model>
+  <model file="model\xiaofangzi\xiaofangzi.entity" position="(2.0, 0.0, 30.0)">
+  </model>
+  <model file="model\Diaoxiang_01\Diaoxiang_01.entity" position="(50.0, 0.0, 25.0)">
+      </model>
+  <model file="model\Monster_1846\Monster_1846.entity" position="(10.0, 0.0, 10.0)" animation="run">
+      </model>
+  <model file="model\npc_heshang\npc_heshang.entity" position="(3.0, 1.0, 3.0)" animation="rest">
+      </model>
 </chunk>
