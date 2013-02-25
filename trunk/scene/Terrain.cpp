@@ -487,3 +487,45 @@ tstring Terrain::getFXFileName()
 {
 	return fx_->getFilePath();
 }
+float getHeight(const Vector3& a, const Vector3& b, const Vector3& c, float x, float z)
+{
+	// x = a.x * s + b.x * t + c.x * (1 - s - t)
+	// z = a.z * s + b.z * t + c.z * (1 - s - t)
+	float m = a.x- c.x;
+	float n = b.x - c.x;
+	float p = x - c.x;
+	float h = a.z - c.z;
+	float i = b.z - c.z;
+	float j = z - c.z;
+	float s = (n*j - p*i) / (h*n - m*i);
+	float t = (h*p - m*j) / (h*n - m*i);
+
+	return (a.y * s + b.y * t + c.y * (1 - s - t));
+}
+float Terrain::getHeightFromeWorldSpacePosition( float x, float z )
+{
+	if (!isXInside_(x) || !isZInside_(z))
+	{
+		return 0.0f;
+	}
+	float s = getSceneManager()->getLOD()->getScale();
+	int xb = x / s;
+	int zb = z / s;
+	int xn = xb;
+	int zn = zb;
+	Vector3 lb(xn * s, heights_[zn * totalNumberX_ + xn], zn *s);
+	xn = xb; zn = zb + 1;
+	Vector3 lt(xn * s, heights_[zn * totalNumberX_ + xn], zn *s);
+	xn = xb + 1; zn = zb;
+	Vector3 rb(xn * s, heights_[zn * totalNumberX_ + xn], zn *s);
+	xn = xb + 1; zn = zb + 1;
+	Vector3 rt(xn * s, heights_[zn * totalNumberX_ + xn], zn *s);
+	//以\为对角线，判定属于上三角形还是下三角形，判定准则：点p到lb的距离小于或等于到rt的距离，则位于下三角形；反之，上三角形
+	float dlb = (x - lb.x) * (x - lb.x) + (z - lb.z) * (z - lb.z);
+	float drt = (x - rt.x) * (x - rt.x) + (z - rt.z) * (z - rt.z);
+	if (dlb <= drt)
+	{
+		return getHeight(lb, lt, rb, x, z);
+	}
+	return getHeight(lt, rb, rt, x, z);
+}

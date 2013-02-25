@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<entity name="002">
+    <part file="polySurface30.part"/>
+    <part file="polySurface31.part"/>
+    <skeleton file="002.skeleton"/>
+    <animation file="002.animation"/>
+</entity>

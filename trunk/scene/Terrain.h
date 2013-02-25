@@ -22,6 +22,7 @@ public:
 	void setFileName(const tstring& fn);
 	void setFX(const tstring& fn);
 	Chunk* getChunkFromWorldSpacePostion(float x, float z);
+	float getHeightFromeWorldSpacePosition(float x, float z);
 	Chunk* getChunkFromTopology(int x, int z);
 	void updateVisibleChunks(float x, float z);
 	void clearSelected();

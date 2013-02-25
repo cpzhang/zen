@@ -148,8 +148,8 @@ LRESULT FrameWindow::OnOpenscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWnd
 
 LRESULT FrameWindow::OnGo( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
-	getSceneManager()->open(TEXT("f:\\zen\\data\\scene\\bornland"));
-	dlgData_.SelectFile(TEXT("f:\\zen\\data\\model\\Character_1015\\Character_1015.entity"));
+	getSceneManager()->open(TEXT("d:\\work\\zen\\data\\scene\\bornland"));
+	dlgData_.SelectFile(TEXT("d:\\work\\zen\\data\\model\\Character_1015\\Character_1015.entity"));
 	return 0;
 }
 

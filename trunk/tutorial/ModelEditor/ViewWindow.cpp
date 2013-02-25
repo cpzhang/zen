@@ -202,7 +202,7 @@ void ViewWindow::onIdle(const float delta)
 		}
 	}
 	//
-	camera_.update(delta);
+	camera_.update(delta, 0.0f);
 	getSceneManager()->update();
 	{
 		getGlobal()->update(delta);

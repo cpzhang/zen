@@ -11,7 +11,7 @@ HRESULT IndexBuffer::create( u32 size, DWORD usage, D3DFORMAT FVF, D3DPOOL pool 
 	destroy();
 	HRESULT hr;
 	IDirect3DIndexBuffer9* temp;
-	if( SUCCEEDED( getRenderContex()->getDxDevice()->CreateIndexBuffer(size, usage, FVF, pool, &temp, NULL ) ) )
+	if( SUCCEEDED(hr = getRenderContex()->getDxDevice()->CreateIndexBuffer(size, usage, FVF, pool, &temp, NULL ) ) )
 	{
 		indexBuffer_ = temp;
 	}

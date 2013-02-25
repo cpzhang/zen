@@ -10,7 +10,7 @@ HRESULT VertexBuffer::create( u32 size, DWORD usage, DWORD FVF, D3DPOOL pool )
 	destroy();
 	HRESULT hr;
 	IDirect3DVertexBuffer9* temp;
-	if( SUCCEEDED( getRenderContex()->getDxDevice()->CreateVertexBuffer(size, usage, FVF, pool, &temp, NULL ) ) )
+	if( SUCCEEDED( hr = getRenderContex()->getDxDevice()->CreateVertexBuffer(size, usage, FVF, pool, &temp, NULL ) ) )
 	{
 		vertexBuffer_ = temp;
 	}

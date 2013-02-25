@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<entity name="Monster_1768_01_EF_0">
+    <particle file="particle/Monster_1768_01_EF_0.particle"/>
+</entity>

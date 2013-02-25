@@ -19,8 +19,9 @@ void SceneManager::createTerrain( int xChunks, int zChunks, int n, float unit)
 {
 	lod_.destroy();
 	lod_.setN(n);
-	lod_.setScale(unit);
+	//lod_.setScale(unit);
 	lod_.create();
+	lod_.setChunkSize(unit);
 	destroyTerrain_();
 	destroyTerrainQuadTree();
 	terrainCurrent_ = new Terrain;
@@ -175,7 +176,7 @@ void constructQuadTreeInsideChunk(QuadNode* parent, eQuadNode e, int x, int z)
 	n->zNumber_ = gZ;
 	n->x_ = x;
 	n->z_ = z;
-	int s = getSceneManager()->getLOD()->getScale();
+	float s = getSceneManager()->getLOD()->getScale();
 	n->rect_.left_ = x * s + gRC.left_;
 	n->rect_.right_ = n->rect_.left_ + s;
 	n->rect_.bottom_ = z * s + gRC.bottom_;
@@ -247,7 +248,7 @@ void constructTerrainQuadTreeImp_(QuadNode* parent, int xChunksBegin, int xChunk
 	}
 	//
 	{
-		int s = 0;
+		float s = 0;
 		if (outSide)
 		{
 			s = getSceneManager()->getLOD()->getLengthOneSide();
@@ -459,7 +460,7 @@ void SceneManager::save(const tstring& path)
 		e->SetAttribute("XChunkNumber", terrainCurrent_->getXChunkNumber());
 		e->SetAttribute("ZChunkNumber", terrainCurrent_->getZChunkNumber());
 		e->SetAttribute("Lod", lod_.getN());
-		e->SetAttribute("Unit", lod_.getScale());
+		e->SetAttribute("ChunkSize", lod_.getChunkSize());
 		ele->LinkEndChild(e);
 	}
 	//
@@ -512,7 +513,7 @@ void SceneManager::open( const tstring& resID )
 			{
 				return;
 			}
-			if (tinyxml2::XML_SUCCESS != tex->QueryFloatAttribute("Unit", &unit))
+			if (tinyxml2::XML_SUCCESS != tex->QueryFloatAttribute("ChunkSize", &unit))
 			{
 				return;
 			}

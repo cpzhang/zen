@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<entity name="000_shui">
+    <part file="pPlane10.part"/>
+    <part file="pPlane11.part"/>
+    <part file="pPlane12.part"/>
+    <part file="pPlane13.part"/>
+    <part file="pPlane14.part"/>
+    <part file="pPlane15.part"/>
+    <part file="pPlane9.part"/>
+    <part file="pPlane8.part"/>
+    <part file="pPlane7.part"/>
+    <part file="pPipe4.part"/>
+    <part file="pPipe3.part"/>
+    <particle file="particle/ef_scene_000_shui_01_0.particle" bone="sds"/>
+    <particle file="particle/ef_scene_000_shui_01_1.particle" bone="joint1"/>
+    <particle file="particle/ef_scene_000_shui_01_2.particle" bone="pasted__sds"/>
+    <particle file="particle/ef_scene_000_shui_01_3.particle" bone="pasted__joint1"/>
+    <skeleton file="000_shui.skeleton"/>
+    <animation file="000_shui.animation"/>
+</entity>

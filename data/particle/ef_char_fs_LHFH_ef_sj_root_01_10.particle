@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<ParticleEmitter>
+    <Alpha value="(0.000000, 1.000000, 0.000000)"/>
+    <AttachEmitter value="0"/>
+    <AspectRadio value="1.000000"/>
+    <BlendMode value="3"/>
+    <ChangeStyle value="0"/>
+    <ChangeInterval value="30"/>
+    <Cols value="1"/>
+    <ColorStart value="(1.000000, 1.000000, 1.000000)"/>
+    <ColorMiddle value="(1.000000, 1.000000, 1.000000)"/>
+    <ColorEnd value="(1.000000, 1.000000, 1.000000)"/>
+    <FixedSize value="0"/>
+    <ForSword value="0"/>
+    <Head value="1"/>
+    <HeadDecay value="(0.000000, 0.000000, 1.000000)"/>
+    <HeadLifeSpan value="(0.000000, 0.000000, 1.000000)"/>
+    <InitAngleBegin value="180.000000"/>
+    <InitAngleEnd value="-180.000000"/>
+    <InitNumber value="0"/>
+    <LifeSpan value="0.300000"/>
+    <LifeVar value="0.000000"/>
+    <MaxNumber value="5"/>
+    <MoveWithEmitter value="0"/>
+    <RotateSpeed value="0.000000"/>
+    <RotateSpeedVar value="0.000000"/>
+    <Rows value="1"/>
+    <Scale value="(0.001000, 300.000000, 0.001000)"/>
+    <ScaleVar value="(0.000000, 50.000000, 0.000000)"/>
+    <SwordInitAngle value="0.000000"/>
+    <Tail value="0"/>
+    <TailLifeSpan value="(0.000000, 0.000000, 1.000000)"/>
+    <TailDecay value="(0.000000, 0.000000, 1.000000)"/>
+    <Texture value="particle/image/D3_lg_0881.dds"/>
+    <Time value="0.300000"/>
+    <Wander value="0"/>
+    <WanderRadius value="0.000000"/>
+    <WanderSpeed value="0.000000"/>
+    <EmitRate static="512.000000">
+        <KeyFrame time="0" value="512.000000"/>
+        <KeyFrame time="166" value="341.333344"/>
+        <KeyFrame time="208" value="170.666672"/>
+        <KeyFrame time="250" value="0.000000"/>
+    </EmitRate>
+    <ExplosiveForce static="0.000000"/>
+    <Gravity static="0.000000"/>
+    <Height static="0.000000"/>
+    <Length static="0.000000"/>
+    <Latitude static="0.000000"/>
+    <Speed static="0.000000"/>
+    <Variation static="0.000000"/>
+    <Visibility static="0">
+        <KeyFrame time="0" value="0"/>
+        <KeyFrame time="125" value="1"/>
+    </Visibility>
+    <Width static="0.000000"/>
+</ParticleEmitter>

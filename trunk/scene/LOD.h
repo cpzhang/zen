@@ -20,6 +20,16 @@ public:
 	{
 		scale_ = s;
 	}
+
+	float getChunkSize()
+	{
+		return chunkSize_;
+	}
+	void setChunkSize(float f)
+	{
+		chunkSize_ = f;
+		setScale(f / (nVerticesNumberOneSide_ - 1.0f));
+	}
 	float getLengthOneSide();
 	int getN();
 	void setN(int n);
@@ -27,6 +37,7 @@ private:
 	void clear_();
 private:
 	int n_;
+	float chunkSize_;
 	float scale_;
 	int nVerticesNumberOneChunk_;
 	int nVerticesNumberOneSide_;

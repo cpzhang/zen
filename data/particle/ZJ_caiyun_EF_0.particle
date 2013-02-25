@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<ParticleEmitter>
+    <Alpha value="(0.000000, 0.200000, 0.000000)"/>
+    <AttachEmitter value="0"/>
+    <AspectRadio value="1.000000"/>
+    <BlendMode value="4"/>
+    <ChangeStyle value="0"/>
+    <ChangeInterval value="30"/>
+    <Cols value="1"/>
+    <ColorStart value="(0.582864, 0.417000, 1.000000)"/>
+    <ColorMiddle value="(0.395000, 0.465684, 1.000000)"/>
+    <ColorEnd value="(0.282000, 0.776463, 1.000000)"/>
+    <FixedSize value="0"/>
+    <ForSword value="0"/>
+    <Head value="1"/>
+    <HeadDecay value="(0.000000, 0.000000, 1.000000)"/>
+    <HeadLifeSpan value="(0.000000, 0.000000, 1.000000)"/>
+    <InitAngleBegin value="-180.000000"/>
+    <InitAngleEnd value="180.000000"/>
+    <InitNumber value="0"/>
+    <LifeSpan value="1.500000"/>
+    <LifeVar value="0.200000"/>
+    <MaxNumber value="40"/>
+    <MoveWithEmitter value="1"/>
+    <RotateSpeed value="0.000000"/>
+    <RotateSpeedVar value="0.000000"/>
+    <Rows value="1"/>
+    <Scale value="(80.000000, 40.000000, 20.000000)"/>
+    <ScaleVar value="(0.100000, 0.000000, 0.000000)"/>
+    <SwordInitAngle value="0.000000"/>
+    <Tail value="0"/>
+    <TailLifeSpan value="(0.000000, 0.000000, 1.000000)"/>
+    <TailDecay value="(0.000000, 0.000000, 1.000000)"/>
+    <Texture value="particle/image/lg0022.dds"/>
+    <Time value="0.500000"/>
+    <Wander value="0"/>
+    <WanderRadius value="0.000000"/>
+    <WanderSpeed value="0.000000"/>
+    <EmitRate static="20.000000">
+        <KeyFrame time="0" value="20.000000"/>
+        <KeyFrame time="1541" value="20.015982"/>
+        <KeyFrame time="1583" value="20.031963"/>
+        <KeyFrame time="1625" value="20.047945"/>
+    </EmitRate>
+    <ExplosiveForce static="0.000000"/>
+    <Gravity static="0.000000"/>
+    <Height static="50.000000"/>
+    <Length static="50.000000"/>
+    <Latitude static="45.000000"/>
+    <Speed static="20.000000"/>
+    <Variation static="0.020000"/>
+    <Visibility static="1"/>
+    <Width static="50.000000"/>
+</ParticleEmitter>

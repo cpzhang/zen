@@ -13,6 +13,9 @@ private:
 	CEditImpl   mEditN;
 	int			mN;
 	//
+	CEditImpl   mEditChunkSize;
+	int			mChunkSize;
+	//
 	CEditImpl   mEditWidth;
 	int			mWidth;
 	//
@@ -48,6 +51,8 @@ public:
 		DDX_INT_RANGE(IDC_EDIT_ChunksZ, mHeight, 1, 200)//做校验
 		DDX_CONTROL(IDC_EDIT_N, mEditN)//功能等价于SubclassWindow，接管消息回调
 		DDX_INT_RANGE(IDC_EDIT_N, mN, 0, 5)//做校验
+		DDX_CONTROL(IDC_EDIT_ChunkSize, mEditChunkSize)//功能等价于SubclassWindow，接管消息回调
+		DDX_INT_RANGE(IDC_EDIT_ChunkSize, mChunkSize, 1, 5000)//做校验
 		DDX_CONTROL(IDC_ScenePath, mPathEdit)//功能等价于SubclassWindow，接管消息回调
 		//DDX_TEXT(IDC_ScenePath, tPath)
 		DDX_CONTROL(IDC_SceneName, mNameEdit)//功能等价于SubclassWindow，接管消息回调

@@ -34,7 +34,7 @@ void OrbitCamera::setSpeed( float s )
 	speed_ = s;
 }
 
-void OrbitCamera::update( float dTime )
+void OrbitCamera::update( float dTime, float ch )
 {
 // 	if (!capture_)
 // 	{
@@ -46,7 +46,7 @@ void OrbitCamera::update( float dTime )
 	}
 	if (isDirty_())
 	{
-		polarToViewImp_();	
+		polarToViewImp_(ch);	
 		setDirty(false);
 	}
 }
@@ -124,9 +124,10 @@ void OrbitCamera::create( float distance, float angleXZ, float angleYZ )
 	distance_ = distance;
 	angleXZ_ = angleXZ;
 	angleYZ_ = angleYZ;
-	polarToViewImp_();
+	polarToViewImp_(0.0f);
 }
-void OrbitCamera::polarToViewImp_()
+
+void OrbitCamera::polarToViewImp_(float ch)
 {
 	while(angleYZ_ < 0.0f)
 	{
@@ -136,12 +137,14 @@ void OrbitCamera::polarToViewImp_()
 	{
 		angleYZ_ -= MATH_PI_Two;
 	}
-	float y = distance_ * cos(angleYZ_);
-	float x = distance_ * sin(angleYZ_) * sin(angleXZ_);
-	float z = distance_ * sin(angleYZ_) * cos(angleXZ_);
+	float aYZ = getAngleYZ(ch);
+	float y = distance_ * cos(aYZ);
+	float x = distance_ * sin(aYZ) * sin(angleXZ_);
+	float z = distance_ * sin(aYZ) * cos(angleXZ_);
 	Vector3 p3(x, y, z);
 	Vector3 w3=-p3.unitVector();
 	p3 += center_;
+	lastPos_ = p3;
 	Vector4 p4(p3.x, p3.y, p3.z, 1.0f);
 	Vector3 u3;
 	if (angleYZ_ > MATH_PI)
@@ -170,7 +173,7 @@ void OrbitCamera::polarToView()
 {
 	if (!almostEqual( angleXZ_, lastYaw_ ) || !almostEqual( angleYZ_, lastPitch_ ))
 	{
-		polarToViewImp_();
+		polarToViewImp_(0.0f);
 	}
 }
 
@@ -292,4 +295,13 @@ void OrbitCamera::onMouseWheel( float d )
 	d = d * speed_ * sin(a);
 	distance_ += d;
 	setDirty(true);
+}
+float OrbitCamera::getAngleYZ( float ch )
+{
+	float y = distance_ * cos(angleYZ_) + center_.y;
+	if (y < ch)
+	{
+		//return 0.0f;
+	}
+	return angleYZ_;
 }

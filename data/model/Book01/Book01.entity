@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<entity name="Book01">
+    <part file="Monster_1768_01.part"/>
+    <part file="pPlane1.part"/>
+    <part file="pPlane2.part"/>
+    <part file="pPlane3.part"/>
+    <particle file="particle/Monster_1768_01_EF_0.particle" bone="joint6"/>
+    <skeleton file="Book01.skeleton"/>
+    <animation file="Book01.animation"/>
+</entity>

@@ -36,6 +36,9 @@
 #define IDC_LIST_DataProperty           1018
 #define IDC_LIST_Animation              1019
 #define IDC_BUTTON_Previewer            1024
+#define IDC_STATIC_ChunkSize            1021
+#define IDC_EDIT2                       1022
+#define IDC_EDIT_ChunkSize              1022
 #define ID_40001                        40001
 #define ID_40002                        40002
 #define ID_40003                        40003

@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="pPlane11">
+    <mesh file="pPlane11.mesh"/>
+    <material file="UnnamedShader4.material"/>
+</part>

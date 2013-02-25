@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="polySurface30">
+    <mesh file="polySurface30.mesh"/>
+    <material file="pasted__t_pasted__t_UnnamedShader26.material"/>
+</part>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<entity name="flower">
+    <part file="polySurface10.part"/>
+    <part file="polySurface20.part"/>
+    <part file="polySurface30.part"/>
+    <part file="polySurface40.part"/>
+    <part file="wenzi.part"/>
+    <particle file="particle/AAA_hua_chenhao_baobei_0.particle" bone="joint1"/>
+    <skeleton file="flower.skeleton"/>
+    <animation file="flower.animation"/>
+</entity>

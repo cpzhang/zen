@@ -9,6 +9,7 @@ void SceneNewDlg::clear()
 	mN = 5;
 	mPath.clear();
 	tPath[0] = NULL;
+	mChunkSize = 30;
 }
 
 SceneNewDlg::SceneNewDlg()
@@ -39,7 +40,7 @@ LRESULT SceneNewDlg::OnBnClickedOk( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*h
 	if (DoDataExchange(true))
 	{
 		//创建场景
-		getSceneManager()->createTerrain(mWidth, mHeight, mN, 3);
+		getSceneManager()->createTerrain(mWidth, mHeight, mN, mChunkSize);
 		//保存路径
 		if (mPath.empty())
 		{
@@ -53,7 +54,7 @@ LRESULT SceneNewDlg::OnBnClickedOk( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*h
 		if (tn)
 		{
 			tn->setFileName(mPath + TEXT("/") + getSceneName());
-			tstring fxName(TEXT("e:/ZenBin/data/shader/Terrain.fx"));
+			tstring fxName(TEXT("shader/Terrain.fx"));
 			tn->setFX(fxName);
 		}
 		//1，否则domodel处条件判断失败，估计enddialog的参数即domodel的返回值
@@ -129,7 +130,7 @@ tstring selectDirectory(HWND hWnd, tstring caption, tstring initPath)
 LRESULT SceneNewDlg::OnBnClickedButtonScenepath(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	//mPath = selectDirectory(m_hWnd, TEXT("选择场景保存路径"), FileSystem::getDataDirectory());
-	mPath = selectDirectory(m_hWnd, TEXT("选择场景保存路径"), TEXT("f:\\zen\\data\\scene"));
+	mPath = selectDirectory(m_hWnd, TEXT("选择场景保存路径"), TEXT("d:\\work\\zen\\data\\scene"));
 
 	mPathEdit.InsertText(0, mPath.c_str());
 	//IFileDialog d;

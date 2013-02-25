@@ -1,17 +1,21 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BmpView", "BmpView.vcxproj", "{5B602FB1-CD4E-4AF6-2BE0-E2987BEB1B54}"
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BmpView", "BmpView.vcproj", "{F5F40F56-82B6-41F7-B5ED-51E95B65A288}"
 EndProject
 Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Win32 = Debug|Win32
-		Release|Win32 = Release|Win32
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Release
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5B602FB1-CD4E-4AF6-2BE0-E2987BEB1B54}.Debug|Win32.ActiveCfg = Debug|Win32
-		{5B602FB1-CD4E-4AF6-2BE0-E2987BEB1B54}.Release|Win32.ActiveCfg = Release|Win32
+	GlobalSection(ProjectDependencies) = postSolution
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
+	GlobalSection(ProjectConfiguration) = postSolution
+		{F5F40F56-82B6-41F7-B5ED-51E95B65A288}.Debug.ActiveCfg = Debug|Win32
+		{F5F40F56-82B6-41F7-B5ED-51E95B65A288}.Debug.Build.0 = Debug|Win32
+		{F5F40F56-82B6-41F7-B5ED-51E95B65A288}.Release.ActiveCfg = Release|Win32
+		{F5F40F56-82B6-41F7-B5ED-51E95B65A288}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
 	EndGlobalSection
 EndGlobal

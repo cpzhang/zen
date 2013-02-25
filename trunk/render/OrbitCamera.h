@@ -36,7 +36,7 @@ public:
 	void setCapture(bool b);
 	float getSpeed() const;
 	void setSpeed( float s );
-	void update( float dTime);
+	void update( float dTime, float ch);
 	bool handleKeyEvent( );
 	bool onMouseMove();
 	void create( float distance, float angleXZ, float angleYZ);
@@ -53,7 +53,9 @@ public:
 	}
 	void handleInput( float dTime );
 private:
-	void polarToViewImp_();
+	void polarToViewImp_(float ch);
 	void setDirty(bool b);
 	bool isDirty_();
+		
+	float getAngleYZ(float ch);
 };

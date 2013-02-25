@@ -28,6 +28,7 @@ private:
 	LRESULT onMouseMove(UINT, WPARAM, LPARAM lParam, BOOL& b) ;
 	LRESULT OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 public:
+	void destroy();
 	void render();
 	void onIdle(float delta);
 	void setModel(const std::string resID);

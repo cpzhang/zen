@@ -69,7 +69,8 @@ void Global::destroy()
 {
 	if (Previewer_)
 	{
-		delete Previewer_;
+		//delete Previewer_;
+		Previewer_->destroy();//stack变量，不能delete
 		Previewer_ = NULL;
 	}
 	getRenderContex()->releaseRenderTarget(renderTargetKey_);
@@ -89,7 +90,7 @@ void Global::destroy()
 	destroyStateManager();
 	//
 	ModelResManager::getInstance()->destroy();
-	destroyLuaScript();
+//	destroyLuaScript();//导致非法，不解！！先注释掉
 	//在此以前，把VB 纹理等显存资源释放干净
 	if (getRenderContex())
 	{
@@ -131,7 +132,12 @@ Decal* Global::getBrushDecal()
 void Global::update(float delta)
 {
 	camera_.setCenter(heroController_.getPosition() + Vector3(0, 2, 0));
-	camera_.update(delta);
+	float cameraHeight = 0.0f;
+	if (getSceneManager() && getSceneManager()->getTerrain())
+	{
+		cameraHeight = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(camera_.lastPos_.x, camera_.lastPos_.z);
+	}
+	camera_.update(delta, cameraHeight);
 	heroController_.setCameraAngleY(camera_.angleXZ_);
 	getRenderContex()->setViewMatrix(camera_.view_);
 	//
@@ -145,6 +151,7 @@ void Global::update(float delta)
 	if (Hero_)
 	{
 		Hero_->update(delta);
+		heroController_.apply(Hero_->getEntityInstance());
 	}
 }
 
@@ -734,10 +741,12 @@ void HeroController::update(float delta)
 
 void HeroController::apply( IMovable* m )
 {
-	if (NULL == m)
+	if (NULL == m || NULL == getSceneManager() || NULL == getSceneManager()->getTerrain())
 	{
 		return;
 	}
+	//拾取高度
+	position_.y = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(position_.x, position_.z);
 	m->setPosition(position_);
 	m->rotateY(angleY_ + MATH_PI);
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<animations name="Monster_1768_01_EF">
+    <animation name="stand" duration="1966" skin="stand.skin"/>
+    <animation name="dialogue" duration="1966" skin="dialogue.skin"/>
+    <animation name="rest" duration="1966" skin="rest.skin"/>
+</animations>

@@ -706,8 +706,6 @@ public:
 	int AddString(LPCTSTR lpszItem)
 	{
 		ATLASSERT(::IsWindow(m_hWnd));
-		///Adds a string to a list box. If the list box does not have the LBS_SORT style, the string is added to the end of the list.
-		//Otherwise, the string is inserted into the list and the list is sorted.
 		return (int)::SendMessage(m_hWnd, LB_ADDSTRING, 0, (LPARAM)lpszItem);
 	}
 
@@ -6516,7 +6514,7 @@ public:
 		return TBase::Create(GetWndClassName(), hWndParent, rect.m_lpRect, szWindowName, dwStyle, dwExStyle, MenuOrID.m_hMenu, lpCreateParam);
 	}
 
-	// Attributes
+// Attributes
 	static LPCTSTR GetWndClassName()
 	{
 		return TRACKBAR_CLASS;

@@ -61,7 +61,7 @@ void Global::destroy()
 {
 	if (pi_)
 	{
-		delete pi_;
+		//delete pi_;
 		pi_ = NULL;
 	}
 	FontManager::getPointer()->destroy();
@@ -76,7 +76,7 @@ void Global::destroy()
 	//
 	ModelResManager::getInstance()->destroy();
 	//
-	destroyLuaScript();
+	//destroyLuaScript();
 	//在此以前，把VB 纹理等显存资源释放干净
 	if (getRenderContex())
 	{

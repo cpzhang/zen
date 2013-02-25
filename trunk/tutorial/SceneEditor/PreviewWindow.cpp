@@ -58,14 +58,14 @@ PreviewWindow::PreviewWindow()
 {
 	EntityInstance_ = NULL;
 	Hero_ = NodeManager::getInstancePtr()->createNode("HeroPreviewerNode");
+	//Hero_ = NULL;
 	Camera_.setSpeed(5.0f);
 	Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
 	Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
 	Camera_.limit_ =  BoundingBox( minBound, maxBound );
 	Camera_.create(3, MATH_PI, MATH_PI_Half);
 }
-
-PreviewWindow::~PreviewWindow()
+void PreviewWindow::destroy()
 {
 	if (EntityInstance_)
 	{
@@ -77,6 +77,10 @@ PreviewWindow::~PreviewWindow()
 		Hero_->release();
 		Hero_ = NULL;
 	}
+}
+PreviewWindow::~PreviewWindow()
+{
+	
 }
 
 LRESULT PreviewWindow::onMouseMove( UINT, WPARAM, LPARAM lParam, BOOL& b )
@@ -127,7 +131,7 @@ LRESULT PreviewWindow::onMouseWheel( UINT, WPARAM wParam, LPARAM, BOOL& b )
 void PreviewWindow::onIdle( float delta )
 {
 	//update
-	Camera_.update(delta);
+	Camera_.update(delta, 0.0f);
 	if (Hero_)
 	{
 		Hero_->update(delta);
