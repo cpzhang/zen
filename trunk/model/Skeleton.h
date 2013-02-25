@@ -53,6 +53,10 @@ public:
 		static Skeleton s;
 		return &s;
 	}
+	bool isNullObject()
+	{
+		return this == Skeleton::getNullObject();
+	}
 private:
 	void _clear();
 	void _relate();

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<entity name="Diaoxiang_01">
+    <part file="Egg.part"/>
+    <skeleton file="Diaoxiang_01.skeleton"/>
+    <animation file="Diaoxiang_01.animation"/>
+</entity>

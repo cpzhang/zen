@@ -30,7 +30,7 @@ bool Fx::create( const tstring& effectResource )
 	}
 	else
 	{
-		tstring ts = FileSystem::getDataDirectory() + effectResource;
+		tstring ts = FileSystem::getDataDirectory() + "\\" + effectResource;
 		if (SUCCEEDED(D3DXCreateEffectFromFile(getRenderContex()->getDxDevice(), ts.c_str(), NULL, NULL, D3DXSHADER_DEBUG|D3DXSHADER_SKIPOPTIMIZATION, NULL, &pEffect_, NULL)))
 		{
 			resourceID_ = ts;

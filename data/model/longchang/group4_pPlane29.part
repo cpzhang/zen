@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="group4_pPlane29">
+    <mesh file="group4_pPlane29.mesh"/>
+    <material file="ef_scene_002_huo_03_UnnamedShader5.material"/>
+</part>

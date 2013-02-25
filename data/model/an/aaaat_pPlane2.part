@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="aaaat_pPlane2">
+    <mesh file="aaaat_pPlane2.mesh"/>
+    <material file="UnnamedShader21.material"/>
+</part>

@@ -86,7 +86,18 @@ tstring FileSystem::removeFileExtension( const tstring& fileName )
 	}
 	return fileName;
 }
-
+tstring FileSystem::toWindowsFilePath(const tstring& p)
+{
+	tstring path(p);
+	for (size_t i = 0; i != path.size(); ++i)
+	{
+		if (path[i] == '/')
+		{
+			path[i] = '\\';
+		}
+	}
+	return path;
+}
 tstring FileSystem::standardFilePath(const tstring& p)
 {
 	tstring path(p);
@@ -125,7 +136,7 @@ tstring FileSystem::guessDataDirectory()
 {
 	tstring d = getBinDirectory();
 	d = getParent(d);
-	return d + "/data/";
+	return d + "/data";
 }
 
 tstring FileSystem::dataPath_;

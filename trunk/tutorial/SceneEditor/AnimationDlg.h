@@ -4,7 +4,7 @@
 #include "CEditImpl.h"
 #include "IdleHandler.h"
 #include "resource.h"
-#include "EventManager.h"
+#include "misc/EventManager.h"
 class Entity;
 class AnimationDlg :
 	public CDialogImpl<AnimationDlg>

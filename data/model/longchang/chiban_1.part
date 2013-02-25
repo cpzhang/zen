@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="chiban_1">
+    <mesh file="chiban_1.mesh"/>
+    <material file="t_9_:t7:a1.material"/>
+</part>

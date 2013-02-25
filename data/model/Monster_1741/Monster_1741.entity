@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<entity name="Monster_1741">
+    <part file="Monster1061_03.part"/>
+    <part file="Monster_1741_020.part"/>
+    <part file="Monster_1741_021.part"/>
+    <skeleton file="Monster_1741.skeleton"/>
+    <animation file="Monster_1741.animation"/>
+</entity>

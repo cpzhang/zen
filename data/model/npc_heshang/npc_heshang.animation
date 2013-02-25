@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<animations name="npc_heshang">
+    <animation name="stand" duration="1166" skin="stand.skin"/>
+    <animation name="walk" duration="1566" skin="walk.skin"/>
+    <animation name="rest" duration="3633" skin="rest.skin"/>
+    <animation name="dialogue" duration="3299" skin="dialogue.skin"/>
+</animations>

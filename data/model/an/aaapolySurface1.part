@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="aaapolySurface1">
+    <mesh file="aaapolySurface1.mesh"/>
+    <material file="t_UnnamedShader20.material"/>
+</part>

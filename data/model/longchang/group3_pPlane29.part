@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="group3_pPlane29">
+    <mesh file="group3_pPlane29.mesh"/>
+    <material file="UnnamedShader5.material"/>
+</part>

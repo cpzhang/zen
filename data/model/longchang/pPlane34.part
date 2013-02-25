@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="pPlane34">
+    <mesh file="pPlane34.mesh"/>
+    <material file="huo_UnnamedShader2.material"/>
+</part>

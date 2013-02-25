@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<material name="t_UnnamedShader21">
+    <Fx file="shader/aPTSkin.fx"/>
+    <Texture name="g_Texture0" file="lg0392.dds"/>
+    <RenderState state="7" value="0"/>
+    <RenderState state="14" value="0"/>
+    <RenderState state="22" value="1"/>
+    <RenderState state="24" value="190"/>
+    <RenderState state="27" value="1"/>
+    <RenderState state="19" value="5"/>
+    <RenderState state="20" value="2"/>
+    <TextureStageState stage="0" type="3" value="0"/>
+    <TextureStageState stage="0" type="4" value="4"/>
+    <TextureStageState stage="0" type="6" value="0"/>
+    <TextureStageState stage="1" type="1" value="4"/>
+    <TextureStageState stage="1" type="2" value="1"/>
+    <TextureStageState stage="1" type="3" value="3"/>
+    <TextureStageState stage="1" type="4" value="4"/>
+    <TextureStageState stage="1" type="5" value="1"/>
+    <TextureStageState stage="1" type="6" value="3"/>
+    <Alpha>
+        <KeyFrame time="0" value="0.500000"/>
+    </Alpha>
+    <Color>
+        <KeyFrame time="0" value="(0.000000, 0.652500, 1.000000)"/>
+    </Color>
+    <FlowU>
+        <KeyFrame time="0" value="-5.025000"/>
+    </FlowU>
+    <FlowV>
+        <KeyFrame time="0" value="9.803898"/>
+        <KeyFrame time="41" value="10.344584"/>
+        <KeyFrame time="83" value="11.144798"/>
+        <KeyFrame time="125" value="11.555719"/>
+        <KeyFrame time="166" value="11.015768"/>
+        <KeyFrame time="208" value="9.827875"/>
+        <KeyFrame time="250" value="8.639983"/>
+        <KeyFrame time="291" value="8.100032"/>
+        <KeyFrame time="333" value="8.363153"/>
+        <KeyFrame time="375" value="8.942017"/>
+        <KeyFrame time="416" value="9.520881"/>
+        <KeyFrame time="458" value="9.784000"/>
+        <KeyFrame time="500" value="10.194921"/>
+        <KeyFrame time="541" value="10.995136"/>
+        <KeyFrame time="583" value="11.535822"/>
+        <KeyFrame time="625" value="11.196327"/>
+        <KeyFrame time="666" value="10.086188"/>
+        <KeyFrame time="708" value="8.846460"/>
+        <KeyFrame time="750" value="8.125086"/>
+        <KeyFrame time="791" value="8.275165"/>
+        <KeyFrame time="833" value="8.816140"/>
+        <KeyFrame time="875" value="9.420263"/>
+        <KeyFrame time="916" value="9.771791"/>
+        <KeyFrame time="958" value="10.060831"/>
+        <KeyFrame time="1000" value="10.835093"/>
+        <KeyFrame time="1041" value="11.479590"/>
+        <KeyFrame time="1083" value="11.345786"/>
+        <KeyFrame time="1125" value="10.339317"/>
+        <KeyFrame time="1166" value="9.073672"/>
+        <KeyFrame time="1208" value="8.196792"/>
+        <KeyFrame time="1250" value="8.202333"/>
+        <KeyFrame time="1291" value="8.692789"/>
+        <KeyFrame time="1333" value="9.309543"/>
+        <KeyFrame time="1375" value="9.736849"/>
+        <KeyFrame time="1416" value="9.947504"/>
+        <KeyFrame time="1458" value="10.669860"/>
+        <KeyFrame time="1500" value="11.392216"/>
+        <KeyFrame time="1541" value="11.458960"/>
+        <KeyFrame time="1583" value="10.582079"/>
+        <KeyFrame time="1625" value="9.316434"/>
+        <KeyFrame time="1666" value="8.309965"/>
+        <KeyFrame time="1708" value="8.147183"/>
+        <KeyFrame time="1750" value="8.574491"/>
+        <KeyFrame time="1791" value="9.191243"/>
+        <KeyFrame time="1833" value="9.681700"/>
+        <KeyFrame time="1875" value="9.860129"/>
+        <KeyFrame time="1916" value="10.504626"/>
+        <KeyFrame time="1958" value="11.278888"/>
+        <KeyFrame time="2000" value="11.530665"/>
+        <KeyFrame time="2041" value="10.809291"/>
+        <KeyFrame time="2083" value="9.569563"/>
+        <KeyFrame time="2125" value="8.459424"/>
+        <KeyFrame time="2166" value="8.112241"/>
+        <KeyFrame time="2208" value="8.463769"/>
+        <KeyFrame time="2250" value="9.067893"/>
+        <KeyFrame time="2291" value="9.608868"/>
+        <KeyFrame time="2333" value="9.803898"/>
+        <KeyFrame time="2375" value="10.344584"/>
+        <KeyFrame time="2416" value="11.144798"/>
+        <KeyFrame time="2458" value="11.555719"/>
+    </FlowV>
+</material>

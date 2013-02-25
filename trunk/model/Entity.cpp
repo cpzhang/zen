@@ -10,13 +10,23 @@ void Entity::addPart( const tstring& resID)
 
 bool Entity::create( const tstring& resourceId )
 {
+	std::string resId(resourceId);
+	if (!FileSystem::isFileExist(resId))
+	{
+		resId = FileSystem::getDataDirectory() + "\\" + resId;
+		if (!FileSystem::isFileExist(resId))
+		{
+			return false;
+		}
+	}
+	
 	//
 	tinyxml2::XMLDocument doc;
-	if (tinyxml2::XML_SUCCESS != doc.LoadFile(resourceId.c_str()))
+	if (tinyxml2::XML_SUCCESS != doc.LoadFile(resId.c_str()))
 	{
 		return false;
 	}
-	FileName_ = resourceId;
+	FileName_ = resId;
 	tinyxml2::XMLElement* r = doc.RootElement();
 	Name_ = r->Attribute("name");
 	tinyxml2::XMLElement* tex= r->FirstChildElement("part");

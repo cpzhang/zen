@@ -355,6 +355,14 @@ public:
 	{
 		SwapChain_ = NULL;
 	}
+	~AdditionalRenderTarget()
+	{
+		if (SwapChain_)
+		{
+			SwapChain_->Release();
+			SwapChain_ = NULL;
+		}
+	}
 public:
 	virtual void create(HWND h)
 	{

@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="loftedSurface3">
+    <mesh file="loftedSurface3.mesh"/>
+    <material file="UnnamedShader7.material"/>
+</part>

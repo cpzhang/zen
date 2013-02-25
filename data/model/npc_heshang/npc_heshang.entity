@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<entity name="npc_heshang">
+    <part file="npc_heshang_md.part"/>
+    <part file="npc_heshang_weapon_md.part"/>
+    <skeleton file="npc_heshang.skeleton"/>
+    <animation file="npc_heshang.animation"/>
+</entity>

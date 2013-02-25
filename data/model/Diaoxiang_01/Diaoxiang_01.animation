@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<animations name="diaoxiang_01">
+    <animation name="dialogue" duration="633" skin="dialogue.skin"/>
+    <animation name="rest" duration="633" skin="rest.skin"/>
+    <animation name="stand" duration="633" skin="stand.skin"/>
+</animations>

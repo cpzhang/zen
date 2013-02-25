@@ -198,9 +198,16 @@ void Mz::loadMzI( const std::string& fileName )
 		}
 	}
 }
-
+int Mz::getAnimationNumber()
+{
+	return mAnimations.size();
+}
 void Mz::saveAnimation( const std::string& fileName )
 {
+	if (mAnimations.empty())
+	{
+		return;
+	}
 	tinyxml2::XMLDocument doc;
 	// 
 	tinyxml2::XMLDeclaration* dec = doc.NewDeclaration("xml version=\"1.0\"");
@@ -808,9 +815,17 @@ void Mz::loadFb( const std::string& fileName )
 		}
 	}
 }
-
+int Mz::getBoneNumbers()
+{
+	return mBones.size();
+}
 void Mz::saveSkeleton( const std::string& fileName )
 {
+	//
+	if (mBones.empty())
+	{
+		return;
+	}
 	//============================================================================
 	// 开始写入数据
 	ChunkSet cs;

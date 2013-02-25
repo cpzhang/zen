@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<entity name="liaowangta">
+    <part file="liaota_ding.part"/>
+    <part file="liaota_lang.part"/>
+    <part file="liaota_di.part"/>
+</entity>

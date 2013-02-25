@@ -21,7 +21,7 @@ bool ManagedTexture::load( const tstring & resourceID )
 	}
 	else
 	{
-		tstring ts = FileSystem::getDataDirectory() + resourceID;
+		tstring ts = FileSystem::getDataDirectory() + "\\" + resourceID;
 		if (SUCCEEDED(D3DXCreateTextureFromFileEx(getRenderContex()->getDxDevice(), ts.c_str(), 
 			D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, 0, NULL, NULL, &dxTexture_)))
 		{

@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<entity name="xiaofangzi">
+    <part file="xiaofangzi_qiang.part"/>
+    <part file="xiaofangzi_ding.part"/>
+</entity>

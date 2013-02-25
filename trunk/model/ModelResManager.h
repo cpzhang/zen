@@ -1,5 +1,6 @@
 #pragma once
 #include "misc/stdHead.h"
+#include "misc/helper.h"
 class IAttachable
 {
 public:
@@ -36,6 +37,10 @@ public:
 	}
 	void removeReference()
 	{
+		if (Refer_ <= 0)
+		{
+			breakable;
+		}
 		--Refer_;
 		if (Refer_ <= 0)
 		{

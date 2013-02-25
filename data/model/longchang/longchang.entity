@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<entity name="longchang">
+    <part file="pPlane1.part"/>
+    <skeleton file="longchang.skeleton"/>
+    <animation file="longchang.animation"/>
+</entity>

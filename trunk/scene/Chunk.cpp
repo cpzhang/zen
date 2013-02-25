@@ -6,6 +6,7 @@
 #include "Terrain.h"
 #include "render/Colour.h"
 #include "tinyXML2/tinyxml2.h"
+#include "model/EntityInstance.h"
 Chunk::Chunk( int x, int z )
 {
 	clear_();
@@ -284,5 +285,30 @@ void Chunk::open( const tstring& path )
 		}
 		tex = tex->NextSiblingElement("layer");
 		l = (eTerrainLayer)(l + 1);
+	}
+	//
+	tex= ele->FirstChildElement("model");
+	while(tex)
+	{
+		const char* n = tex->Attribute("file");
+		if (NULL != n)
+		{
+			EntityInstance* i = getSceneManager()->addEntityInstance(n);
+			if (i)
+			{
+				Vector3 pos = Vector3::Zero;
+				tex->QueryVector3Attribute("position", &pos);
+				i->setPosition(pos);
+				//
+				{
+					const char* n = tex->Attribute("animation");
+					if (NULL != n)
+					{
+						i->setAnimation(n);
+					}
+				}
+			}
+		}
+		tex = tex->NextSiblingElement("model");
 	}
 }

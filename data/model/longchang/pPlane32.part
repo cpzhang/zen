@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="pPlane32">
+    <mesh file="pPlane32.mesh"/>
+    <material file="UnnamedShader8.material"/>
+</part>

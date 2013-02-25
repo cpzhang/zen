@@ -58,7 +58,7 @@
 #define ID_BUTTON_PaintTerrain          40015
 #define ID_BUTTON40016                  40016
 #define ID_BUTTON_Options               40017
-#define ID_BUTTON_Go                    40018
+#define ID_BUTTON_Test                    40018
 #define ID_BUTTON_Hero                  40019
 #define ID_BUTTON40020                  40020
 #define ID_BUTTON_PlaceModel            40020

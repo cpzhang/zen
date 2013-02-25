@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="pPipe2">
+    <mesh file="pPipe2.mesh"/>
+    <material file="UnnamedShader16.material"/>
+</part>

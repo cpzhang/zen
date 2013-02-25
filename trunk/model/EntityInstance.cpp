@@ -135,6 +135,7 @@ bool EntityInstance::create( const tstring& resourceId )
 	}
 	//
 	Skeleton_ = ModelResManager::getInstance()->get<Skeleton>(Entity_->getSkeleton());
+	Skeleton_->addReference();
 	//
 	Angles_.resize(Materials_.size());
 	AnglesCurrent_.resize(Materials_.size(), 0.0f);
@@ -229,6 +230,10 @@ void EntityInstance::destroy()
 
 void EntityInstance::setAnimation( const tstring& resourceId )
 {
+	if (NULL == Skeleton_ || Skeleton_->isNullObject())
+	{
+		return;
+	}
 	if (Skeleton_)
 	{
 		if (SkinCurrent_)
@@ -237,6 +242,7 @@ void EntityInstance::setAnimation( const tstring& resourceId )
 		}
 		const tstring& res = Skeleton_->getSkin(resourceId, AnimationTime_);
 		SkinCurrent_ = ModelResManager::getInstance()->get<Skin>(res);
+		SkinCurrent_->addReference();
 	}
 }
 

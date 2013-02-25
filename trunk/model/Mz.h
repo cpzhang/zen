@@ -194,9 +194,10 @@ public:
 	void saveEntity( const std::string& fileName );
 	void saveMaterial( const std::string& fileName );
 	void saveSubEntity( const std::string& fileName );
+	int getBoneNumbers();
+	int getAnimationNumber();
 private:
 	void clear();
-
 private:
 	std::string mzFileName_;
 	char mVersion;

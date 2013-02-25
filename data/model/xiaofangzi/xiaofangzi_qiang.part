@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="xiaofangzi_qiang">
+    <mesh file="xiaofangzi_qiang.mesh"/>
+    <material file="UnnamedShader3.material"/>
+</part>

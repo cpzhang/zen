@@ -26,6 +26,7 @@ public:
 public:
 	void update(float delta);
 	void apply(IMovable* m);
+	void apply(OrbitCamera& m, float delta);
 	Vector3 getPosition()
 	{
 		return position_;
@@ -117,6 +118,7 @@ private:
 	HWND previewWindowHandle_;
 	PreviewWindow* Previewer_;
 	Node* Hero_;
+	EntityInstance* HeroInstance_;
 	// tolua_begin
 };
 	// tolua_end

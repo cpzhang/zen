@@ -8,7 +8,7 @@
 #include "model/Entity.h"
 #include "model/Skeleton.h"
 #include "model/Part.h"
-#include "EventManager.h"
+#include "EventArgs.h"
 #include "PreviewWindow.h"
 #include "scene/SceneManager.h"
 LRESULT DataDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled )
@@ -63,7 +63,8 @@ void DataDlg::onIdle(const float delta)
 
 void DataDlg::onRefreshLuaScript()
 {
-	fileTree_.SetRootFolder(getGlobal()->getDataRootDirectory());
+	tstring s = FileSystem::toWindowsFilePath(getGlobal()->getDataRootDirectory());
+	fileTree_.SetRootFolder(s);
 }
 
 LRESULT DataDlg::OnDestroyDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/ )
@@ -148,7 +149,7 @@ IFile* IFileManager::getFile( const std::string& fn )
 		args.FilePath_ = fn;
 	}
 	//
-	EventManager::GetInstance().fireEvent(eEvent_SelectModel, args);
+	EventManager::GetInstance().fireEvent(SelectModelEventArgs::tEventName, args);
 	return getFile(f);
 }
 

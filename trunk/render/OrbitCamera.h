@@ -47,10 +47,7 @@ public:
 	{
 		return center_;
 	}
-	void setCenter(const Vector3& p)
-	{
-		center_ = p;
-	}
+	void setCenter(const Vector3& p);
 	void handleInput( float dTime );
 private:
 	void polarToViewImp_(float ch);
@@ -58,4 +55,6 @@ private:
 	bool isDirty_();
 		
 	float getAngleYZ(float ch);
+public:
+	static std::string tEvent_Dirty;
 };

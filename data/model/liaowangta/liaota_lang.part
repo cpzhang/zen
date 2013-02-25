@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="liaota_lang">
+    <mesh file="liaota_lang.mesh"/>
+    <material file="UnnamedShader5.material"/>
+</part>

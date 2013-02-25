@@ -146,10 +146,11 @@ LRESULT FrameWindow::OnOpenscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWnd
 	return 0;
 }
 
-LRESULT FrameWindow::OnGo( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
+LRESULT FrameWindow::OnTest( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
-	getSceneManager()->open(TEXT("d:\\work\\zen\\data\\scene\\bornland"));
-	dlgData_.SelectFile(TEXT("d:\\work\\zen\\data\\model\\Character_1015\\Character_1015.entity"));
+	getSceneManager()->open(TEXT(FileSystem::getDataDirectory() + "\\scene\\bornland"));
+	std::string resId(TEXT(FileSystem::getDataDirectory() + "\\model\\Character_1015\\Character_1015.entity"));
+	getGlobal()->setHero(resId.c_str());
 	return 0;
 }
 

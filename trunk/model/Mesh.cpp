@@ -205,6 +205,11 @@ bool Mesh::save( const std::string& path )
 
 void Mesh::saveSkeleton( const std::string& fileName )
 {
+	if (_bones.empty())
+	{
+		return;
+	}
+	//
 	Mz* mz;
 	//============================================================================
 	// 开始写入数据
@@ -256,6 +261,12 @@ void Mesh::saveSkeleton( const std::string& fileName )
 
 void Mesh::saveSkin( const std::string& fileName )
 {
+	//
+	if (_bones.empty())
+	{
+		return;
+	}
+	//
 	Mz* mz;
 	for (size_t i = 0; i != mz->mSkins.size(); ++i)
 	{
@@ -382,6 +393,10 @@ bool Mesh::create( const std::string& fileName )
 
 void Mesh::saveBoneMapping( const std::string& fileName, Mz* mz)
 {
+	if (_bones.empty())
+	{
+		return;
+	}
 	//============================================================================
 	// 开始写入数据
 	ChunkSet cs;

@@ -41,12 +41,13 @@ bool Global::create()
 	tolua_LuaAPI_open(getLuaScript()->getLuaState());
 	tstring d = FileSystem::guessDataDirectory();
 	FileSystem::setDataDirectory(d);
+	setDataRootDirectory(d.c_str());
 	refreshDataRoot();
 	//
 	createStateManager();
 	createFxManager();
 	createTextureManager();
-	//createSkeletonManager();
+	//
 	createSceneManager();
 	if (!createBrushDecal())
 	{
@@ -67,6 +68,16 @@ bool Global::create()
 
 void Global::destroy()
 {
+	if (Hero_)
+	{
+		Hero_->release();
+		Hero_ = NULL;
+	}
+	if (HeroInstance_)
+	{
+		HeroInstance_->release();
+		HeroInstance_ = NULL;
+	}
 	if (Previewer_)
 	{
 		//delete Previewer_;
@@ -74,11 +85,6 @@ void Global::destroy()
 		Previewer_ = NULL;
 	}
 	getRenderContex()->releaseRenderTarget(renderTargetKey_);
-// 	if (pi_)
-// 	{
-// 		//delete pi_;
-// 		pi_ = NULL;
-// 	}
 	FontManager::getPointer()->destroy();
 	//
 	destroySceneManager();
@@ -100,8 +106,6 @@ void Global::destroy()
 
 void Global::clear_()
 {
-// 	pi_ = NULL;
-// 	movable_ = NULL;
 	isSmoothAverage_ = false;
 	absoluteHeight_ = 0;
 	isAbsoluteHeight_ = false;
@@ -113,6 +117,7 @@ void Global::clear_()
 	//
 	Previewer_ = NULL;
 	Hero_ = NULL;
+	HeroInstance_ = NULL;
 }
 
 bool Global::createBrushDecal()
@@ -129,29 +134,34 @@ Decal* Global::getBrushDecal()
 	return brushDecal_;
 }
 
-void Global::update(float delta)
+
+void HeroController::apply( OrbitCamera& camera_, float delta)
 {
-	camera_.setCenter(heroController_.getPosition() + Vector3(0, 2, 0));
+	camera_.setCenter(getPosition() + Vector3(0, 2, 0));
 	float cameraHeight = 0.0f;
 	if (getSceneManager() && getSceneManager()->getTerrain())
 	{
 		cameraHeight = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(camera_.lastPos_.x, camera_.lastPos_.z);
 	}
 	camera_.update(delta, cameraHeight);
-	heroController_.setCameraAngleY(camera_.angleXZ_);
+	setCameraAngleY(camera_.angleXZ_);
 	getRenderContex()->setViewMatrix(camera_.view_);
+}
+
+void Global::update(float delta)
+{
 	//
 	updatePickingPoint_();
 	//
 	getStateManager()->update();
 	//
-	//
 	heroController_.update(delta);
+	heroController_.apply(camera_, delta);
 	//
 	if (Hero_)
 	{
 		Hero_->update(delta);
-		heroController_.apply(Hero_->getEntityInstance());
+		heroController_.apply(Hero_->getEntityInstance());//调整主角位置和方向
 	}
 }
 
@@ -299,7 +309,7 @@ tstring Global::getDataRootDirectory()
 void Global::setDataRootDirectory( const char* s)
 {
 	dataRootDirectory_ = s;
-	FileSystem::setDataDirectory(dataRootDirectory_ + "/");
+	FileSystem::setDataDirectory(dataRootDirectory_);
 }
 
 void Global::addHandler( const tstring& name, IdleHandler* h )
@@ -405,6 +415,7 @@ std::string decode(const std::string& name)
 			a->SetAttribute("bone", tM.getParticleSystemBone(i).c_str());
 			ele->LinkEndChild(a);
 		}
+		if(tM.getBoneNumbers() > 0)
 		{
 			tinyxml2::XMLElement* a = doc.NewElement("skeleton");
 			std::string meshPath;
@@ -413,6 +424,7 @@ std::string decode(const std::string& name)
 			a->SetAttribute("file", meshPath.c_str());
 			ele->LinkEndChild(a);
 		}
+		if(tM.getAnimationNumber() > 0)
 		{
 			tinyxml2::XMLElement* a = doc.NewElement("animation");
 			std::string meshPath;
@@ -431,17 +443,17 @@ std::string decode(const std::string& name)
 }
 void Global::setHero( const char* resID )
 {
-	if (Hero_)
+	if (HeroInstance_)
 	{
-		EntityInstance* i = Hero_->getEntityInstance();
-		if (i)
-		{
-			i->release();
-		}
-		Hero_->release();
+		HeroInstance_->release();
 	}
-	Hero_ = NodeManager::getInstancePtr()->createNode("Hero");
-	Hero_->attach(getSceneManager()->createEntityInstance(resID));
+	HeroInstance_ = getSceneManager()->createEntityInstance(resID);
+	if (NULL == Hero_)
+	{
+		Hero_ = NodeManager::getInstancePtr()->createNode("Hero");
+	}
+	Hero_->attach(HeroInstance_);
+	HeroInstance_->setAnimation("Run");
 }
 void Global::onSelectFile( const tstring& name )
 {
@@ -729,13 +741,11 @@ void HeroController::update(float delta)
 		v = v * s;
 		position_ += v;
 	}
+	if (FontManager::getPointer()->getFont())
 	{
-		if (FontManager::getPointer()->getFont())
-		{
-			std::ostringstream ss;
-			ss<<"position = "<<position_.x<<", "<<position_.y<<", "<<position_.z<<std::endl;
-			FontManager::getPointer()->getFont()->render(Vector2(10, 30), Vector4(1, 0, 0, 1), ss.str());
-		}
+		std::ostringstream ss;
+		ss<<"position = "<<position_.x<<", "<<position_.y<<", "<<position_.z<<std::endl;
+		FontManager::getPointer()->getFont()->render(Vector2(10, 30), Vector4(1, 0, 0, 1), ss.str());
 	}
 }
 

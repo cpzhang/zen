@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="polySurface21">
+    <mesh file="polySurface21.mesh"/>
+    <material file="b.material"/>
+</part>

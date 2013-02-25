@@ -36,10 +36,6 @@ void OrbitCamera::setSpeed( float s )
 
 void OrbitCamera::update( float dTime, float ch )
 {
-// 	if (!capture_)
-// 	{
-// 		return;
-// 	}
 	if (0  && handleKeyEvent())
 	{
 		handleInput(dTime);
@@ -305,3 +301,11 @@ float OrbitCamera::getAngleYZ( float ch )
 	}
 	return angleYZ_;
 }
+
+void OrbitCamera::setCenter( const Vector3& p )
+{
+	center_ = p;	
+	setDirty(true);
+}
+
+std::string OrbitCamera::tEvent_Dirty("OrbitCamera::tEvent_Dirty");

@@ -471,7 +471,7 @@ void Terrain::open( const tstring& path )
 			}
 		}
 	}
-	//±£¥Êchunk
+	//∂¡»°chunk
 	{
 		for (size_t i = 0; i != chunks_.size(); ++i)
 		{

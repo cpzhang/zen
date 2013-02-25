@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<material name="UnnamedShader7">
+    <Fx file="shader/aPTSkin.fx"/>
+    <Texture name="g_Texture0" file="lg0160.dds"/>
+    <RenderState state="14" value="0"/>
+    <RenderState state="22" value="1"/>
+    <RenderState state="24" value="190"/>
+    <RenderState state="27" value="1"/>
+    <RenderState state="19" value="5"/>
+    <RenderState state="20" value="2"/>
+    <TextureStageState stage="0" type="3" value="0"/>
+    <TextureStageState stage="0" type="4" value="4"/>
+    <TextureStageState stage="0" type="6" value="0"/>
+    <TextureStageState stage="1" type="1" value="4"/>
+    <TextureStageState stage="1" type="2" value="1"/>
+    <TextureStageState stage="1" type="3" value="3"/>
+    <TextureStageState stage="1" type="4" value="4"/>
+    <TextureStageState stage="1" type="5" value="1"/>
+    <TextureStageState stage="1" type="6" value="3"/>
+    <Alpha>
+        <KeyFrame time="0" value="0.500000"/>
+        <KeyFrame time="41" value="0.499303"/>
+        <KeyFrame time="83" value="0.497277"/>
+        <KeyFrame time="125" value="0.494022"/>
+        <KeyFrame time="166" value="0.489635"/>
+        <KeyFrame time="208" value="0.484214"/>
+        <KeyFrame time="250" value="0.477859"/>
+        <KeyFrame time="291" value="0.470667"/>
+        <KeyFrame time="333" value="0.462737"/>
+        <KeyFrame time="375" value="0.454168"/>
+        <KeyFrame time="416" value="0.445057"/>
+        <KeyFrame time="458" value="0.435504"/>
+        <KeyFrame time="500" value="0.425606"/>
+        <KeyFrame time="541" value="0.415462"/>
+        <KeyFrame time="583" value="0.405170"/>
+        <KeyFrame time="625" value="0.394830"/>
+        <KeyFrame time="666" value="0.384538"/>
+        <KeyFrame time="708" value="0.374394"/>
+        <KeyFrame time="750" value="0.364496"/>
+        <KeyFrame time="791" value="0.354943"/>
+        <KeyFrame time="833" value="0.345832"/>
+        <KeyFrame time="875" value="0.337263"/>
+        <KeyFrame time="916" value="0.329333"/>
+        <KeyFrame time="958" value="0.322141"/>
+        <KeyFrame time="1000" value="0.315786"/>
+        <KeyFrame time="1041" value="0.310365"/>
+        <KeyFrame time="1083" value="0.305978"/>
+        <KeyFrame time="1125" value="0.302723"/>
+        <KeyFrame time="1166" value="0.300697"/>
+        <KeyFrame time="1208" value="0.300000"/>
+        <KeyFrame time="1250" value="0.300652"/>
+        <KeyFrame time="1291" value="0.302548"/>
+        <KeyFrame time="1333" value="0.305600"/>
+        <KeyFrame time="1375" value="0.309719"/>
+        <KeyFrame time="1416" value="0.314815"/>
+        <KeyFrame time="1458" value="0.320800"/>
+        <KeyFrame time="1500" value="0.327585"/>
+        <KeyFrame time="1541" value="0.335081"/>
+        <KeyFrame time="1583" value="0.343200"/>
+        <KeyFrame time="1625" value="0.351852"/>
+        <KeyFrame time="1666" value="0.360948"/>
+        <KeyFrame time="1708" value="0.370400"/>
+        <KeyFrame time="1750" value="0.380119"/>
+        <KeyFrame time="1791" value="0.390015"/>
+        <KeyFrame time="1833" value="0.400000"/>
+        <KeyFrame time="1875" value="0.409985"/>
+        <KeyFrame time="1916" value="0.419881"/>
+        <KeyFrame time="1958" value="0.429600"/>
+        <KeyFrame time="2000" value="0.439052"/>
+        <KeyFrame time="2041" value="0.448148"/>
+        <KeyFrame time="2083" value="0.456800"/>
+        <KeyFrame time="2125" value="0.464919"/>
+        <KeyFrame time="2166" value="0.472415"/>
+        <KeyFrame time="2208" value="0.479200"/>
+        <KeyFrame time="2250" value="0.485185"/>
+        <KeyFrame time="2291" value="0.490281"/>
+        <KeyFrame time="2333" value="0.494400"/>
+        <KeyFrame time="2375" value="0.497452"/>
+        <KeyFrame time="2416" value="0.499348"/>
+        <KeyFrame time="2458" value="0.500000"/>
+        <KeyFrame time="2500" value="0.499303"/>
+        <KeyFrame time="2541" value="0.497277"/>
+        <KeyFrame time="2583" value="0.494022"/>
+        <KeyFrame time="2625" value="0.489635"/>
+        <KeyFrame time="2666" value="0.484214"/>
+        <KeyFrame time="2708" value="0.477859"/>
+        <KeyFrame time="2750" value="0.470667"/>
+        <KeyFrame time="2791" value="0.462737"/>
+        <KeyFrame time="2833" value="0.454168"/>
+        <KeyFrame time="2875" value="0.445057"/>
+        <KeyFrame time="2916" value="0.435504"/>
+        <KeyFrame time="2958" value="0.425606"/>
+        <KeyFrame time="3000" value="0.415462"/>
+        <KeyFrame time="3041" value="0.405170"/>
+        <KeyFrame time="3083" value="0.394830"/>
+        <KeyFrame time="3125" value="0.384538"/>
+        <KeyFrame time="3166" value="0.374394"/>
+        <KeyFrame time="3208" value="0.364496"/>
+        <KeyFrame time="3250" value="0.354943"/>
+        <KeyFrame time="3291" value="0.345832"/>
+        <KeyFrame time="3333" value="0.337263"/>
+        <KeyFrame time="3375" value="0.329333"/>
+        <KeyFrame time="3416" value="0.322141"/>
+        <KeyFrame time="3458" value="0.315786"/>
+        <KeyFrame time="3500" value="0.310365"/>
+        <KeyFrame time="3541" value="0.305978"/>
+        <KeyFrame time="3583" value="0.302723"/>
+        <KeyFrame time="3625" value="0.300697"/>
+        <KeyFrame time="3666" value="0.300000"/>
+        <KeyFrame time="3708" value="0.300652"/>
+        <KeyFrame time="3750" value="0.302548"/>
+        <KeyFrame time="3791" value="0.305600"/>
+        <KeyFrame time="3833" value="0.309719"/>
+        <KeyFrame time="3875" value="0.314815"/>
+        <KeyFrame time="3916" value="0.320800"/>
+        <KeyFrame time="3958" value="0.327585"/>
+        <KeyFrame time="4000" value="0.335081"/>
+        <KeyFrame time="4041" value="0.343200"/>
+        <KeyFrame time="4083" value="0.351852"/>
+        <KeyFrame time="4125" value="0.360948"/>
+        <KeyFrame time="4166" value="0.370400"/>
+        <KeyFrame time="4208" value="0.380119"/>
+        <KeyFrame time="4250" value="0.390015"/>
+        <KeyFrame time="4291" value="0.400000"/>
+        <KeyFrame time="4333" value="0.409985"/>
+        <KeyFrame time="4375" value="0.419881"/>
+        <KeyFrame time="4416" value="0.429600"/>
+        <KeyFrame time="4458" value="0.439052"/>
+        <KeyFrame time="4500" value="0.448148"/>
+        <KeyFrame time="4541" value="0.456800"/>
+        <KeyFrame time="4583" value="0.464919"/>
+        <KeyFrame time="4625" value="0.472415"/>
+        <KeyFrame time="4666" value="0.479200"/>
+        <KeyFrame time="4708" value="0.485185"/>
+        <KeyFrame time="4750" value="0.490281"/>
+        <KeyFrame time="4791" value="0.494400"/>
+        <KeyFrame time="4833" value="0.497452"/>
+        <KeyFrame time="4875" value="0.499348"/>
+        <KeyFrame time="4916" value="0.500000"/>
+        <KeyFrame time="4958" value="0.499303"/>
+    </Alpha>
+    <Color>
+        <KeyFrame time="0" value="(0.917360, 0.278073, 0.052290)"/>
+    </Color>
+</material>

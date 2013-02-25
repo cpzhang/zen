@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="pasted__pasted__pPlane30">
+    <mesh file="pasted__pasted__pPlane30.mesh"/>
+    <material file="pasted__pasted__UnnamedShader10.material"/>
+</part>

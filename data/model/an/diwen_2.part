@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="diwen_2">
+    <mesh file="diwen_2.mesh"/>
+    <material file="t1:tt7:M_dimian.material"/>
+</part>

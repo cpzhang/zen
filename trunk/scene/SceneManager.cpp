@@ -45,6 +45,7 @@ Terrain* SceneManager::getTerrain()
 
 void SceneManager::destroy()
 {
+	destroyEntityInstances_();
 	//
 	lod_.destroy();
 	//

@@ -31,7 +31,7 @@ bool FreeType::create( std::string& faceFile, unsigned int fontSize, eFontProper
 	err = FT_New_Face(_library, faceFile.c_str(), 0, &_face);
 	if (err != 0)
 	{
-		std::string data = FileSystem::getDataDirectory();
+		std::string data = FileSystem::getDataDirectory() + "\\";
 		data += faceFile;
 		err = FT_New_Face(_library, data.c_str(), 0, &_face);
 		if (err != 0)
