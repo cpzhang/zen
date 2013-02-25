@@ -481,8 +481,19 @@ void SceneManager::save(const tstring& path)
 
 void SceneManager::open( const tstring& resID )
 {
+	std::string resId(resID);
+	if (!FileSystem::isFileExist(resId))
+	{
+		resId = FileSystem::getDataDirectory() + "\\" + resId;
+		if (!FileSystem::isFileExist(resId))
+		{
+			//return;
+		}
+	}
+
+
 	tinyxml2::XMLDocument doc;
-	tstring settingFile(resID + "/setting.xml");
+	tstring settingFile(resId + "/setting.xml");
 	if (tinyxml2::XML_SUCCESS != doc.LoadFile(settingFile.c_str()))
 	{
 		return;
@@ -524,7 +535,7 @@ void SceneManager::open( const tstring& resID )
 	createTerrain(xChunks, zChunks, n, unit);
 	//
 	{
-		terrainCurrent_->open(resID);
+		terrainCurrent_->open(resId);
 	}
 	//
 	{

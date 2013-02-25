@@ -22,3 +22,4 @@ include_directories(
 #add_subdirectory(terrain_04_texture)
 #add_subdirectory(ModelEditor)
 add_subdirectory(SceneEditor)
+add_subdirectory(client)
