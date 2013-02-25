@@ -1,5 +1,5 @@
 function go()   
 	-- createGlobal();
-	getGlobal():setDataRootDirectory("f:\\zen\\data");
+	getGlobal():setDataRootDirectory("d:\\work\\zen\\data");
 end
 go();

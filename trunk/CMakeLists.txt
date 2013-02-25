@@ -4,7 +4,7 @@ set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE)
 cmake_policy(SET CMP0003 NEW)
 
 # Specifies the build type for make based generators
-SET(CMAKE_BUILD_TYPE "Release")
+SET(CMAKE_BUILD_TYPE "Debug")
 
 set(CMAKE_CXX_FLAGS_RELEASE "/MD /Zi /Od")
 
@@ -29,7 +29,7 @@ endif(StaticLibrary_)
 # project name
 project(Zen)
 
-set(vBinDir "f:/zen/bin")
+set(vBinDir "d:/work/zen/bin")
 SET(EXECUTABLE_OUTPUT_PATH ${vBinDir})
 SET(LIBRARY_OUTPUT_PATH ${vBinDir})
 
@@ -40,9 +40,9 @@ add_subdirectory("misc")
 set(RenderName "render")
 add_subdirectory(render)
 
-#add_subdirectory(lua)
+add_subdirectory(lua)
 #add_subdirectory(tolua++-1.0.93)
-#add_subdirectory(tolua-5.2.0)
+add_subdirectory(tolua-5.2.0)
 add_subdirectory(luaScript)
 #add_subdirectory(luaAPI)
 # add_subdirectory("terrain")
