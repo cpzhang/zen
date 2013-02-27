@@ -15,8 +15,13 @@
 #include "scene/Node.h"
 #include "scene/Terrain.h"
 #include "scene/SceneManager.h"
+//
+#include "CrashRpt/CrashRpt.h"
 const LPCTSTR APP_NAME = TEXT("Game");
 const LPCTSTR APP_TITLE = TEXT("Game Client");
+bool g_bActive = false;
+bool g_bAppQuit = false;
+bool g_bAppStarted = false;
 HWND			_hwnd;
 HeroCamera camera_;
 Node* Hero_ = NULL;
@@ -72,19 +77,52 @@ LRESULT CALLBACK _wndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
 		break;
 	case WM_MOUSEMOVE:
 		{
-			//camera_.onMouseMove();
+			if (g_bActive)
+			{
+				camera_.onMouseMove();
+			}
 		}
 		break;
 	case WM_MOUSEWHEEL:
 		{
-			float delta = ( short )HIWORD( wParam );
-			delta /= 120.0f;
-			camera_.onMouseWheel(delta);
+			if (g_bActive)
+			{
+				float delta = ( short )HIWORD( wParam );
+				delta /= 120.0f;
+				camera_.onMouseWheel(delta);
+			}
 		}
+		break;
 	case WM_SIZE:
 		{
+			g_bActive = !( (SIZE_MAXHIDE == wParam) || (SIZE_MINIMIZED == wParam) || ( 0 == lParam ));
+			if (g_bActive && g_bAppStarted)
+			{
+				getRenderContex()->resetDevice();
+			}
 			return 1;
 		}break;
+	case WM_ACTIVATE:
+		{
+			/*
+			http://msdn.microsoft.com/en-us/library/windows/desktop/ms646274(v=vs.85).aspx
+			*/
+			short d = ( short )LOWORD( wParam );
+			if (d == WA_ACTIVE)
+			{
+				g_bActive = true;
+			}
+			else if (d == WA_CLICKACTIVE)
+			{
+				g_bActive = true;
+			}
+			else if (d == WA_INACTIVE)
+			{
+				g_bActive = false;
+			}
+			return 0;
+		}
+		break;
 	case WM_KEYDOWN:
 		{
 			switch(wParam)
@@ -95,13 +133,28 @@ LRESULT CALLBACK _wndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
 					::DestroyWindow((HWND)hWnd);
 				}
 				break;
+			case VK_ADD:
+				{
+					if (g_bActive)
+					{
+						camera_.setSpeed(camera_.getSpeed() * 1.2f);
+					}
+				}break;
+			case VK_SUBTRACT:
+				{
+					if (g_bActive)
+					{
+						camera_.setSpeed(camera_.getSpeed() * 0.8f);
+					}
+				}break;
 			case 'W':
 			case 'S':
 			case 'A':
 			case 'D':
 				{
-					camera_.onKeyDown(wParam);
-				}break;
+					//camera_.onKeyDown(wParam);
+				}
+				break;
 			}
 		}
 		break;
@@ -116,8 +169,11 @@ LRESULT CALLBACK _wndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
 bool play(const float delta)
 {
 	//
-	camera_.update(delta, 0);
-	getRenderContex()->setViewMatrix(camera_.getViewMatrix());
+	if (g_bActive)
+	{
+		camera_.update(delta, 0);
+		getRenderContex()->setViewMatrix(camera_.getViewMatrix());
+	}
 	getSceneManager()->update(delta);
 	Hero_->update(delta);
 	//拾取高度
@@ -152,6 +208,17 @@ void postPlay()
 	destroyFxManager();
 	destroyTextureManager();
 	destroyRenderContex();
+}
+// Define the callback function that will be called on crash
+BOOL WINAPI CrashCallback(LPVOID /*lpvState*/)
+{  
+	// The application has crashed!
+
+	// Close the log file here
+	// to ensure CrashRpt is able to include it into error report
+
+	// Return TRUE to generate error report
+	return TRUE;
 }
 int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
@@ -189,11 +256,74 @@ int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	// Update the window
 	::UpdateWindow(_hwnd);
 
-	MessageBox(NULL, "远程连接后点击确定", "测试", MB_OK);
+	//MessageBox(NULL, "远程连接后点击确定", "测试", MB_OK);
 	//
 	adjustClientArea();
 	//
+	g_bAppStarted = true;
 	Error("游戏客户端log");
+	//
+	//
+	{
+		// Define CrashRpt configuration parameters
+		CR_INSTALL_INFO info;  
+		memset(&info, 0, sizeof(CR_INSTALL_INFO));  
+		info.cb = sizeof(CR_INSTALL_INFO);    
+		info.pszAppName = _T("MyApp");  
+		info.pszAppVersion = _T("1.0.0");  
+		info.pszEmailSubject = _T("MyApp 1.0.0 Error Report");  
+		//info.pszEmailTo = _T("297191409@qq.com");    
+		info.pszEmailText = _T("text");
+		//info.pszSmtpProxy =_T("smtp.21cn.com:25");
+		//int i = rand() % 10 + 1;
+		//char mailinfo[256];
+		//sprintf_s(mailinfo, "bccr%03d", i);
+		//info.pszSmtpLogin =_T("bccr001");
+		//info.pszSmtpPassword =_T("107628");
+		//info.pszUrl = _T("http://myapp.com/tools/crashrpt.php");  
+		info.pfnCrashCallback = CrashCallback;   
+		info.uPriorities[CR_HTTP] = 1;  // First try send report over HTTP 
+		info.uPriorities[CR_SMTP] = 3;  // Second try send report over SMTP  
+		info.uPriorities[CR_SMAPI] = 2; // Third try send report over Simple MAPI    
+		// Install all available exception handlers, use HTTP binary transfer encoding (recommended).
+		info.dwFlags |= CR_INST_ALL_POSSIBLE_HANDLERS;
+		info.dwFlags |= CR_INST_HTTP_BINARY_ENCODING; 
+		info.dwFlags |= CR_INST_APP_RESTART; 
+		//info.dwFlags |= CR_INST_SEND_QUEUED_REPORTS; 
+		info.dwFlags |= CR_INST_DONT_SEND_REPORT;
+		info.dwFlags |= CR_INST_NO_GUI;
+		//info.dwFlags |= CR_INST_STORE_ZIP_ARCHIVES;
+		//info.pszRestartCmdLine = _T("/restart");
+		//
+		char binDir[256];
+		tstring path = FileSystem::getBinDirectory();
+		strncpy(binDir, path.c_str(), 256);
+		info.pszErrorReportSaveDir = binDir;
+		//info.pszErrorReportSaveDir 
+		// Define the Privacy Policy URL 
+		//info.pszPrivacyPolicyURL = _T("http://myapp.com/privacypolicy.html"); 
+
+		// Install exception handlers
+		int nResult = crInstall(&info);    
+		if(nResult!=0)  
+		{    
+			// Something goes wrong. Get error message.
+			TCHAR szErrorMsg[512] = _T("");        
+			crGetLastErrorMsg(szErrorMsg, 512);    
+			_tprintf_s(_T("%s\n"), szErrorMsg);    
+			return 1;
+		} 
+
+		// Add our log file to the error report
+		crAddFile2(_T("log.txt"), NULL, _T("Log File"), CR_AF_MAKE_FILE_COPY);    
+
+		// We want the screenshot of the entire desktop is to be added on crash
+		crAddScreenshot(CR_AS_VIRTUAL_SCREEN);   
+
+		// Add a named property that means what graphics adapter is
+		// installed on user's machine
+		crAddProperty(_T("VideoCard"), _T("nVidia GeForce 8600 GTS"));
+	}
 	//
 	createRenderContex();
 	int index = 0;
@@ -253,9 +383,19 @@ int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 				}
 				lastTick = currentTick;
 			}
+			else
+			{
+				Sleep(1);
+			}
 		}
 	}
 	// clean up
 	postPlay();
+	//
+	//
+	{
+		// Unset exception handlers before exiting the main function
+		crUninstall();
+	}
 	Error("==end");
 }

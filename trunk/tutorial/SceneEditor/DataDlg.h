@@ -95,6 +95,7 @@ private:
 	//CGradientStatic previewCanvas_; 
 	//u32 renderTargetKey_;
 	PreviewWindow pw_;
+	CImageList ImageList_;
 };
 
 class TerrainTextureDlg :

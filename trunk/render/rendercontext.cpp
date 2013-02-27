@@ -118,6 +118,13 @@ bool RenderContext::changeModePriv( u32 modeIndex, bool windowed, bool testCoope
 	HRESULT hr = D3DERR_DEVICELOST;
 	while( hr == D3DERR_DEVICELOST )
 	{
+		/************************************************************************/
+		/* Calling IDirect3DDevice9::Reset causes all texture memory surfaces to be lost, 
+		managed textures to be flushed from video memory, and all state information to be lost. 
+		Before calling the IDirect3DDevice9::Reset method for a device, 
+		an application should release any explicit render targets, depth stencil surfaces, 
+		additional swap chains, state blocks, and D3DPOOL_DEFAULT resources associated with the device.                                                                     */
+		/************************************************************************/
 		hr = Direct3DDevice9_->Reset( &presentParameters_ );
 
 		lost_ = true;
@@ -290,7 +297,6 @@ bool RenderContext::create()
 				{
 					deviceInfo.compatibilityFlags_ |= eCompatibilityFlag_ATI;
 				}
-
 
 				D3DFORMAT formats[] = { D3DFMT_X8R8G8B8, D3DFMT_A8R8G8B8, D3DFMT_A2B10G10R10, D3DFMT_X1R5G5B5, D3DFMT_A1R5G5B5, D3DFMT_R5G6B5 };
 				u32 nFormats = sizeof( formats ) / sizeof(D3DFORMAT);

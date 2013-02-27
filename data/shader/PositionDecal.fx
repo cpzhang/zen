@@ -3,7 +3,7 @@
 texture gTexture;
 sampler gDecalSampler = Zen_Sampler(gTexture, Clamp);
 float3 gCenter = {0,0,0};
-float gRadius = 100;
+float gRadius = 10;
 // World * View * Projection matrix
 //-----------------------------------------------------------------------------
 // Vertex shader output structure

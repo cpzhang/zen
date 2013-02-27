@@ -33,7 +33,7 @@ bool Fx::create( const tstring& effectResource )
 	{
 		tstring ts = FileSystem::addDataDir(effectResource);
 		HRESULT r;
-		if (SUCCEEDED(r = D3DXCreateEffectFromFile(getRenderContex()->getDxDevice(), ts.c_str(), NULL, NULL, /*D3DXSHADER_DEBUG|*//*D3DXSHADER_SKIPOPTIMIZATION*/0, NULL, &pEffect_, NULL)))
+		if (SUCCEEDED(r = D3DXCreateEffectFromFile(getRenderContex()->getDxDevice(), ts.c_str(), NULL, NULL, /*D3DXSHADER_DEBUG|*/D3DXSHADER_SKIPOPTIMIZATION, NULL, &pEffect_, NULL)))
 		{
 			resourceID_ = ts;
 		}
@@ -42,6 +42,7 @@ bool Fx::create( const tstring& effectResource )
 			std::stringstream ss;
 			ss<<ts<<" error code = "<<r;
 			Error(ss.str());
+			MessageBox(NULL, ss.str().c_str(), "µ÷ÊÔÐÅÏ¢", MB_OK);
 			return false;
 		}
 	}

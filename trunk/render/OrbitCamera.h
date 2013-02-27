@@ -64,7 +64,7 @@ class ApiRender_ HeroCamera
 public:
 	HeroCamera()
 	{
-		camera_.setSpeed(0.05f);
+		camera_.setSpeed(0.005f);
 		Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
 		Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
 		camera_.limit_ =  BoundingBox( minBound, maxBound );
@@ -72,42 +72,40 @@ public:
 		angleY_ = 0.0f;
 	}
 public:
-	void onKeyDown(char c)
+	void updateWSAD(float dTime)
 	{
 		bool moved = true;
-		switch(c)
+		if (isKeyDown('W'))
 		{
-		case 'W':
-			{
-				angleY_ = camera_.angleXZ_ + MATH_PI;
-			}break;
-		case 'S':
-			{
-				angleY_ = camera_.angleXZ_; 
-			}break;
-		case 'A':
-			{
-				angleY_ = camera_.angleXZ_ + MATH_PI_Half;
-			}break;
-		case 'D':
-			{
-				angleY_ = camera_.angleXZ_ - MATH_PI_Half;
-			}break;
-		default:
-			{
-				moved = false;
-			}break;
+			angleY_ = camera_.angleXZ_ + MATH_PI;
+		} 
+		else if(isKeyDown('S'))
+		{
+			angleY_ = camera_.angleXZ_; 
+		}
+		else if(isKeyDown('A'))
+		{
+			angleY_ = camera_.angleXZ_ + MATH_PI_Half;
+		}
+		else if(isKeyDown('D'))
+		{
+			angleY_ = camera_.angleXZ_ - MATH_PI_Half;
+		}
+		else
+		{
+			moved = false;
 		}
 		if (moved)
 		{
 			Vector3 v(sin(angleY_), 0.0f, cos(angleY_));
-			v = v * camera_.getSpeed();
+			v = v * camera_.getSpeed() * dTime;
 			camera_.setCenter(camera_.getCenter() + v);
 		}
 	}
 	void update( float dTime, float ch)
 	{
 		camera_.update(dTime, ch);
+		updateWSAD(dTime);
 	}
 	Matrix getViewMatrix()
 	{
@@ -132,6 +130,14 @@ public:
 	void onMouseWheel(float d)
 	{
 		camera_.onMouseWheel(d);
+	}
+	float getSpeed() const
+	{
+		return camera_.getSpeed();
+	}
+	void setSpeed( float s )
+	{
+		camera_.setSpeed(s);
 	}
 private:
 	OrbitCamera camera_;

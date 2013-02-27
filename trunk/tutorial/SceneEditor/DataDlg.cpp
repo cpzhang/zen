@@ -31,6 +31,8 @@ LRESULT DataDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 	pw_.SubclassWindow( GetDlgItem( IDC_BUTTON_Previewer ) );   
 	getGlobal()->setPreviewWindow(&pw_);
 	//
+	ImageList_.Create(32, 32, 0, 0, 3);
+	//
 	return bHandled;
 }
 
