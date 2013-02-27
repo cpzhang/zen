@@ -96,6 +96,7 @@ private:
 	//u32 renderTargetKey_;
 	PreviewWindow pw_;
 	CImageList ImageList_;
+	CListViewCtrl Icons_;
 };
 
 class TerrainTextureDlg :

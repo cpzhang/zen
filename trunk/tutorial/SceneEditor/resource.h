@@ -34,11 +34,12 @@
 #define IDC_BUTTON_DataRefresh          1017
 #define IDC_LIST1                       1018
 #define IDC_LIST_DataProperty           1018
+#define IDC_LIST_Icons                  1018
 #define IDC_LIST_Animation              1019
-#define IDC_BUTTON_Previewer            1024
 #define IDC_STATIC_ChunkSize            1021
 #define IDC_EDIT2                       1022
 #define IDC_EDIT_ChunkSize              1022
+#define IDC_BUTTON_Previewer            1024
 #define ID_40001                        40001
 #define ID_40002                        40002
 #define ID_40003                        40003
@@ -58,7 +59,7 @@
 #define ID_BUTTON_PaintTerrain          40015
 #define ID_BUTTON40016                  40016
 #define ID_BUTTON_Options               40017
-#define ID_BUTTON_Test                    40018
+#define ID_BUTTON_Test                  40018
 #define ID_BUTTON_Hero                  40019
 #define ID_BUTTON40020                  40020
 #define ID_BUTTON_PlaceModel            40020

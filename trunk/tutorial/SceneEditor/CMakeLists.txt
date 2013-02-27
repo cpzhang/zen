@@ -57,6 +57,7 @@ target_link_libraries(${ItemName}
   model
   tinyxml2
   font
+  FreeImaged.lib
   )
 
 add_custom_command(

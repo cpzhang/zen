@@ -11,6 +11,7 @@
 #include "EventArgs.h"
 #include "PreviewWindow.h"
 #include "scene/SceneManager.h"
+#include "Misc.h"
 LRESULT DataDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled )
 {
 	bHandled = TRUE;
@@ -25,13 +26,21 @@ LRESULT DataDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 	//
 	getGlobal()->addHandler("DataDlg", this);
 	//
-	properties_.SubclassWindow(GetDlgItem(IDC_LIST_DataProperty));
-	properties_.SetExtendedListStyle(PLS_EX_CATEGORIZED);
+	//properties_.SubclassWindow(GetDlgItem(IDC_LIST_DataProperty));
+	//properties_.SetExtendedListStyle(PLS_EX_CATEGORIZED);
 	//
 	pw_.SubclassWindow( GetDlgItem( IDC_BUTTON_Previewer ) );   
 	getGlobal()->setPreviewWindow(&pw_);
 	//
-	ImageList_.Create(32, 32, 0, 0, 3);
+	ImageList_.Create(32, 32, ILC_COLOR32, 1, 1);
+	HBITMAP h = generateHBitMap("d:\\work\\zen\\data\\brush\\detailMap.tga", 32, 32, true);
+	ImageList_.Add(h);
+	DeleteObject(h);
+	//
+	Icons_.Attach(GetDlgItem(IDC_LIST_Icons));
+	Icons_.AddItem(0, 0, "a");
+	Icons_.AddItem(1, 0, "b");
+	Icons_.SetImageList(ImageList_.m_hImageList, LVSIL_NORMAL);
 	//
 	return bHandled;
 }
