@@ -49,8 +49,9 @@ void TerrainTextureState::update()
 					if (distance2 <= radius2)
 					{
 						Vector4 b = c0->getBlendFromTopology(x, z);
-						b.w = 255.0f;
+						b.w = 0.0f;
 						b[ln] += cos(MATH_PI_Half * distance2/radius2) * getGlobal()->getBrushStrength() * 0.1f;
+						b.w += cos(MATH_PI_Half * distance2/radius2) * getGlobal()->getBrushStrength() * 0.1f;
 						c0->setBlendFromTopology(x, z, b);
 					}
 				}
