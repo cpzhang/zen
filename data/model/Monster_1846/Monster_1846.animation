@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<animations name="Character_1001_01_03">
-    <animation name="run" duration="966" skin="run.skin"/>
-    <animation name="stand" duration="1166" skin="stand.skin"/>
-</animations>

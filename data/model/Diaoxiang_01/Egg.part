@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<part name="Egg">
-    <mesh file="Egg.mesh"/>
-    <material file="UnnamedShader1.material"/>
-</part>

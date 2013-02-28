@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<entity name="Flybus">
-    <part file="mount_duorenzaiju_md_01.part"/>
-    <part file="mount_duorenzaiju_md_03.part"/>
-    <part file="mount_duorenzaiju_md_02.part"/>
-    <animation file="Flybus.animation"/>
-</entity>

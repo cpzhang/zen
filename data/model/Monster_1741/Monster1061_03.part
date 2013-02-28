@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<part name="Monster1061_03">
-    <mesh file="Monster1061_03.mesh"/>
-    <material file="UnnamedShader1.material"/>
-</part>

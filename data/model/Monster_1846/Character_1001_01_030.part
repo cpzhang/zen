@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<part name="Character_1001_01_030">
-    <mesh file="Character_1001_01_030.mesh"/>
-    <material file="Monster_1846_01_02_M.material"/>
-</part>

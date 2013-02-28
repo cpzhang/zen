@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<part name="diwen_1">
-    <mesh file="diwen_1.mesh"/>
-    <material file="M_dimian.material"/>
-</part>

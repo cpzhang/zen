@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<entity name="Monster_1846">
-    <part file="Character_1001_01_030.part"/>
-    <part file="Character_1001_01_031.part"/>
-    <part file="Monster_1846_01_EF.part"/>
-    <skeleton file="Monster_1846.skeleton"/>
-    <animation file="Monster_1846.animation"/>
-</entity>

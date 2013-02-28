@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<part name="wenzi">
-    <mesh file="wenzi.mesh"/>
-    <material file="t_BG.material"/>
-</part>

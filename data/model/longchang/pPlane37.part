@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<part name="pPlane37">
-    <mesh file="pPlane37.mesh"/>
-    <material file="huo_UnnamedShader2.material"/>
-</part>

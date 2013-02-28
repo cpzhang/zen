@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<part name="pCylinder1">
-    <mesh file="pCylinder1.mesh"/>
-    <material file="t_UnnamedShader26.material"/>
-</part>

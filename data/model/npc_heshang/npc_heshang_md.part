@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<part name="npc_heshang_md">
-    <mesh file="npc_heshang_md.mesh"/>
-    <material file="npc_heshang:npc_heshang_mt.material"/>
-</part>

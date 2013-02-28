@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<entity name="Cloud1">
-    <particle file="particle/ZJ_caiyun_EF_0.particle" bone="joint2"/>
-    <particle file="particle/ZJ_caiyun_EF_1.particle" bone="joint3"/>
-    <particle file="particle/ZJ_caiyun_EF_2.particle" bone="joint5"/>
-    <particle file="particle/ZJ_caiyun_EF_3.particle" bone="joint6"/>
-    <skeleton file="Cloud1.skeleton"/>
-    <animation file="Cloud1.animation"/>
-</entity>

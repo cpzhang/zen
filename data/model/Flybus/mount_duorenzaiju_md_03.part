@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<part name="mount_duorenzaiju_md_03">
-    <mesh file="mount_duorenzaiju_md_03.mesh"/>
-    <material file="mount_duorenzaiju_mt_03.material"/>
-</part>
