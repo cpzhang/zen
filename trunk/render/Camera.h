@@ -49,7 +49,26 @@ public:
 	{
 		return farPlane_;
 	}
-
+	bool isOrtho() const
+	{
+		return ortho_;
+	}
+	void setOrtho(bool b)
+	{
+		ortho_ = b;
+	}
+	float getWidth() const
+	{
+		return (viewHeight_ * aspectRatio_);
+	}
+	float getHeight() const
+	{
+		return viewHeight_;
+	}
+	void setHeight(float h)
+	{
+		viewHeight_ = h;
+	}
 private:
 	float	nearPlane_;
 	float	farPlane_;

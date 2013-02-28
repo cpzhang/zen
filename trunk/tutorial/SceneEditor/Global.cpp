@@ -62,6 +62,7 @@ bool Global::create()
 	Camera c = getRenderContex()->getCamera();
 	c.setFarPlane(10000.0f);
 	getRenderContex()->setCamera(c);
+
 	new NodeManager;
 	return true;
 }
@@ -524,7 +525,21 @@ void Global::onMouseWheel( float d )
 {
 	camera_.onMouseWheel(d);
 }
-
+std::string Global::saveBackBuffer(const std::string resID)
+{
+	u32 rtk = getRenderContex()->getCurrentRenderTarget();
+	getRenderContex()->setCurrentRenderTarget(renderTargetKey_);
+	//
+	//
+	if (Previewer_)
+	{
+		Previewer_->onIdle(0);
+	}
+	tstring fn = getRenderContex()->screenShot("bmp", resID, false);
+	//
+	getRenderContex()->setCurrentRenderTarget(rtk);
+	return fn;
+}
 void Global::renderPreviewWindow(const float delta)
 {
 	u32 rtk = getRenderContex()->getCurrentRenderTarget();
@@ -549,6 +564,15 @@ void Global::setPreviewWindowHandle( HWND h )
 		renderTargetKey_ = getRenderContex()->createRenderTarget(eRenderTarget_Additional);
 		IRenderTarget* rt = getRenderContex()->getRenderTarget(renderTargetKey_);
 		rt->create(previewWindowHandle_);
+		//
+		u32 ort = getRenderContex()->getCurrentRenderTarget();
+		getRenderContex()->setCurrentRenderTarget(renderTargetKey_);
+		Camera c = getRenderContex()->getCamera();
+		c.setFarPlane(10000.0f);
+		c.setHeight(60);
+		c.setOrtho(true);
+		getRenderContex()->setCamera(c);
+		getRenderContex()->setCurrentRenderTarget(ort);
 	}
 }
 

@@ -93,6 +93,7 @@ public:
 	OrbitCamera* getCamera();
 	//
 	void addEntityInstance(const std::string& resID);
+	std::string saveBackBuffer(const std::string resID);
 private:
 	void clear_();
 	bool createBrushDecal();

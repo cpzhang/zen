@@ -35,3 +35,8 @@ void PlaceModelState::leave()
 void PlaceModelState::destroy()
 {
 }
+
+void PlaceModelState::setModelFile( const tstring& mf )
+{
+	ModelFile_ = mf;
+}

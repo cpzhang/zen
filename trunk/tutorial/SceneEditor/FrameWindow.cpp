@@ -160,3 +160,10 @@ LRESULT FrameWindow::OnHero( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*
 	getLuaScript()->doFile("lua/HeroButton.lua");
 	return 0;
 }
+
+LRESULT FrameWindow::OnPlaceModel( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
+{
+	getStateManager()->gotoState(eState_PlaceModel);
+	UISetCheck(ID_BUTTON_PlaceModel, true);
+	return 1;
+}

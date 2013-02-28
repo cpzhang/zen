@@ -34,7 +34,7 @@ public:
 		Position_ = Vector3::Zero;
 		AngleY_ = 0.0f;
 		Scale_ = Vector3::One;
-		Scale_ *= 0.01f;
+		Scale_ *= 0.1f;
 	}
 public:
 	virtual void render();

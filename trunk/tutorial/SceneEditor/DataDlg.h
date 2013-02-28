@@ -66,6 +66,7 @@ public:
 		MESSAGE_HANDLER( WM_ITEM_SELECTED, OnFileItemSelected )
 		MESSAGE_HANDLER( WM_ITEM_RightButtonUp, OnFileItemRightButtonUp )
 		COMMAND_HANDLER(IDC_BUTTON_DataRefresh, BN_CLICKED, OnBnClickedButtonDatarefresh)
+		NOTIFY_HANDLER(IDC_LIST_Icons, NM_DBLCLK, OnNMDblclkListIcons)
 		MESSAGE_HANDLER(WM_MOUSEMOVE, onMouseMove)
 		MESSAGE_HANDLER(WM_LBUTTONDOWN, onMouseLeftButtonDown)
 		MESSAGE_HANDLER(WM_LBUTTONUP, onMouseLeftButtonUp)
@@ -89,14 +90,21 @@ public:
 	LRESULT OnFileItemSelected(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnFileItemRightButtonUp(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnBnClickedButtonDatarefresh(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnSelectIcon(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	bool isBrushDirSelected();
+	void refreshBrushIcons();
+	void refreshModelIcons();
+	bool isModelDirSelected();
 private:
-	CWtlFileTreeCtrl fileTree_;
+	CWtlFileTreeCtrl FileTree_;
 	CPropertyListCtrl properties_;
 	//CGradientStatic previewCanvas_; 
 	//u32 renderTargetKey_;
 	PreviewWindow pw_;
 	CImageList ImageList_;
 	CListViewCtrl Icons_;
+	tstring PathSelected_;
+	LRESULT OnNMDblclkListIcons(int /*idCtrl*/, LPNMHDR pNMHDR, BOOL& /*bHandled*/);
 };
 
 class TerrainTextureDlg :

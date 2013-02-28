@@ -102,9 +102,37 @@ public:
 	{
 		return *reinterpret_cast<const Vector3 *>( m[axis] );
 	}
+	/*
+	This function computes the returned matrix as shown:
+
+
+	xScale     0          0               0
+	0        yScale       0               0
+	0          0       zf/(zf-zn)         1
+	0          0       -zn*zf/(zf-zn)     0
+	where:
+	yScale = cot(fovY/2)
+
+	xScale = yScale / aspect ratio
+
+	*/
 	void perspectiveProjection( float fov, float aspectRatio, float nearPlane, float farPlane )
 	{
 		D3DXMatrixPerspectiveFovLH( this, fov, aspectRatio, nearPlane, farPlane );
+	}
+	/*
+	This function uses the following formula to compute the returned matrix.
+
+
+	2/w  0    0           0
+	0    2/h  0           0
+	0    0    1/(zf-zn)   0
+	0    0    zn/(zn-zf)  1
+
+	*/
+	void orthogonalProjection( float w, float h, float zn, float zf )
+	{
+		D3DXMatrixOrthoLH(this, w, h, zn, zf);
 	}
 	void multiply( const Matrix& m1, const Matrix& m2 )
 	{

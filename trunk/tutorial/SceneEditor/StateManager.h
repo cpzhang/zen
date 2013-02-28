@@ -1,6 +1,7 @@
 #pragma once
 #include "IState.h"
 #include "misc/Singleton.h"
+#include "PlaceModelState.h"
 class StateManager : public Singleton<StateManager>
 {
 public:
@@ -10,6 +11,9 @@ public:
 	void destroy();
 	void gotoState(eState e);
 	void update();
+	IState* getState(eState e);
+	eState getCurrentState();
+	PlaceModelState* getPlaceModelState();
 private:
 	IState* createState_(eState e);
 private:

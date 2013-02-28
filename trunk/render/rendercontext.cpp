@@ -1,8 +1,7 @@
 #include "rendercontext.h"
 #include "math.h"
-
+#include "misc/Logger.h"
 RenderContext::RenderContext()
-	:camera_( 0.25, 500, DEG_TO_RAD( 60 ), 4.f/3.f )
 {
 	clear_();
 }
@@ -535,13 +534,25 @@ void RenderContext::updateProjectionMatrix()
 {
 	if( !windowed_ )
 	{
-		camera_.setAspectRatio( fullScreenAspectRatio_ );
+		currentRenderTarget_->camera_.setAspectRatio( fullScreenAspectRatio_ );
 	}
 	else
 	{
-		camera_.setAspectRatio( float( backBufferDesc_.Width ) / float( backBufferDesc_.Height ) );
+		currentRenderTarget_->camera_.setAspectRatio( float( backBufferDesc_.Width ) / float( backBufferDesc_.Height ) );
 	}
-	currentRenderTarget_->projectionMatrix_.perspectiveProjection( camera_.getFov(), camera_.getAspectRatio(), camera_.getNearPlane(), camera_.getFarPlane() );
+	if (currentRenderTarget_->camera_.isOrtho())
+	{
+		currentRenderTarget_->projectionMatrix_.orthogonalProjection(currentRenderTarget_->camera_.getWidth(),
+			currentRenderTarget_->camera_.getHeight(),
+			currentRenderTarget_->camera_.getNearPlane(),
+			currentRenderTarget_->camera_.getFarPlane());
+	}
+	else
+	{
+		currentRenderTarget_->projectionMatrix_.perspectiveProjection( currentRenderTarget_->camera_.getFov(), 
+			currentRenderTarget_->camera_.getAspectRatio(),
+			currentRenderTarget_->camera_.getNearPlane(), currentRenderTarget_->camera_.getFarPlane() );
+	}
 }
 
 const Matrix& RenderContext::getViewMatrix() const
@@ -1008,12 +1019,13 @@ void RenderContext::setViewMatrix( const Matrix& m )
 
 void RenderContext::setCamera( Camera& c )
 {
-	camera_ = c;
+	currentRenderTarget_->camera_ = c;
+	updateProjectionMatrix();
 }
 
 Camera RenderContext::getCamera()
 {
-	return camera_;
+	return currentRenderTarget_->camera_;
 }
 
 Ray RenderContext::getPickingRay()
@@ -1112,6 +1124,112 @@ void RenderContext::setCurrentRenderTarget( u32 k )
 	}
 }
 
+/**
+ * Takes a screenshot
+ *
+ * @param fileExt - the extension to save the screenshot as, this can be "bmp", "jpg", "tga", "png" or "dds".
+ *
+ * @param fileName - the root name of the file to save out
+ *
+ * @param autoNumber - is this is true then try to postpend a unique identifying number to the shot name(e.g. shot_666.bmp)
+ */
+const std::string RenderContext::screenShot( const std::string& fileExt /*= "bmp"*/, const std::string& fileName /*= "shot"*/, bool autoNumber /*= true*/ )
+{
+	static std::map< std::string, D3DXIMAGE_FILEFORMAT > format;
+	if (format.size() == 0)
+	{
+		format["dds"] = D3DXIFF_DDS;
+		format["bmp"] = D3DXIFF_BMP;
+		format["jpg"] = D3DXIFF_JPG;
+		format["tga"] = D3DXIFF_TGA;
+		format["png"] = D3DXIFF_PNG;
+	}
+
+	//Convert uppercase to lowercase
+	std::string ext = fileExt;
+	std::transform( ext.begin(), ext.end(), ext.begin(), tolower );
+
+	//It the extension specified cannot be found then use "bmp"
+	if (format.find( ext ) == format.end())
+	{
+		ext = "bmp";
+	}
+
+	char findName[256];
+	std::string name;
+
+	if (autoNumber)
+	{	
+		static u32 sequence = 1;
+
+		// go through filenames until we find one that has not been created yet.
+		bool foundEmptyFile = false;
+		while( !foundEmptyFile )
+		{
+			// Create the filename
+			sprintf( findName, "%s_%03d.%s", fileName.c_str(), sequence, ext.c_str() );
+			FILE* f = fopen( findName, "rb" );
+
+			// is there such a file?
+			if( !f )
+			{
+				// nope, we have a winner.
+				foundEmptyFile = true;
+				name = findName;
+			}
+			else
+			{
+				// try the next file.
+				sequence++;
+				fclose( f );
+			}
+		}
+	}
+	else
+	{
+		sprintf( findName, "%s.%s", fileName.c_str(), ext.c_str() );
+		name = findName;
+	}
+
+	IDirect3DSurface9* backBuffer = NULL;
+	if( SUCCEEDED( currentRenderTarget_->getBackBuffer( &backBuffer ) ) )
+	{
+		if (SUCCEEDED( D3DXSaveSurfaceToFile( name.c_str(), format[ext], backBuffer, NULL, NULL) ) )
+		{
+			//INFO_MSG( "Moo::RenderContext::screenShot - saved image %s\n", name.c_str() );
+		}
+		else
+		{
+			D3DSURFACE_DESC backBufferDesc;
+			IDirect3DSurface9* systemMemorySurface;
+			backBuffer->GetDesc( &backBufferDesc );
+			if( SUCCEEDED( Direct3DDevice9_->CreateOffscreenPlainSurface(	backBufferDesc.Width,
+				backBufferDesc.Height,
+				backBufferDesc.Format,
+				D3DPOOL_SYSTEMMEM,
+				&systemMemorySurface,
+				NULL ) ) )
+			{
+				if( SUCCEEDED( Direct3DDevice9_->GetRenderTargetData( backBuffer, systemMemorySurface ) ) )
+				{
+					if( SUCCEEDED( D3DXSaveSurfaceToFile( name.c_str(), format[ext], systemMemorySurface, NULL, NULL) ) )
+					{
+						//INFO_MSG( "Moo::RenderContext::screenShot - saved image %s\n", name.c_str() );
+					}
+				}
+
+				systemMemorySurface->Release();
+			}
+		}
+	}
+	else
+	{
+		Error( "Moo::RenderContext::screenShot - unable to get backbuffer surface\n" );
+	}
+
+	return name;
+}
+
 ApiRender_ bool createRenderContex()
 {
 	new RenderContext();
@@ -1128,4 +1246,9 @@ ApiRender_ void destroyRenderContex()
 ApiRender_ RenderContext* getRenderContex()
 {
 	return RenderContext::getInstancePtr();
+}
+
+IRenderTarget::IRenderTarget() :camera_( 0.25, 500, DEG_TO_RAD( 60 ), 4.f/3.f )
+{
+
 }

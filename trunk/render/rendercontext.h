@@ -167,16 +167,19 @@ enum eRenderTarget
 class IRenderTarget
 {
 public:
+	IRenderTarget();
 	virtual ~IRenderTarget(){};
 public:
 	virtual void create(HWND h){};
 	virtual void apply() = 0;
 	virtual HRESULT present() = 0;
+	virtual bool getBackBuffer(IDirect3DSurface9 **ppBackBuffer) = 0;
 public:
 	Matrix						projectionMatrix_;
 	Matrix						viewMatrix_;
 	Matrix						viewProjectionMatrix_;
 	Matrix						viewMatrixInverse_;
+	Camera						camera_;
 };
 
 class ApiRender_ RenderContext: public Singleton<RenderContext>
@@ -278,6 +281,8 @@ public:
 	//
 	HRESULT LightEnable(DWORD LightIndex, BOOL bEnable);
 
+	const std::string screenShot( const std::string& fileExt /*= "bmp"*/, const std::string& fileName /*= "shot"*/, bool autoNumber /*= true*/ );
+
 private:
 	// When converting a legacy application to Direct3D 9, you must add a call to either IDirect3DDevice9::SetFVF to use the fixed function pipeline, 
 	// or IDirect3DDevice9::SetVertexDeclaration to use a vertex shader before you make any Draw calls.
@@ -309,7 +314,7 @@ private:
 	Matrix						viewMatrix_;
 	Matrix						viewProjectionMatrix_;
 	Matrix						viewMatrixInverse_;*/
-	Camera						camera_;
+	//Camera						camera_;
 	bool						changingMode_;
 	u32						backBufferWidthOverride_;
 	D3DPRESENT_PARAMETERS		presentParameters_;
@@ -351,6 +356,10 @@ public:
 	virtual HRESULT present()
 	{
 		return getRenderContex()->getDxDevice()->Present(0,0,0,0);
+	}
+	virtual bool getBackBuffer(IDirect3DSurface9 **ppBackBuffer)
+	{
+		return SUCCEEDED(getRenderContex()->getDxDevice()->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO,ppBackBuffer));
 	}
 };
 class AdditionalRenderTarget : public IRenderTarget
@@ -394,6 +403,10 @@ public:
 	{
 		return SwapChain_->Present(0,0,0,0,0);
 	}
+	virtual bool getBackBuffer(IDirect3DSurface9 **ppBackBuffer)
+	{
+		return SUCCEEDED(SwapChain_->GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO,ppBackBuffer));
+	}
 private:
 	IDirect3DSwapChain9*	SwapChain_;
 };
@@ -414,6 +427,10 @@ public:
 	{
 		return S_OK;
 	};
+	virtual bool getBackBuffer(IDirect3DSurface9 **ppBackBuffer)
+	{
+		return SUCCEEDED(m_pTexture->getDxTexture()->GetSurfaceLevel(0,ppBackBuffer));
+	}
 private:
 	Texture*				m_pTexture;
 };

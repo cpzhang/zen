@@ -68,6 +68,20 @@ StateManager::StateManager()
 	current_ = eState_None;
 }
 
+IState* StateManager::getState( eState e )
+{
+	return states_[e];
+}
+
+eState StateManager::getCurrentState()
+{
+	return current_;
+}
+
+PlaceModelState* StateManager::getPlaceModelState()
+{
+	return (PlaceModelState*)states_[eState_PlaceModel];
+}
 
 StateManager* createStateManager()
 {

@@ -33,6 +33,7 @@ public:
 	void onIdle(float delta);
 	void setModel(const std::string resID);
 	std::string getModelResID() const;
+	std::string saveBackBuffer(const std::string resID);
 private:
 	EntityInstance* EntityInstance_;
 	Node* Hero_;

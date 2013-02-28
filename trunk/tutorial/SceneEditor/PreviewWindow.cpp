@@ -17,12 +17,12 @@ void PreviewWindow::render()
 	getRenderContex()->getDxDevice()->Clear( 0, NULL, clearFlags, scc.getARGB(), 1, 0 );
 	getRenderContex()->beginScene();
 	//ÆÁÄ»×Ö£¬×îºó»­
-	{
+	if(0){
 		std::ostringstream ss;
 		ss<<"Preview";
 		FontManager::getPointer()->getFont()->render(Vector2(10, 10), Vector4(1, 0, 0, 1), ss.str());
+		FontManager::getPointer()->getFont()->render();
 	}
-	FontManager::getPointer()->getFont()->render();
 	if (Hero_)
 	{
 		Hero_->render();
@@ -51,6 +51,7 @@ void PreviewWindow::setModel( const std::string resID )
 		EntityInstance_ = getSceneManager()->createEntityInstance(resID);
 	}
 	EntityInstance_->setAnimation("Stand");
+	EntityInstance_->scale(Vector3(10, 10, 10));
 	Hero_->attach(EntityInstance_);
 }
 
@@ -61,9 +62,9 @@ PreviewWindow::PreviewWindow()
 	//Hero_ = NULL;
 	Camera_.setSpeed(5.0f);
 	Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
-	Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
+	Vector3 maxBound = Vector3(1000, 500.0f, 1000.0f);
 	Camera_.limit_ =  BoundingBox( minBound, maxBound );
-	Camera_.create(3, MATH_PI, MATH_PI_Half);
+	Camera_.create(0.1f, MATH_PI, MATH_PI_Half);
 }
 void PreviewWindow::destroy()
 {
@@ -123,7 +124,7 @@ LRESULT PreviewWindow::onMouseWheel( UINT, WPARAM wParam, LPARAM, BOOL& b )
 {
 	//
 	float delta = ( short )HIWORD( wParam );
-	delta /= 120.0f;
+	delta /= 1200.0f;
 	Camera_.onMouseWheel(delta);
 	return 1;
 }
@@ -144,4 +145,10 @@ std::string PreviewWindow::getModelResID() const
 	std::string id;
 	id = EntityInstance_->getResId();
 	return id;
+}
+
+std::string PreviewWindow::saveBackBuffer( const std::string resID )
+{
+	render();
+	return getRenderContex()->screenShot("dds", resID, true);
 }
