@@ -445,15 +445,7 @@ void Global::setHero( const char* resID )
 }
 void Global::onSelectFile( const tstring& name )
 {
-	layer_ = name;
-	//
-	size_t dotPos = layer_.find('.');
-	if (dotPos == std::string::npos)
-	{
-		return;
-	}
-	std::string suffix = layer_.substr(dotPos, layer_.size() - dotPos);
-	std::transform(suffix.begin(), suffix.end(), suffix.begin(), tolower);
+	std::string suffix = FileSystem::getFileExtension(name);
 	EntityInstance* i = NULL;
 	std::string finalEntityName;
 	if(suffix == ".part")
@@ -480,11 +472,6 @@ void Global::onSelectFile( const tstring& name )
 	{
 		Previewer_->setModel(finalEntityName);
 	}
-}
-
-tstring Global::getCurrentLayer()
-{
-	return layer_;
 }
 
 void Global::render()

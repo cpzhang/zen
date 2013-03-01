@@ -2,6 +2,7 @@
 #include "IState.h"
 #include "misc/Singleton.h"
 #include "PlaceModelState.h"
+#include "TerrainTextureState.h"
 class StateManager : public Singleton<StateManager>
 {
 public:
@@ -12,8 +13,10 @@ public:
 	void gotoState(eState e);
 	void update();
 	IState* getState(eState e);
-	eState getCurrentState();
+	eState getCurrentStateEnum();
+	IState* getCurrentState();
 	PlaceModelState* getPlaceModelState();
+	TerrainTextureState* getTerrainTextureState();
 private:
 	IState* createState_(eState e);
 private:

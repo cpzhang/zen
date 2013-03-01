@@ -77,7 +77,7 @@ public:
 	void removeHandler(const tstring& name);
 	//
 	void onSelectFile(const tstring& name);
-	tstring getCurrentLayer();
+	//tstring getCurrentLayer();
 	//
 	void refreshDataRoot();
 	//
@@ -111,7 +111,7 @@ private:
 	typedef stdext::hash_map<tstring, IdleHandler*> NameIdleHandlerMap;
 	NameIdleHandlerMap nameHandlers_;
 	//
-	tstring layer_;
+	//tstring layer_;
 	HeroController heroController_;
 	OrbitCamera	camera_;
 	//

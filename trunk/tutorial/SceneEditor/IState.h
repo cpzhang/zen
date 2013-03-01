@@ -14,6 +14,7 @@ public:
 	  IState()
 	  {
 		  type_ = eState_None;
+		  BrushStrength_ = 1.0f;
 	  }
 	  virtual ~IState(){};
 
@@ -24,9 +25,18 @@ public:\
 	virtual void enter() ##terminal\
 	virtual void leave() ##terminal\
 
+	  void setBrushStrength(float f)
+	  {
+		  BrushStrength_ = f;
+	  }
+	  float getBrushStrength() const
+	  {
+		  return BrushStrength_;
+	  }
 protected:
 	eState type_;
-
+	float BrushStrength_;
+	
 #define IState_Base InterfaceIdleHandler(=0;)
 #define IState_Null InterfaceIdleHandler({};)
 #define IState_Derived InterfaceIdleHandler(;)

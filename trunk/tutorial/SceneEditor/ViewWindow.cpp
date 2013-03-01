@@ -11,6 +11,7 @@
 #include "font/FontManager.h"
 #include "font/FreeType.h"
 #include "PreviewWindow.h"
+#include "FlowText.h"
 ViewWindow::ViewWindow()
 {
 	_fps = 0.0f;
@@ -199,9 +200,7 @@ void ViewWindow::onIdle(const float delta)
 	}
 	//
 	getSceneManager()->update(delta);
-	getGlobal()->update(delta);
-	//
-	
+	getGlobal()->update(delta);	
 	//
 	u32 clearFlags = D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER;
 	if ( getRenderContex()->isStencilAvailable() )
@@ -218,6 +217,8 @@ void ViewWindow::onIdle(const float delta)
 		//»­ÈË
 		getGlobal()->render();
 	}
+	FlowText::getSingletonP()->update(delta);
+	FlowText::getSingletonP()->render();
 	//ÆÁÄ»×Ö£¬×îºó»­
 	{
 		std::ostringstream ss;

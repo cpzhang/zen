@@ -1,6 +1,7 @@
 #pragma once
 #include "misc/stdHead.h"
 #include "Interpolate.h"
+//关键帧动画，时间单位：毫秒
 struct AnimationTime
 {
 	AnimationTime()
@@ -8,23 +9,37 @@ struct AnimationTime
 		start = 0;
 		end = 0;
 		current = 0;
+		loop = false;
 	}
-	void update(float delta)
+	//终止返回false
+	bool update(float delta)
 	{
 		if (end <= 0.0001f)
 		{
-			return;
+			return false;
 		}
 		current += delta;
-		while(current > end)
+		if (current > end)
 		{
-			current -= end;
+			if (loop)
+			{
+				while(current > end)
+				{
+					current -= end;
+				}
+			}
+			else
+			{
+				return false;
+			}
 		}
+		return true;
 	}
 	//毫秒
 	float start;
 	float end;
 	float current;
+	bool loop;
 };
 
 #pragma pack( push)
@@ -214,17 +229,20 @@ template<class T>
 class KeyFrameController
 {
 public:
+	//此处关键帧集合是指针，外面需存在，若Stack临时变量，可能出错
 	void init(const AnimationTime& at, sKeyFrameSet<T>* kfs, const T& dv)
 	{
 		AniTime_ = at;
 		KeyFrameSet_ = kfs;
 		DefaultValue_ = dv;
+		End_ = false;
 	}
-	void init(sKeyFrameSet<T>* kfs, const T& dv)
+	void init(sKeyFrameSet<T>* kfs, const T& dv, const bool loop = true)
 	{
 		AnimationTime at;
 		at.start = 0;
 		at.current = 0;
+		at.loop = loop;
 		if (NULL == kfs || kfs->empty())
 		{
 			at.end = 0;
@@ -242,13 +260,23 @@ public:
 	}
 	void update(float delta)
 	{
-		AniTime_.update(delta);
+		if (!AniTime_.update(delta))
+		{
+			End_ = true;
+		}
 	}
 	T getValue()
 	{
 		if (KeyFrameSet_)
 		{
-			return KeyFrameSet_->getFrame(AniTime_);
+			if (End_)
+			{
+				return KeyFrameSet_->getKeyFrame(KeyFrameSet_->numKeyFrames() - 1)->v;
+			}
+			else
+			{
+				return KeyFrameSet_->getFrame(AniTime_);
+			}
 		}
 		return DefaultValue_;
 	}
@@ -264,4 +292,5 @@ public:
 	AnimationTime		AniTime_;
 	sKeyFrameSet<T>*	KeyFrameSet_;
 	T					DefaultValue_;
+	bool End_;
 };

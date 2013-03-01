@@ -5,6 +5,7 @@
 #include "Global.h"
 #include "PreviewWindow.h"
 #include "luaScript/LuaScript.h"
+#include "FlowText.h"
 FrameWindow::FrameWindow()
 {
 
@@ -85,6 +86,7 @@ void FrameWindow::onRefreshLuaScript()
 
 LRESULT FrameWindow::OnToobarChangeHeight( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
+	FlowText::getSingletonP()->add("切换至地表拉高度图模式", Vector4(1, 1, 1, 1));
 	getStateManager()->gotoState(eState_TerrainHeight);
 	tabSwitch(ID_BUTTON_ChangeHeight);
 	tabs_.SetActivePage(2);
@@ -93,6 +95,7 @@ LRESULT FrameWindow::OnToobarChangeHeight( WORD /*wNotifyCode*/, WORD /*wID*/, H
 
 LRESULT FrameWindow::OnToobarChangeTexture( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
+	FlowText::getSingletonP()->add("切换至地表刷纹理模式", Vector4(1, 1, 1, 1));
 	getStateManager()->gotoState(eState_TerrainTexture);
 	UISetCheck(ID_BUTTON_PaintTerrain, true);
 
@@ -164,6 +167,7 @@ LRESULT FrameWindow::OnHero( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*
 LRESULT FrameWindow::OnPlaceModel( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
 	getStateManager()->gotoState(eState_PlaceModel);
+	FlowText::getSingletonP()->add("切换至放置物件模式", Vector4(1, 1, 1, 1));
 	UISetCheck(ID_BUTTON_PlaceModel, true);
 	return 1;
 }

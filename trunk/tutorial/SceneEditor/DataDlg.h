@@ -104,17 +104,8 @@ private:
 	CImageList ImageList_;
 	CListViewCtrl Icons_;
 	tstring PathSelected_;
+	std::vector< std::string > FilePaths_;
 	LRESULT OnNMDblclkListIcons(int /*idCtrl*/, LPNMHDR pNMHDR, BOOL& /*bHandled*/);
-};
-
-class TerrainTextureDlg :
-	public CDialogImpl<TerrainTextureDlg>
-{
-public:
-	enum { IDD = IDD_DIALOG_TerrainTexture};
-	BEGIN_MSG_MAP(TerrainTextureDlg)
-		REFLECT_NOTIFICATIONS()
-	END_MSG_MAP()
 };
 
 class OptionsDlg :

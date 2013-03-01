@@ -73,7 +73,7 @@ IState* StateManager::getState( eState e )
 	return states_[e];
 }
 
-eState StateManager::getCurrentState()
+eState StateManager::getCurrentStateEnum()
 {
 	return current_;
 }
@@ -81,6 +81,16 @@ eState StateManager::getCurrentState()
 PlaceModelState* StateManager::getPlaceModelState()
 {
 	return (PlaceModelState*)states_[eState_PlaceModel];
+}
+
+TerrainTextureState* StateManager::getTerrainTextureState()
+{
+	return (TerrainTextureState*)states_[eState_TerrainTexture];
+}
+
+IState* StateManager::getCurrentState()
+{
+	return states_[current_];
 }
 
 StateManager* createStateManager()

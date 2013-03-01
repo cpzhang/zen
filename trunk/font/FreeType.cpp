@@ -89,18 +89,19 @@ bool FreeType::destroy()
 }	
 
 
-bool FreeType::render( Vector2& basePoint, const Vector4& color, std::string& text )
+bool FreeType::render(const Vector2& basePoint, const Vector4& color, const std::string& text )
 {
 	if (text.size() == 0)
 	{
 		return true;
 	}
+	Vector2 bp = basePoint;
 	//
 	unsigned short unicode = 0;
 	FTex* fTex = 0;
-	_baseX = basePoint.x;
+	_baseX = bp.x;
 	unsigned int spaceOffset = _fontSize * 0.5;
-	basePoint.y += _fontSize;
+	bp.y += _fontSize;
 	//
 	for (size_t i = 0; i < text.size(); ++i)
 	{
@@ -123,8 +124,8 @@ bool FreeType::render( Vector2& basePoint, const Vector4& color, std::string& te
 			// '\n'
 			if (unicode == 10)
 			{
-				basePoint.y += _fontSize;
-				_baseX = basePoint.x;
+				bp.y += _fontSize;
+				_baseX = bp.x;
 			} 
 			else
 			{
@@ -133,7 +134,7 @@ bool FreeType::render( Vector2& basePoint, const Vector4& color, std::string& te
 		}
 		else
 		{
-			_renderImpl(fTex, color, basePoint);
+			_renderImpl(fTex, color, bp);
 		}
 
 		//
@@ -186,7 +187,7 @@ void FreeType::render()
 	_caches.clear();
 }
 
-void FreeType::_renderImpl( FTex* fft, const Vector4& color, Vector2& basePoint )
+void FreeType::_renderImpl( FTex* fft, const Vector4& color, const Vector2& basePoint )
 {
 	static unsigned short sIndices[6] = {0, 1, 2, 0, 2, 3};
 	//

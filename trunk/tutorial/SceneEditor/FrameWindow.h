@@ -7,6 +7,7 @@
 #include "DataDlg.h"
 #include "AnimationDlg.h"
 #include "SceneNewDlg.h"
+#include "TerrainTextureDlg.h"
 class FrameWindow : 
 	public CFrameWindowImpl<FrameWindow>
 	,public CUpdateUI<FrameWindow>

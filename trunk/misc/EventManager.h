@@ -64,7 +64,7 @@ public:
 
 	template<typename T>
 	SubscriberSlot(bool (T::*function)(const EventArgs&), T* obj) :
-	d_functor_impl(new MemberFunctionSlot<T>(function, obj))
+	d_functor_impl(new MemberFunctionSlot<T>(function, obj))//new出来之后，何时delete？
 	{}
 
 private:

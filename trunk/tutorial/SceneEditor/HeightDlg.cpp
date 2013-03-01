@@ -1,33 +1,7 @@
 #include "HeightDlg.h"
 #include "Global.h"
 #include "render/Decal.h"
-LRESULT RadiusTrackBarCtrl::OnNMThemeChangedSlider( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled )
-{
-	int nPercent;
-	switch ((int)LOWORD(wParam)) 
-	{
-	case SB_THUMBTRACK:
-	case SB_THUMBPOSITION:
-		nPercent = (short)HIWORD(wParam);
-		bHandled = TRUE;
-		break;
-	case SB_ENDSCROLL:
-	case SB_LINELEFT:
-	case SB_LINERIGHT:
-	case SB_PAGELEFT:
-	case SB_PAGERIGHT:
-		nPercent = GetPos();
-		bHandled = TRUE;
-		break;
-	default:
-		break;
-	}
-	if (bHandled)
-	{
-		getGlobal()->getBrushDecal()->setRadius(nPercent);
-	}
-	return bHandled;
-}
+#include "StateManager.h"
 
 LRESULT HeightDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled )
 {
@@ -35,8 +9,10 @@ LRESULT HeightDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPar
 	radius_.SubclassWindow(GetDlgItem(IDC_SLIDER_BrushSize));
 	radius_.SetRange(0, 100);
 	radius_.SetPos(50);
+	radius_.registerCallback(SubscriberSlot(&HeightDlg::upateRadius, this));
 	//
 	strength_.SubclassWindow(GetDlgItem(IDC_SLIDER_BrushStrength));
+	strength_.registerCallback(SubscriberSlot(&HeightDlg::upateStrength, this));
 	strength_.SetRange(0, 100);
 	strength_.SetPos(50);
 	//
@@ -53,34 +29,6 @@ LRESULT HeightDlg::OnBnClickedCheckAbsoluteheight( WORD wNotifyCode, WORD wID, H
 	// TODO: 在此添加控件通知处理程序代码
 	getGlobal()->setIsAbsoluteHeight(!getGlobal()->isAbosoluteHeight());
 	return 0;
-}
-
-LRESULT StrengthTrackBarCtrl::OnNMThemeChangedSlider( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled )
-{
-	int nPercent;
-	switch ((int)LOWORD(wParam)) 
-	{
-	case SB_THUMBTRACK:
-	case SB_THUMBPOSITION:
-		nPercent = (short)HIWORD(wParam);
-		bHandled = TRUE;
-		break;
-	case SB_ENDSCROLL:
-	case SB_LINELEFT:
-	case SB_LINERIGHT:
-	case SB_PAGELEFT:
-	case SB_PAGERIGHT:
-		nPercent = GetPos();
-		bHandled = TRUE;
-		break;
-	default:
-		break;
-	}
-	if (bHandled)
-	{
-		getGlobal()->setBrushStrength(nPercent * 0.01f);
-	}
-	return bHandled;
 }
 
 LRESULT HeightDlg::OnEnChangeEditAbsoluteheight(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& bHandled)
@@ -113,4 +61,18 @@ void HeightDlg::onIdle(const float delta)
 
 void HeightDlg::onRefreshLuaScript()
 {
+}
+
+bool HeightDlg::upateRadius( const EventArgs& args)
+{
+	const TrackBarCtrlWrapperEventArgs* m = (TrackBarCtrlWrapperEventArgs*)&args;
+	getGlobal()->getBrushDecal()->setRadius(m->nPercent);
+	return true;
+}
+
+bool HeightDlg::upateStrength( const EventArgs& args)
+{
+	const TrackBarCtrlWrapperEventArgs* m = (TrackBarCtrlWrapperEventArgs*)&args;
+	getStateManager()->getCurrentState()->setBrushStrength(m->nPercent);
+	return true;
 }

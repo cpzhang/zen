@@ -3,24 +3,7 @@
 #include "CEditImpl.h"
 #include "resource.h"
 #include "IdleHandler.h"
-class RadiusTrackBarCtrl : public CWindowImpl<RadiusTrackBarCtrl, CTrackBarCtrl>
-{
-public:
-	BEGIN_MSG_MAP(RadiusTrackBarCtrl)
-		MESSAGE_HANDLER(WM_HSCROLL + OCM__BASE, OnNMThemeChangedSlider)//父窗口没有处理，reflect给子窗口是消息码加了OCM__BASE
-	END_MSG_MAP()
-public:
-	LRESULT OnNMThemeChangedSlider( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled );
-};
-class StrengthTrackBarCtrl : public CWindowImpl<StrengthTrackBarCtrl, CTrackBarCtrl>
-{
-public:
-	BEGIN_MSG_MAP(StrengthTrackBarCtrl)
-		MESSAGE_HANDLER(WM_HSCROLL + OCM__BASE, OnNMThemeChangedSlider)//父窗口没有处理，reflect给子窗口是消息码加了OCM__BASE
-	END_MSG_MAP()
-public:
-	LRESULT OnNMThemeChangedSlider( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled );
-};
+#include "TrackBarCtrlWrapper.h"
 class HeightDlg :
 	public CDialogImpl<HeightDlg>
 	,public CWinDataExchange<HeightDlg>
@@ -47,9 +30,11 @@ private:
 	LRESULT OnBnClickedCheckAbsoluteheight(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnBnClickedCheckSmoothAverage(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnEnChangeEditAbsoluteheight(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	bool upateRadius(const EventArgs&);
+	bool upateStrength(const EventArgs&);
 private:
-	RadiusTrackBarCtrl radius_;
-	StrengthTrackBarCtrl strength_;
+	TrackBarCtrlWrapper radius_;
+	TrackBarCtrlWrapper strength_;
 	CEditImpl absoluteHeight;
 	int aHeight_;
 };

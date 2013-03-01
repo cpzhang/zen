@@ -59,8 +59,9 @@ LRESULT DataDlg::OnFileItemRightButtonUp( UINT /*uMsg*/, WPARAM wParam, LPARAM /
 
 void DataDlg::SelectFile( const tstring& s )
 {
+
 	//getLuaScript()->doFile(FileName);
-	getGlobal()->onSelectFile(s);
+	//getGlobal()->onSelectFile(s);
 	//
 	//IFileManager::getFile(s)->update(s, &properties_);
 }
@@ -84,10 +85,11 @@ bool DataDlg::isModelDirSelected()
 }
 void DataDlg::refreshBrushIcons()
 {
+	FilePaths_.clear();
+	ImageList_.RemoveAll();
+	Icons_.DeleteAllItems();
 	// Find all the directories and files underneath sPath
 	std::vector< std::string > DirectoryPaths;
-	std::vector< std::string > FilePaths;
-
 	CFileFind find;
 	std::string sFile(PathSelected_ + _T("\\*.*"));
 	std::string sNewPath;
@@ -109,23 +111,9 @@ void DataDlg::refreshBrushIcons()
 			if( !find.IsHidden())
 			{
 				sNewPath = find.GetFilePath();
-				FilePaths.push_back( sNewPath );
+				FilePaths_.push_back( sNewPath );
 			}  
 		}
-	}
-	//
-	ImageList_.RemoveAll();
-	for (size_t i = 0; i != FilePaths.size(); ++i)
-	{
-		HBITMAP h = generateHBitMap(PathSelected_ + '\\' + FilePaths[i], 64, 64, true);
-		ImageList_.Add(h);
-		DeleteObject(h);
-	}
-	//
-	Icons_.DeleteAllItems();
-	for (size_t i = 0; i != FilePaths.size(); ++i)
-	{
-		Icons_.InsertItem(i, FilePaths[i].c_str(), i);
 	}
 }
 HBITMAP generateHBitMapFromModel(const std::string& fileName, int width, int height)
@@ -222,7 +210,7 @@ void DataDlg::onIdle(const float delta)
 	if (sn != PathSelected_)
 	{
 		PathSelected_ = sn;
-		//耗时，可以考虑的方案：1.异步 2.预生成
+		//耗时，可以考虑的方案：1.异步 2.预生成 3.每次只处理一个
 		if (isBrushDirSelected())
 		{
 			refreshBrushIcons();
@@ -230,6 +218,19 @@ void DataDlg::onIdle(const float delta)
 		else if (isModelDirSelected())
 		{
 			refreshModelIcons();
+		}
+	}
+	else
+	{
+		//3.每次只处理一个
+		if (!PathSelected_.empty() && !FilePaths_.empty())
+		{
+			//
+			HBITMAP h = generateHBitMap(PathSelected_ + '\\' + FilePaths_[FilePaths_.size() - 1], 64, 64, true);
+			ImageList_.Add(h);
+			DeleteObject(h);
+			Icons_.InsertItem(Icons_.GetItemCount(), FilePaths_[FilePaths_.size() - 1].c_str(), Icons_.GetItemCount());
+			FilePaths_.pop_back();
 		}
 	}
 }
@@ -357,11 +358,17 @@ LRESULT DataDlg::OnNMDblclkListIcons(int /*idCtrl*/, LPNMHDR pNMHDR, BOOL& /*bHa
 	// single-selection only
 	CString n;
 	Icons_.GetItemText(Icons_.GetSelectedIndex(), 0, n);
-	if (getStateManager()->getCurrentState() == eState_PlaceModel)
+	if (getStateManager()->getCurrentStateEnum() == eState_PlaceModel)
 	{
 		tstring ef("model\\");
 		ef += n.GetBuffer(0);
 		getStateManager()->getPlaceModelState()->setModelFile(ef);
+	}
+	else if (getStateManager()->getCurrentStateEnum() == eState_TerrainTexture)
+	{
+		tstring ef("brush\\");
+		ef += n.GetBuffer(0);
+		getStateManager()->getTerrainTextureState()->setBrushTextureFile(ef);
 	}
 	return 0;
 }

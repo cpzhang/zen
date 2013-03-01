@@ -47,7 +47,7 @@ public:
 public:
 	virtual bool create(std::string& faceFile, unsigned int fontSize, eFontProperty fontProperty);
 	virtual bool destroy();
-	virtual bool render(Vector2& basePoint, const Vector4& color, std::string& text);
+	virtual bool render(const Vector2& basePoint, const Vector4& color, const std::string& text);
 public:
 	void onInvalidateDevice();
 	void onRestoreDevice();
@@ -57,7 +57,7 @@ private:
 	unsigned short _computeUnicode(std::string& character);
 	FTex* _parse(unsigned short unicode, bool chinese = false);
 	void _addCode(unsigned short unicode, bool chinese = false);
-	void _renderImpl(FTex* fft, const Vector4& color, Vector2& direction);
+	void _renderImpl(FTex* fft, const Vector4& color, const Vector2& direction);
 
 	//
 private:
