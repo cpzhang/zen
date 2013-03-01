@@ -2,10 +2,13 @@
 texture gLayer0;
 texture gLayer1;
 texture gLayer2;
+texture gLayer3;
+texture gAlphaMap;
 sampler gSamplerLayer0 = Zen_Sampler(gLayer0, Wrap);
 sampler gSamplerLayer1 = Zen_Sampler(gLayer1, Wrap);
 sampler gSamplerLayer2 = Zen_Sampler(gLayer2, Wrap);
-
+sampler gSamplerLayer3 = Zen_Sampler(gLayer3, Wrap);
+sampler gSamplerAlphaMap = Zen_Sampler(gAlphaMap, Wrap);
 //-----------------------------------------------------------------------------
 // Vertex shader output structure
 //-----------------------------------------------------------------------------
@@ -61,10 +64,12 @@ PS_Output RenderScenePS( VS_Output ip )
 
     // Lookup mesh texture and modulate it with diffuse
 	float4 c = (float4)0;
-    c += ip.Blend.r*tex2D(gSamplerLayer0, ip.TexCoord);
-	c += ip.Blend.g*tex2D(gSamplerLayer1, ip.TexCoord);
-	c += ip.Blend.b*tex2D(gSamplerLayer2, ip.TexCoord);
-
+	float4 am = tex2D(gSamplerAlphaMap, ip.TexCoord);
+    c =	  am.a*tex2D(gSamplerLayer0, ip.TexCoord);
+	c = c * (1 - am.r) + am.r*tex2D(gSamplerLayer1, ip.TexCoord);
+	c = c * (1 - am.g) + am.g*tex2D(gSamplerLayer2, ip.TexCoord);
+	c = c * (1 - am.b) + am.b*tex2D(gSamplerLayer3, ip.TexCoord);
+	
     op.RGBColor = c;
     return op;
 }
