@@ -32,6 +32,12 @@ Chunk::Chunk( int x, int z )
 	rect_.right_ = x_*len + len;
 	rect_.bottom_ = z*len;
 	rect_.top_ = z*len + len;
+	//
+	AlphaMapCompressed_.resize(tAlphaMapCompressedSize  * tAlphaMapCompressedSize, 0);
+	AlphaMapUnCompressed_.resize(tAlphaMapUnCompressedSize * tAlphaMapUnCompressedSize, 0);
+	//memset(&AlphaMapUnCompressed_[0], 0, AlphaMapUnCompressed_.size() * sizeof(uniRGBA));
+	//
+	AlphaMapTexture_ = NULL;
 }
 
 Chunk::~Chunk()
@@ -197,7 +203,12 @@ void Chunk::setBlendFromTopology( int x, int z, Vector4 h )
 
 void Chunk::refreshBlend()
 {
-	refreshVB_();
+	//refreshVB_();
+	if (AlphaMapTexture_ == NULL)
+	{
+		AlphaMapTexture_ = getTextureManager()->createTexture(tAlphaMapUnCompressedSize, tAlphaMapUnCompressedSize, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED);
+	}
+	AlphaMapTexture_->setSubData(0, 0, tAlphaMapUnCompressedSize, tAlphaMapUnCompressedSize, &AlphaMapUnCompressed_[0], D3DFMT_A8R8G8B8, tAlphaMapUnCompressedSize*sizeof(u32));
 }
 
 void Chunk::refreshVB_()
@@ -314,4 +325,27 @@ void Chunk::open( const tstring& path )
 		}
 		tex = tex->NextSiblingElement("model");
 	}
+}
+
+void Chunk::saveAlphaMap( const std::string& fileName )
+{
+	std::ofstream o(fileName.c_str(), std::ios::binary);
+	for (size_t i = 0; i != AlphaMapUnCompressed_.size(); ++i)
+	{
+		//u32 a = Colour::getUint32(AlphaMapUnCompressed_[i].RGBA_.R_, AlphaMapUnCompressed_[i].RGBA_.G_, AlphaMapUnCompressed_[i].RGBA_.B_, AlphaMapUnCompressed_[i].RGBA_.A_);
+		o.write((char*)&AlphaMapUnCompressed_[i], sizeof(u32));
+		//o.write((char*)&AlphaMapUnCompressed_[i].RGBA_.R_, sizeof(u8));
+	}
+	o.close();	
+}
+
+Vector4 Chunk::getAlphaMapUncompressed( const size_t x, const size_t y )
+{
+	Vector4 c = Colour::getVector4(AlphaMapUnCompressed_[x + (tAlphaMapUnCompressedSize - 1 - y) * tAlphaMapUnCompressedSize]);
+	return Vector4(c.w, c.x, c.y, c.z);
+}
+
+void Chunk::setAlphaMapUncompressed( const size_t x, const size_t y, const Vector4& a )
+{
+	AlphaMapUnCompressed_[x + (tAlphaMapUnCompressedSize - 1 - y) * tAlphaMapUnCompressedSize] = Colour::getUint32(a);
 }

@@ -35,7 +35,7 @@ bool Fx::create( const tstring& effectResource )
 		HRESULT r;
 		if (SUCCEEDED(r = D3DXCreateEffectFromFile(getRenderContex()->getDxDevice(), ts.c_str(), NULL, NULL, /*D3DXSHADER_DEBUG|*/D3DXSHADER_SKIPOPTIMIZATION, NULL, &pEffect_, NULL)))
 		{
-			resourceID_ = ts;
+			resourceID_ = effectResource;
 		}
 		else
 		{

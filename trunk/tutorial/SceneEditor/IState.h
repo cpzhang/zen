@@ -25,13 +25,27 @@ public:\
 	virtual void enter() ##terminal\
 	virtual void leave() ##terminal\
 
-	  void setBrushStrength(float f)
+	  virtual void setBrushStrength(float f)
 	  {
 		  BrushStrength_ = f;
 	  }
 	  float getBrushStrength() const
 	  {
 		  return BrushStrength_;
+	  }
+	  virtual void setBrushRadiusInner(float f)
+	  {
+	  }
+	  virtual void setBrushRadiusOuter(float f)
+	  {
+	  }
+	  virtual float getBrushRadiusInner() const
+	  {
+		  return 0.0f;
+	  }
+	  virtual float getBrushRadiusOuter() const
+	  {
+		  return 0.0f;
 	  }
 protected:
 	eState type_;

@@ -25,7 +25,7 @@ bool ManagedTexture::load( const tstring & resourceID )
 		if (SUCCEEDED(D3DXCreateTextureFromFileEx(getRenderContex()->getDxDevice(), ts.c_str(), 
 			D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, 0, NULL, NULL, &dxTexture_)))
 		{
-			resourceID_ = ts;
+			resourceID_ = resourceID;
 		}
 		else
 		{
@@ -75,7 +75,7 @@ bool ManagedTexture::createTexture( u32 Width, u32 Height, u32 MipLevels, DWORD 
 	}
 	return false;
 }
-
+//Pitch of source image, in bytes. For DXT formats, this number should represent the width of one row of cells, in bytes
 bool ManagedTexture::setSubData(int left, int top, int width, int height, void* pData, D3DFORMAT pf, int pitch)
 {
 	if(!dxTexture_)return false;

@@ -23,6 +23,7 @@ void TerrainTextureSetter::setDxEffect( Fx* f)
 	handles_.push_back( pEffect_->GetParameterByName(NULL,"gLayer0") );
 	handles_.push_back( pEffect_->GetParameterByName(NULL,"gLayer1") );
 	handles_.push_back( pEffect_->GetParameterByName(NULL,"gLayer2") );
+	handles_.push_back( pEffect_->GetParameterByName(NULL,"gLayer3") );
 }
 
 void TerrainTextureSetter::apply( Chunk* ck )

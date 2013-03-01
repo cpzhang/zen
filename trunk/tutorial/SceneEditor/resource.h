@@ -41,8 +41,10 @@
 #define IDC_EDIT2                       1022
 #define IDC_EDIT_ChunkSize              1022
 #define IDC_BUTTON_Previewer            1024
-#define IDC_SLIDER1                     1025
 #define IDC_SLIDER_TerrainTexture_BrushStrength 1025
+#define IDC_SLIDER_TerrainTexture_InnerRadius 1026
+#define IDC_SLIDER_TerrainTexture_RadiusInner 1026
+#define IDC_SLIDER_TerrainTexture_RadiusOuter 1027
 #define ID_40001                        40001
 #define ID_40002                        40002
 #define ID_40003                        40003
@@ -73,7 +75,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        118
 #define _APS_NEXT_COMMAND_VALUE         40021
-#define _APS_NEXT_CONTROL_VALUE         1026
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

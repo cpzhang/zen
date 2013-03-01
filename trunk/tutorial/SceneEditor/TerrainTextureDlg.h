@@ -15,7 +15,11 @@ private:
 	LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	bool upateRadius(const EventArgs&);
 	bool upateStrength(const EventArgs&);
+	bool upateRadiusInner(const EventArgs&);
+	bool upateRadiusOuter(const EventArgs&);
 private:
 	TrackBarCtrlWrapper BrushStrength_;
 	TrackBarCtrlWrapper BrushRadius_;
+	TrackBarCtrlWrapper BrushRadiusInner_;
+	TrackBarCtrlWrapper BrushRadiusOuter_;
 };

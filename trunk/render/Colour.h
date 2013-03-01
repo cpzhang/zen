@@ -11,6 +11,23 @@ namespace Colour
 	const u32 Blue(0x000000ff);
 	const u32 White(0xffffffff);
 	const u32 Black(0x00000000);
+	inline u8 getAlphaChannelFromARGB(const u32 argb)
+	{
+		return ( argb >> 24 ) & 255;		
+	}
+	inline u8 getRedChannelFromARGB(const u32 argb)
+	{
+		return ( argb >> 16 ) & 255;		
+	}
+	inline u8 getGreenChannelFromARGB(const u32 argb)
+	{
+		return ( argb >> 8 ) & 255;		
+	}
+	inline u8 getBlueChannelFromARGB(const u32 argb)
+	{
+		return ( argb ) & 255;		
+	}
+	
 	inline
 		u32 getUint32( int r, int g, int b, int a = 0 )
 	{

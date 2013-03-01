@@ -38,9 +38,17 @@ void Terrain::save(const tstring& path)
 	{
 		for (size_t i = 0; i != chunks_.size(); ++i)
 		{
-			std::stringstream ss;
-			ss<<path<<chunks_[i]->getNumberX()<<"_"<<chunks_[i]->getNumberZ()<<".xml";
-			chunks_[i]->save(ss.str());
+			{
+				std::stringstream ss;
+				ss<<path<<chunks_[i]->getNumberX()<<"_"<<chunks_[i]->getNumberZ()<<".xml";
+				chunks_[i]->save(ss.str());
+			}
+			//AlphaMap
+			{
+				std::stringstream ss;
+				ss<<path<<chunks_[i]->getNumberX()<<"_"<<chunks_[i]->getNumberZ()<<".raw";
+				chunks_[i]->saveAlphaMap(ss.str());
+			}
 		}
 	}
 }
@@ -172,6 +180,10 @@ void Terrain::render()
 			ef->SetVector("gAmbient", &nc);
 		}
 		textureSetter_.apply(ck);
+		if (ck->getAlphaMapTexture())
+		{
+			ef->SetTexture("gAlphaMap", ck->getAlphaMapTexture()->getDxTexture());
+		}
 		ef->CommitChanges();
 		for (int p = 0; p != passes; ++p)
 		{

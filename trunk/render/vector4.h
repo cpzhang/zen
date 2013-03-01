@@ -29,7 +29,10 @@ public:
 			z + rkVector.z,
 			w + rkVector.w);
 	}
-
+	void normalize()
+	{
+		D3DXVec4Normalize(this, this);
+	}
 public:
 	static const Vector4 Zero;
 	static const Vector4 One;
