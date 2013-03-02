@@ -358,17 +358,18 @@ LRESULT DataDlg::OnNMDblclkListIcons(int /*idCtrl*/, LPNMHDR pNMHDR, BOOL& /*bHa
 	// single-selection only
 	CString n;
 	Icons_.GetItemText(Icons_.GetSelectedIndex(), 0, n);
-	if (getStateManager()->getCurrentStateEnum() == eState_PlaceModel)
-	{
-		tstring ef("model\\");
-		ef += n.GetBuffer(0);
-		getStateManager()->getPlaceModelState()->setModelFile(ef);
-	}
-	else if (getStateManager()->getCurrentStateEnum() == eState_TerrainTexture)
-	{
-		tstring ef("brush\\");
-		ef += n.GetBuffer(0);
-		getStateManager()->getTerrainTextureState()->setBrushTextureFile(ef);
-	}
+// 	if (getStateManager()->getCurrentStateEnum() == eState_PlaceModel)
+// 	{
+// 		tstring ef("model\\");
+// 		ef += n.GetBuffer(0);
+// 		getStateManager()->getPlaceModelState()->setModelFile(ef);
+// 	}
+// 	else if (getStateManager()->getCurrentStateEnum() == eState_TerrainTexture)
+// 	{
+// 		tstring ef("brush\\");
+// 		ef += n.GetBuffer(0);
+// 		getStateManager()->getTerrainTextureState()->setBrushTextureFile(ef);
+// 	}
+	getStateManager()->getCurrentState()->setModelFile(n.GetBuffer(0));
 	return 0;
 }

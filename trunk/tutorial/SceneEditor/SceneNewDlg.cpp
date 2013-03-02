@@ -41,10 +41,11 @@ LRESULT SceneNewDlg::OnBnClickedOk( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*h
 	{
 		//创建场景
 		getSceneManager()->createTerrain(mWidth, mHeight, mN, mChunkSize);
+		getSceneManager()->constructTerrainQuadTree(mWidth, mHeight);
 		//保存路径
 		if (mPath.empty())
 		{
-			mPath = FileSystem::getDataDirectory() + "/scene";
+			mPath = FileSystem::getDataDirectory() + "\\scene";
 		}
 		if (mcstrName.IsEmpty())
 		{
@@ -54,7 +55,7 @@ LRESULT SceneNewDlg::OnBnClickedOk( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*h
 		if (tn)
 		{
 			tn->setFileName(mPath + TEXT("\\") + getSceneName());
-			tstring fxName(TEXT("shader/Terrain.fx"));
+			tstring fxName(TEXT("shader\\Terrain.fx"));
 			tn->setFX(fxName);
 		}
 		//1，否则domodel处条件判断失败，估计enddialog的参数即domodel的返回值

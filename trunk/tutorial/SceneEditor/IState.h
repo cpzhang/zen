@@ -1,4 +1,5 @@
 #pragma once
+#include "misc/stdHead.h"
 enum eState
 {
 	eState_None,
@@ -14,7 +15,6 @@ public:
 	  IState()
 	  {
 		  type_ = eState_None;
-		  BrushStrength_ = 1.0f;
 	  }
 	  virtual ~IState(){};
 
@@ -25,13 +25,32 @@ public:\
 	virtual void enter() ##terminal\
 	virtual void leave() ##terminal\
 
+	  virtual void setModelFile(const tstring& mf)
+	  {
+
+	  }
+	  //
+	  virtual void setSculptorStrength(float f)
+	  {
+	  }
+	  virtual float getSculptorStrength() const
+	  {
+		  return 0.0f;
+	  }
+	  virtual void setSculptorRadius(float f)
+	  {
+	  }
+	  virtual float getSculptorRadius()
+	  {
+		  return 0.0f;
+	  }
+	  //
 	  virtual void setBrushStrength(float f)
 	  {
-		  BrushStrength_ = f;
 	  }
-	  float getBrushStrength() const
+	  virtual float getBrushStrength() const
 	  {
-		  return BrushStrength_;
+		  return 0.0f;
 	  }
 	  virtual void setBrushRadiusInner(float f)
 	  {
@@ -47,9 +66,13 @@ public:\
 	  {
 		  return 0.0f;
 	  }
+	  //
+	  virtual void onMouseLeftButtonUp(){} ;
+	  virtual void onMouseLeftButtonDown(){} ;
+	  virtual void onMouseRightButtonDown(){};
+	  virtual void onMouseRightButtonUp(){};
 protected:
 	eState type_;
-	float BrushStrength_;
 	
 #define IState_Base InterfaceIdleHandler(=0;)
 #define IState_Null InterfaceIdleHandler({};)

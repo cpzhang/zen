@@ -3,21 +3,28 @@
 #include "misc/windowsHead.h"
 #include "scene/Terrain.h"
 #include "scene/SceneManager.h"
-#include "Global.h"
 #include "scene/Chunk.h"
 #include "render/math.h"
 #include "scene/QuadNode.h"
+#include "Global.h"
+#include "FlowText.h"
 void TerrainHeightState::update()
 {
+	if (getSceneManager() && getSceneManager()->getTerrain() && SculptorDecal_)
+	{
+		Vector2 pp = getSceneManager()->getPickingPoint();
+		SculptorDecal_->setCenter(Vector4(pp.x, 0, pp.y, 1));
+	}
+
 	if (isKeyDown(VK_LBUTTON))
 	{
 		if (getSceneManager() && getSceneManager()->getTerrain())
 		{
 			Terrain* t = getSceneManager()->getTerrain();
-			Vector4 center = getGlobal()->getBrushDecal()->getCenter();
+			Vector4 center = SculptorDecal_->getCenter();
 			LOD* d = getSceneManager()->getLOD();
 			int n = d->getVerticesNumberOneSide();
-			float radius = getGlobal()->getBrushDecal()->getRadius() * 0.5f;
+			float radius = SculptorDecal_->getRadius();
 			RectangleT rc;
 			rc.left_ = center.x - radius;
 			rc.right_ = center.x + radius;
@@ -57,10 +64,12 @@ void TerrainHeightState::update()
 							}
 							else
 							{
-								h = c0->getHeightFromTopology(x, z) + cos(MATH_PI_Half * distance2/radius2) * getGlobal()->getBrushStrength() * 0.1f;
+								float r = cos(MATH_PI_Half * distance2/radius2);
+								r = 1 - distance2/radius2;
+								h = c0->getHeightFromTopology(x, z) + r * getSculptorStrength();
 							}
 							//
-							{
+							if(0){
 								float left = c0->getHeightFromTopology(x - 1, z);
 								float right = c0->getHeightFromTopology(x + 1, z);
 								float bottom = c0->getHeightFromTopology(x, z - 1);
@@ -96,19 +105,59 @@ TerrainHeightState::~TerrainHeightState()
 TerrainHeightState::TerrainHeightState()
 {
 	type_ = eState_TerrainHeight;
+	SculptorDecal_ = NULL;
+	SculptorRadius_ = 1.0f;
+	SculptorStrength_ = 1.0f;
 }
 
 void TerrainHeightState::enter()
 {
-	float h = getGlobal()->getBrushDecal()->getRadius();
-	getGlobal()->getBrushDecal()->setRadius(h);
+	if (SculptorDecal_ == NULL)
+	{
+		createBrushDecal();
+	}
+	SculptorDecal_->setVisible(true);
 }
 
 void TerrainHeightState::leave()
 {
-	//getGlobal()->getBrushDecal()->setRadius(50);
+	SculptorDecal_->setVisible(false);
 }
 
 void TerrainHeightState::destroy()
 {
+}
+
+bool TerrainHeightState::createBrushDecal()
+{
+	SculptorDecal_ = getSceneManager()->createDecal(TEXT("HeightBrush"));
+	SculptorDecal_->setFxFile(TEXT("\\shader\\PositionDecal.fx"));
+	SculptorDecal_->setTexture(TEXT("\\brush\\heighttool.dds"));
+	SculptorDecal_->setRadius(3.0f);
+	return true;
+}
+
+void TerrainHeightState::setSculptorStrength( float f )
+{
+	std::ostringstream ss;
+	ss<<"高度刷强度："<<f;
+	FlowText::getSingletonP()->add(ss.str(), Vector4(1, 1, 1, 1));
+	SculptorStrength_ = f;
+}
+
+float TerrainHeightState::getSculptorStrength() const
+{
+	return SculptorStrength_;
+}
+
+void TerrainHeightState::setSculptorRadius( float f )
+{
+	std::ostringstream ss;
+	ss<<"高度刷半径："<<f;
+	FlowText::getSingletonP()->add(ss.str(), Vector4(1, 1, 1, 1));
+	SculptorRadius_ = f;
+	if (SculptorDecal_)
+	{
+		SculptorDecal_->setRadius(getSculptorRadius());
+	}
 }

@@ -1041,13 +1041,7 @@ Ray RenderContext::getPickingRay()
 	v.z = 1.0f;
 
 	// Get the inverse view matrix
-	const Matrix matView = getRenderContex()->getViewMatrix();
-	//const Matrix matWorld = Matrix::Identity;
-	//Matrix mWorldView = matWorld;
-	//mWorldView.postMultiply(matView);
-	Matrix m;
-	m.invert(matView);
-
+	Matrix m = currentRenderTarget_->viewMatrixInverse_;
 	// Transform the screen space pick ray into 3D space
 	Ray r;
 	r.direction_.x = v.x * m._11 + v.y * m._21 + v.z * m._31;

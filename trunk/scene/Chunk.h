@@ -57,6 +57,7 @@ public:
 	{
 		return AlphaMapTexture_;
 	}
+	void openAlphaMap(const tstring& fn);
 private:
 	void clear_();
 	void calcMaxMinHeight_();
@@ -79,6 +80,6 @@ private:
 	std::vector<u32> AlphaMapUnCompressed_;
 public:
 	static const size_t tAlphaMapCompressedSize = 64;
-	static const size_t tAlphaMapUnCompressedSize = 512;
+	static const size_t tAlphaMapUnCompressedSize = 64;
 };
 typedef std::vector<Chunk*> ChunkVec;

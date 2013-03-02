@@ -3,53 +3,36 @@
 #include "misc/windowsHead.h"
 #include "scene/Terrain.h"
 #include "scene/SceneManager.h"
-#include "Global.h"
 #include "scene/Chunk.h"
 #include "render/math.h"
+#include "render/Decal.h"
 #include "scene/QuadNode.h"
 #include "FlowText.h"
-//HBITMAP loadBrush(int nInnerRadius,int nOuterRadius,int nStrength, u8 *data)
-//{
-//	int innerRadius2 = nInnerRadius * nInnerRadius;
-//	int outerRadius2 = nOuterRadius * nOuterRadius;
-//	float invStrength = nStrength / 255.0f;
-//	for(int i = 0;i < 256;i++)
-//	for(int j = 0;j < 256;j++)
-//	{
-//		int index = (j * 256 + i) * 3;
-//		int length = (i - 128) * (i - 128) + (j - 128) * (j - 128);
-//		uchar c;
-//		if(length > outerRadius2)
-//		{
-//			c = 0;
-//		}
-//		else if(length > innerRadius2)
-//		{
-//			c = 255 * (outerRadius2 - length) / (outerRadius2 - innerRadius2);
-//		}
-//		else
-//		{
-//			c = 255;
-//		}
-//		c *= invStrength;
-//		data[index + 0] = c;
-//		data[index + 1] = c;
-//		data[index + 2] = c;
-//	}
-//}
+#include "Global.h"
 
 void TerrainTextureState::update()
 {
+	if (getSceneManager() && getSceneManager()->getTerrain() && BrushDecalInner_ && BrushDecalOuter_)
+	{
+		Vector2 pp = getSceneManager()->getPickingPoint();
+		BrushDecalInner_->setCenter(Vector4(pp.x, 0, pp.y, 1));
+		BrushDecalOuter_->setCenter(Vector4(pp.x, 0, pp.y, 1));
+	}
 	if (isKeyDown(VK_LBUTTON))
 	{
-		if (getSceneManager() && getSceneManager()->getTerrain() && !getBrushTextureFile().empty())
+		if (getBrushTextureFile().empty())
+		{
+				FlowText::getSingletonP()->add("无法刷地表，未选中地表纹理文件", Vector4(1, 1, 1, 1));
+			return;
+		}
+		if (getSceneManager() && getSceneManager()->getTerrain())
 		{
 			Terrain* t = getSceneManager()->getTerrain();
-			Vector4 center = getGlobal()->getBrushDecal()->getCenter();
+			Vector4 center = BrushDecalOuter_->getCenter();
 			LOD* d = getSceneManager()->getLOD();
 			int n = d->getVerticesNumberOneSide();
 			float alphaMapInterval = d->getChunkSize() / (Chunk::tAlphaMapUnCompressedSize - 1);
-			float radius = getGlobal()->getBrushDecal()->getRadius();
+			float radius = BrushDecalOuter_->getRadius();
 			RectangleT rc;
 			rc.left_ = center.x - radius;
 			rc.right_ = center.x + radius;
@@ -57,7 +40,6 @@ void TerrainTextureState::update()
 			rc.top_ = center.z + radius;
 			ChunkVec cs;
 			getSceneManager()->getChunks(cs, getSceneManager()->getTerrainQuadTreeRoot(), rc);
-			float radius2 = radius * radius;
 			for (size_t i = 0; i != cs.size(); ++i)
 			{
 				Chunk* c0 = cs[i]; 
@@ -110,23 +92,44 @@ void TerrainTextureState::update()
 							dirty = true;
 							c *= (getBrushStrength() / 255.0f);
 							Vector4 a = c0->getAlphaMapUncompressed(x, y);//argb
-							a[ln] += c;
-							if (1)
+							//如果是最外面一层，alpha累加
+							if (ln == eTerrainLayer_3 || c0->getLayer((eTerrainLayer)(ln + 1))->getFileName().empty())
 							{
+								a[ln] += c;
 								if (a[ln] > 255)
 								{
 									a[ln] = 255;
 								}
-							} 
+							}
+							//否则，其上面的层递减，递减为零时，自己那层再累加
 							else
 							{
-								if (a[0] > 255 || ln > eTerrainLayer_0)
+								bool aboveHasAlpha = false;
+								for (int lay = ln + 1; lay != eTerrainLayer_Size; ++lay)
 								{
-									a.normalize();
-									a *= 255;
+									if (!c0->getLayer((eTerrainLayer)lay)->getFileName().empty())
+									{
+										a[lay] -= c;
+										if (a[lay] < 0)
+										{
+											a[lay] = 0;
+										}
+										if (a[lay] > 0)
+										{
+											aboveHasAlpha = true;
+										}
+									}
 								}
-							}
-							
+								//
+								if (!aboveHasAlpha)
+								{
+									a[ln] += c;
+									if (a[ln] > 255)
+									{
+										a[ln] = 255;
+									}
+								}
+							}	
 							c0->setAlphaMapUncompressed(x, y, Vector4(a.y, a.z, a.w, a.x));//rgba
 						}
 					}
@@ -149,17 +152,27 @@ TerrainTextureState::~TerrainTextureState()
 TerrainTextureState::TerrainTextureState()
 {
 	type_ = eState_TerrainTexture;
-	BrushStrength_ = 1.0f;
 	BrushRadiusInner_ = 3;
 	BrushRadiusOuter_ = 6;
+	BrushDecalOuter_ = NULL;
+	BrushDecalInner_ = NULL;
+	BrushStrength_ = 10.0f;
 }
 
 void TerrainTextureState::enter()
 {
+	if (BrushDecalInner_ == NULL && BrushDecalOuter_ == NULL)
+	{
+		createBrushDecal();
+	}
+	BrushDecalInner_->setVisible(true);
+	BrushDecalOuter_->setVisible(true);
 }
 
 void TerrainTextureState::leave()
 {
+	BrushDecalInner_->setVisible(false);
+	BrushDecalOuter_->setVisible(false);
 }
 
 void TerrainTextureState::destroy()
@@ -174,20 +187,16 @@ void TerrainTextureState::setBrushTextureFile( const tstring& n )
 	BrushTextureFileSelected_ = n;
 }
 
-void TerrainTextureState::setBrushStrength( float f )
-{
-	IState::setBrushStrength(f);
-	std::ostringstream ss;
-	ss<<"画刷强度："<<f;
-	FlowText::getSingletonP()->add(ss.str(), Vector4(1, 1, 1, 1));
-}
-
 void TerrainTextureState::setBrushRadiusInner( float f )
 {
 	std::ostringstream ss;
 	ss<<"画刷内径："<<f;
 	FlowText::getSingletonP()->add(ss.str(), Vector4(1, 1, 1, 1));
 	BrushRadiusInner_ = f;
+	if (BrushDecalInner_)
+	{
+		BrushDecalInner_->setRadius(BrushRadiusInner_);
+	}
 }
 
 void TerrainTextureState::setBrushRadiusOuter( float f )
@@ -196,4 +205,36 @@ void TerrainTextureState::setBrushRadiusOuter( float f )
 	ss<<"画刷外径："<<f;
 	FlowText::getSingletonP()->add(ss.str(), Vector4(1, 1, 1, 1));
 	BrushRadiusOuter_ = f;
+	if (BrushDecalOuter_)
+	{
+		BrushDecalOuter_->setRadius(BrushRadiusOuter_);
+	}
+}
+
+bool TerrainTextureState::createBrushDecal()
+{
+	BrushDecalInner_ = getSceneManager()->createDecal(TEXT("BrushDecalInner"));
+	BrushDecalInner_->setFxFile(TEXT("\\shader\\PositionDecal.fx"));
+	BrushDecalInner_->setTexture(TEXT("\\brush\\heighttool.dds"));
+	BrushDecalInner_->setRadius(getBrushRadiusInner());
+	//
+	BrushDecalOuter_ = getSceneManager()->createDecal(TEXT("BrushDecalOuter"));
+	BrushDecalOuter_->setFxFile(TEXT("\\shader\\PositionDecal.fx"));
+	BrushDecalOuter_->setTexture(TEXT("\\brush\\heighttool.dds"));
+	BrushDecalOuter_->setRadius(getBrushRadiusOuter());
+	return true;
+}
+
+void TerrainTextureState::setBrushStrength( float f )
+{
+	BrushStrength_ = f;
+}
+
+void TerrainTextureState::setModelFile( const tstring& mf )
+{
+	BrushTextureFileSelected_ = "brush\\";
+	BrushTextureFileSelected_ += mf;
+	std::ostringstream ss;
+	ss<<"地表纹理刷选择文件："<<BrushTextureFileSelected_;
+	FlowText::getSingletonP()->add(ss.str(), Vector4(1, 1, 1, 1));
 }

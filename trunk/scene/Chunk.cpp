@@ -223,7 +223,7 @@ void Chunk::refreshVB_()
 		sVDT_PositionColorTexture v;
 		v.position_.x = x*s;
 		v.position_.z = z*s;
-		v.position_.y = int(getHeightFromTopology(x, z));
+		v.position_.y = /*int(*/getHeightFromTopology(x, z)/*)*/;
 		//
 		v.color_ = Colour::getUint32FromNormalised(getBlendFromTopology(x,z));
 		//
@@ -265,7 +265,7 @@ void Chunk::save( const tstring& path )
 		{
 			tinyxml2::XMLElement* e = doc.NewElement("layer");
 			std::string tn(layers_[i]->getFileName());
-			tn = FileSystem::cutDataPath(tn);
+			//tn = FileSystem::cutDataPath(tn);
 			e->SetAttribute("texture", tn.c_str());
 			ele->LinkEndChild(e);		
 		}
@@ -330,12 +330,7 @@ void Chunk::open( const tstring& path )
 void Chunk::saveAlphaMap( const std::string& fileName )
 {
 	std::ofstream o(fileName.c_str(), std::ios::binary);
-	for (size_t i = 0; i != AlphaMapUnCompressed_.size(); ++i)
-	{
-		//u32 a = Colour::getUint32(AlphaMapUnCompressed_[i].RGBA_.R_, AlphaMapUnCompressed_[i].RGBA_.G_, AlphaMapUnCompressed_[i].RGBA_.B_, AlphaMapUnCompressed_[i].RGBA_.A_);
-		o.write((char*)&AlphaMapUnCompressed_[i], sizeof(u32));
-		//o.write((char*)&AlphaMapUnCompressed_[i].RGBA_.R_, sizeof(u8));
-	}
+	o.write((char*)&AlphaMapUnCompressed_[0], sizeof(u32) * AlphaMapUnCompressed_.size());
 	o.close();	
 }
 
@@ -348,4 +343,11 @@ Vector4 Chunk::getAlphaMapUncompressed( const size_t x, const size_t y )
 void Chunk::setAlphaMapUncompressed( const size_t x, const size_t y, const Vector4& a )
 {
 	AlphaMapUnCompressed_[x + (tAlphaMapUnCompressedSize - 1 - y) * tAlphaMapUnCompressedSize] = Colour::getUint32(a);
+}
+
+void Chunk::openAlphaMap( const tstring& fn )
+{
+	std::ifstream o(fn.c_str(), std::ios::binary);
+	o.read((char*)&AlphaMapUnCompressed_[0], sizeof(u32) * AlphaMapUnCompressed_.size());
+	o.close();	
 }

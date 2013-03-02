@@ -52,11 +52,7 @@ public:
 	void render();
 	bool create();
 	void destroy();
-	Decal* getBrushDecal();
 	void update(float delta);
-	//
-	float getBrushStrength();
-	void setBrushStrength(float f);
 	//
 	bool isAbosoluteHeight();
 	void setIsAbsoluteHeight(bool b);
@@ -96,13 +92,10 @@ public:
 	std::string saveBackBuffer(const std::string resID);
 private:
 	void clear_();
-	bool createBrushDecal();
-	void updatePickingPoint_();
 	std::string selectedFilePart(const tstring& name);
 	std::string selectedFileParticle(const tstring& name);
 	EntityInstance* selectedFileEntity(const tstring& name);
 private:
-	Decal*	brushDecal_;
 	float	brushStrength_;
 	bool	isAbsoluteHeight_;
 	float	absoluteHeight_;

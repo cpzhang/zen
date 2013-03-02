@@ -26,7 +26,7 @@ void SceneManager::createTerrain( int xChunks, int zChunks, int n, float unit)
 	destroyTerrainQuadTree();
 	terrainCurrent_ = new Terrain;
 	terrainCurrent_->create(xChunks, zChunks);
-	constructTerrainQuadTree(xChunks, zChunks);
+//	constructTerrainQuadTree(xChunks, zChunks);
 }
 
 void SceneManager::clear_()
@@ -36,6 +36,7 @@ void SceneManager::clear_()
 	runType_ = eRunType_Game;
 	hero_ = NULL;
 	terrainCurrent_ = NULL;
+	PickingPoint_ = Vector2::Zero;
 }
 
 Terrain* SceneManager::getTerrain()
@@ -63,7 +64,7 @@ void SceneManager::render()
 		for (DecalMap::iterator it = decals_.begin(); it != decals_.end(); ++it)
 		{
 			Decal* d = it->second;
-			if (d)
+			if (d && d->isVisible())
 			{
 				terrainCurrent_->renderDecal(d);
 			}
@@ -111,6 +112,7 @@ void SceneManager::update(const float delta)
 	//1.地表
 	if (terrainCurrent_)
 	{
+		updatePickingPoint_();
 		terrainCurrent_->clearSelected();
 	}
 	//2.装饰
@@ -399,8 +401,6 @@ void SceneManager::constructTerrainQuadTree(int xChunks, int zChunks )
 	terrainQuadTreeRoot_->rect_.top_ = lod_.getLengthOneSide() * zChunks;
 	constructTerrainQuadTreeImp_(terrainQuadTreeRoot_, 0, xChunks-1, 0, zChunks-1, createLeaf);
 	//
-	//QuadNode::calculateRect(terrainQuadTreeRoot_);
-	//
 	QuadNode::calculateBoundingBox(terrainQuadTreeRoot_);
 }
 
@@ -445,14 +445,6 @@ void SceneManager::getChunks( ChunkVec& cs, QuadNode* n, RectangleT& rc )
 void SceneManager::save(const tstring& path)
 {
 	std::string resId(path);
-	if (!FileSystem::isDirExist(resId))
-	{
-		resId = FileSystem::getDataDirectory() + path;
-		if (!FileSystem::isDirExist(resId))
-		{
-			return;
-		}
-	}
 	name_ = FileSystem::removeParent(path);
 	//============================================================================
 	tinyxml2::XMLDocument doc;
@@ -477,7 +469,7 @@ void SceneManager::save(const tstring& path)
 	{
 		tinyxml2::XMLElement* e = doc.NewElement("material");
 		std::string tn(terrainCurrent_->getFXFileName());
-		tn = FileSystem::cutDataPath(tn);
+		//tn = FileSystem::cutDataPath(tn);
 		e->SetAttribute("fx", tn.c_str());
 		ele->LinkEndChild(e);
 	}
@@ -546,6 +538,7 @@ void SceneManager::open( const tstring& dir )
 	//
 	{
 		terrainCurrent_->open(resId);
+		constructTerrainQuadTree(xChunks, zChunks);
 	}
 	//
 	{
@@ -572,6 +565,19 @@ EntityInstance* SceneManager::createEntityInstance( const std::string& resID )
 	return i;
 }
 
+void SceneManager::removeEntityInstance( EntityInstance* ei )
+{
+	for (EntityInstanceVec::iterator i = entityInstances_.begin(); i != entityInstances_.end(); ++i)
+	{
+		if (ei == *i)
+		{
+			ei->release();
+			entityInstances_.erase(i);
+			return;
+		}
+	}
+}
+
 EntityInstance* SceneManager::addEntityInstance( const std::string& resID )
 {
 	EntityInstance* i = createEntityInstance(resID);
@@ -586,6 +592,98 @@ void SceneManager::destroyEntityInstances_()
 		entityInstances_[i]->release();
 	}
 	entityInstances_.clear();
+}
+struct sPick
+{
+	bool empty_;
+	Vector3 p0_;
+	Vector3 p1_;
+	Vector3 p2_;
+	Vector3 ps_;
+};
+void calcPick(sPick& pk, Ray r, QuadNode* n)
+{
+	if (NULL == n)
+	{
+		return;
+	}
+	if (!n->boundingBox_.intersectsRay(r))
+	{
+		return;
+	}
+	//
+	if (n->leaf_ && n->insideChunk_)
+	{
+		Chunk* c = getSceneManager()->getTerrain()->getChunkFromTopology(n->xNumber_, n->zNumber_);
+		Vector3 p0(n->rect_.left_, c->getHeightFromTopology(n->x_, n->z_) ,n->rect_.bottom_);
+		Vector3 p1(n->rect_.right_, c->getHeightFromTopology(n->x_ + 1, n->z_) ,n->rect_.bottom_);
+		Vector3 p2(n->rect_.right_, c->getHeightFromTopology(n->x_ + 1, n->z_ + 1) ,n->rect_.top_);
+		Vector3 p3(n->rect_.left_, c->getHeightFromTopology(n->x_, n->z_ + 1) ,n->rect_.top_);
+		Vector3 ps;
+		if (r.getIntersetTriangleParameters(p0, p3, p1, ps))
+		{
+			if (ps.z < pk.ps_.z || pk.empty_)
+			{
+				pk.empty_ = false;
+				pk.p0_ = p0;
+				pk.p1_ = p3;
+				pk.p2_ = p1;
+				pk.ps_ = ps;
+			}
+		}
+		if (r.getIntersetTriangleParameters(p3, p2, p1, ps))
+		{
+			if (ps.z < pk.ps_.z || pk.empty_)
+			{
+				pk.empty_ = false;
+				pk.p0_ = p3;
+				pk.p1_ = p2;
+				pk.p2_ = p1;
+				pk.ps_ = ps;
+			}
+		}
+		return;
+	}
+	//
+	for (int i = eQuadNode_LeftBottom; i != eQuadNode_Size; ++i)
+	{
+		QuadNode* c = n->children_[i];
+		if (c)
+		{
+			calcPick(pk, r, c);
+		}
+	}
+}
+Vector2 SceneManager::getPickingPoint()
+{
+	return PickingPoint_;
+}
+
+void SceneManager::updatePickingPoint_()
+{
+	Ray r = getRenderContex()->getPickingRay();
+	if (0)
+	{
+		float x = 0.0f;
+		float z = 0.0f;;
+		//对于平面地表，可以这样处理
+		float t = -r.origion_.y / r.direction_.y;
+		x = r.origion_.x + t * r.direction_.x;
+		z = r.origion_.z + t * r.direction_.z;
+	} 
+	else
+	{
+		sPick pk;
+		pk.empty_ = true;
+		calcPick(pk, r, getSceneManager()->getTerrainQuadTreeRoot());
+		if (!pk.empty_)
+		{
+			Vector3 p = r.getPoint(pk.ps_.z);
+			p = (1 - pk.ps_.x - pk.ps_.y)*pk.p0_ + pk.ps_.x*pk.p1_ + pk.ps_.y*pk.p2_;
+			PickingPoint_.x = p.x;
+			PickingPoint_.y = p.z;
+		}
+	}
 }
 
 ApiScene_ SceneManager* createSceneManager()

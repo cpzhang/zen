@@ -36,19 +36,22 @@ public:
 	Decal* createDecal(const tstring& name);
 	QuadNode* getTerrainQuadTreeRoot();
 	void getChunks(ChunkVec& cs, QuadNode* n, RectangleT& rc);
+	Vector2 getPickingPoint();
 public:
 	EntityInstance* createEntityInstance(const std::string& resID);
 	EntityInstance* addEntityInstance(const std::string& resID);
+	void removeEntityInstance(EntityInstance* ei);
 public:
 	void save(const tstring& path);
 	void open(const tstring& path);
+	void constructTerrainQuadTree(int xChunks, int zChunks );
 private:
 	void clear_();
 	void destroyTerrain_();
 	void destroyDecals();
-	void constructTerrainQuadTree(int xChunks, int zChunks );
 	void destroyTerrainQuadTree();
 	void destroyEntityInstances_();
+	void updatePickingPoint_();
 private:
 	Terrain* terrainCurrent_;
 	LOD		lod_;
@@ -60,6 +63,7 @@ private:
 	tstring name_;
 	typedef std::vector<EntityInstance*> EntityInstanceVec;
 	EntityInstanceVec entityInstances_;
+	Vector2 PickingPoint_;
 };
 ApiScene_ SceneManager* createSceneManager();
 ApiScene_ void destroySceneManager();

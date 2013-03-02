@@ -132,7 +132,20 @@ void FrameWindow::tabSwitch(WORD id)
 LRESULT FrameWindow::OnSavescene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	// TODO: 在此添加命令处理程序代码
+	if (FileSystem::isDirExist(scenePath_))
+	{
+		if (IDOK != MessageBox("已存在场景名称，确定要覆盖吗？", "提示", MB_OKCANCEL))
+		{
+			return 1;
+		}
+	}
+	else
+	{
+		FileSystem::createFolder(scenePath_);
+	}
+	FlowText::getSingletonP()->add("正在保存场景", Vector4(1, 1, 1, 1));
 	getSceneManager()->save(scenePath_);
+	FlowText::getSingletonP()->add("保存场景完成", Vector4(1, 1, 1, 1));
 	return 0;
 }
 
@@ -140,7 +153,7 @@ LRESULT FrameWindow::OnOpenscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWnd
 {
 	// TODO: 在此添加命令处理程序代码
 	CFolderDialog d;
-	d.SetInitialFolder(TEXT("f:\\zen\\data\\scene\\bornland"));
+	d.SetInitialFolder(TEXT("d:\\work\\zen\\data\\scene"));
 	if (d.DoModal())
 	{
 		scenePath_ = d.m_szFolderPath;

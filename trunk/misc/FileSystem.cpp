@@ -120,6 +120,10 @@ tstring FileSystem::standardFilePath(const tstring& p)
 void FileSystem::createFolder(tstring& path)
 {
 	tstring folder = standardFilePath(path);
+	if (folder[folder.size() - 1] != '\\')
+	{
+		folder += '\\';
+	}
 	size_t pos = folder.find_first_of(TEXT("\\"));
 	while(pos != tstring::npos)
 	{

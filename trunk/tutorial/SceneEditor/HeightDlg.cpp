@@ -7,14 +7,14 @@ LRESULT HeightDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPar
 {
 	bHandled = false;
 	radius_.SubclassWindow(GetDlgItem(IDC_SLIDER_BrushSize));
-	radius_.SetRange(0, 100);
-	radius_.SetPos(50);
+	radius_.SetRange(1, 20);
+	radius_.SetPos(6);
 	radius_.registerCallback(SubscriberSlot(&HeightDlg::upateRadius, this));
 	//
 	strength_.SubclassWindow(GetDlgItem(IDC_SLIDER_BrushStrength));
 	strength_.registerCallback(SubscriberSlot(&HeightDlg::upateStrength, this));
-	strength_.SetRange(0, 100);
-	strength_.SetPos(50);
+	strength_.SetRange(1, 20);
+	strength_.SetPos(1);
 	//
 	aHeight_ = 0;
 	// First DDX call, hooks up variables to controls.
@@ -66,13 +66,13 @@ void HeightDlg::onRefreshLuaScript()
 bool HeightDlg::upateRadius( const EventArgs& args)
 {
 	const TrackBarCtrlWrapperEventArgs* m = (TrackBarCtrlWrapperEventArgs*)&args;
-	getGlobal()->getBrushDecal()->setRadius(m->nPercent);
+	getStateManager()->getCurrentState()->setSculptorRadius(m->nPercent);
 	return true;
 }
 
 bool HeightDlg::upateStrength( const EventArgs& args)
 {
 	const TrackBarCtrlWrapperEventArgs* m = (TrackBarCtrlWrapperEventArgs*)&args;
-	getStateManager()->getCurrentState()->setBrushStrength(m->nPercent);
+	getStateManager()->getCurrentState()->setSculptorStrength(m->nPercent);
 	return true;
 }

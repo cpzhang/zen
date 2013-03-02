@@ -493,6 +493,16 @@ void Terrain::open( const tstring& path )
 			chunks_[i]->refreshHeight();
 		}
 	}
+	//∂¡»°AlphaMap
+	{
+		for (size_t i = 0; i != chunks_.size(); ++i)
+		{
+			std::stringstream ss;
+			ss<<path<<"\\"<<chunks_[i]->getNumberX()<<"_"<<chunks_[i]->getNumberZ()<<".raw";
+			chunks_[i]->openAlphaMap(ss.str());
+			chunks_[i]->refreshBlend();
+		}
+	}
 }
 
 tstring Terrain::getFXFileName()

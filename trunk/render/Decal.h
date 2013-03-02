@@ -7,6 +7,7 @@ public:
 	Decal()
 	{
 		center_ = Vector4::Zero;
+		IsVisible_ = true;
 	}
 	~Decal()
 	{
@@ -57,11 +58,20 @@ public:
 	{
 		return radius_;
 	}
+	bool isVisible() const
+	{
+		return IsVisible_;
+	}
+	void setVisible(bool b)
+	{
+		IsVisible_ = b;
+	}
 private:
 	Vector4 center_;
 	float radius_;
 	tstring name_;
 	tstring textureFileName_;	
 	tstring FxFileName_;
+	bool IsVisible_;
 };
 typedef std::map<tstring, Decal*> DecalMap;

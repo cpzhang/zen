@@ -52,7 +52,7 @@ void StateManager::gotoState( eState e )
 		states_[current_]->leave();
 	}
 	current_ = e;
-	states_[current_]->leave();
+	states_[current_]->enter();
 }
 
 void StateManager::update()
