@@ -189,17 +189,17 @@ void Chunk::setLayer( eTerrainLayer e, const tstring & resourceID)
 	layers_[e] = getTextureManager()->getTexture(resourceID);
 }
 
-Vector4 Chunk::getBlendFromTopology( int x, int z )
-{
-	int n = getSceneManager()->getLOD()->getVerticesNumberOneSide();
-	return getSceneManager()->getTerrain()->getBlendFromImage(x_ * (n - 1) + x, z_ * (n - 1) +z);
-}
+// Vector4 Chunk::getBlendFromTopology( int x, int z )
+// {
+// 	int n = getSceneManager()->getLOD()->getVerticesNumberOneSide();
+// 	return getSceneManager()->getTerrain()->getBlendFromImage(x_ * (n - 1) + x, z_ * (n - 1) +z);
+// }
 
-void Chunk::setBlendFromTopology( int x, int z, Vector4 h )
-{
-	int n = getSceneManager()->getLOD()->getVerticesNumberOneSide();
-	getSceneManager()->getTerrain()->setBlendFromImage(x_ * (n - 1) + x, z_ * (n - 1) +z, h);
-}
+// void Chunk::setBlendFromTopology( int x, int z, Vector4 h )
+// {
+// 	int n = getSceneManager()->getLOD()->getVerticesNumberOneSide();
+// 	getSceneManager()->getTerrain()->setBlendFromImage(x_ * (n - 1) + x, z_ * (n - 1) +z, h);
+// }
 
 void Chunk::refreshBlend()
 {
@@ -225,7 +225,7 @@ void Chunk::refreshVB_()
 		v.position_.z = z*s;
 		v.position_.y = /*int(*/getHeightFromTopology(x, z)/*)*/;
 		//
-		v.color_ = Colour::getUint32FromNormalised(getBlendFromTopology(x,z));
+//		v.color_ = Colour::getUint32FromNormalised(getBlendFromTopology(x,z));
 		//
 		v.texture_.x = x == vn-1 ? 1.0f : (float)x * fv;
 		v.texture_.y = z == vn-1 ? 1.0f : (float)z * fv;
@@ -270,6 +270,21 @@ void Chunk::save( const tstring& path )
 			ele->LinkEndChild(e);		
 		}
 	}	
+	//
+	for (int i = 0; i != EntityInstances_.size(); ++i)
+	{
+		EntityInstance* ei = EntityInstances_[i];
+		if (ei)
+		{
+			tinyxml2::XMLElement* e = doc.NewElement("model");
+			std::string tn(ei->getResId());
+			//tn = FileSystem::cutDataPath(tn);
+			e->SetAttribute("file", tn.c_str());
+			e->SetAttribute("position", ei->getPosition());
+			e->SetAttribute("scale", ei->getScale());
+			ele->LinkEndChild(e);		
+		}
+	}
 	doc.SaveFile(path.c_str());
 }
 
@@ -315,6 +330,12 @@ void Chunk::open( const tstring& path )
 				i->setPosition(pos);
 				//
 				{
+					Vector3 pos = Vector3::One;
+					tex->QueryVector3Attribute("scale", &pos);
+					i->scale(pos);
+				}
+				//
+				{
 					const char* n = tex->Attribute("animation");
 					if (NULL != n)
 					{
@@ -350,4 +371,9 @@ void Chunk::openAlphaMap( const tstring& fn )
 	std::ifstream o(fn.c_str(), std::ios::binary);
 	o.read((char*)&AlphaMapUnCompressed_[0], sizeof(u32) * AlphaMapUnCompressed_.size());
 	o.close();	
+}
+
+void Chunk::addEntityInstance( EntityInstance* ei )
+{
+	EntityInstances_.push_back(ei);
 }

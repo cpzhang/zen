@@ -29,8 +29,8 @@ public:
 	float getHeightFromImage(int x, int z);
 	void setHeightFromImage(int x, int z, float h);
 	//
-	Vector4 getBlendFromImage(int x, int z);
-	void setBlendFromImage(int x, int z, Vector4 b);
+//	Vector4 getBlendFromImage(int x, int z);
+//	void setBlendFromImage(int x, int z, Vector4 b);
 	int getXChunkNumber()
 	{
 		return xChunkNumber_;
@@ -54,7 +54,7 @@ private:
 	ChunkVec chunksVisible_;
 	Fx* fx_;
 	std::vector<float>	heights_;
-	std::vector<Vector4> blends_;
+	//std::vector<Vector4> blends_;
 	int totalNumberX_;
 	int totalNumberZ_;
 	TerrainTextureSetter textureSetter_;

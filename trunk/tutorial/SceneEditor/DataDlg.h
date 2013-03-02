@@ -64,7 +64,7 @@ public:
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroyDialog)
 		MESSAGE_HANDLER( WM_ITEM_SELECTED, OnFileItemSelected )
-		MESSAGE_HANDLER( WM_ITEM_RightButtonUp, OnFileItemRightButtonUp )
+//		MESSAGE_HANDLER( WM_ITEM_RightButtonUp, OnFileItemRightButtonUp )
 		COMMAND_HANDLER(IDC_BUTTON_DataRefresh, BN_CLICKED, OnBnClickedButtonDatarefresh)
 		NOTIFY_HANDLER(IDC_LIST_Icons, NM_DBLCLK, OnNMDblclkListIcons)
 		MESSAGE_HANDLER(WM_MOUSEMOVE, onMouseMove)
@@ -88,7 +88,7 @@ public:
 	LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnDestroyDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnFileItemSelected(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnFileItemRightButtonUp(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+//	LRESULT OnFileItemRightButtonUp(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnBnClickedButtonDatarefresh(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnSelectIcon(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	bool isBrushDirSelected();

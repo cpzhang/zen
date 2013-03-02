@@ -31,7 +31,8 @@ void setHero( const char* resID )
 	HeroInstance_ = getSceneManager()->createEntityInstance(resID);
 	Hero_ = NodeManager::getInstancePtr()->createNode("Hero");
 	Hero_->attach(HeroInstance_);
-	HeroInstance_->setAnimation("Run");
+	HeroInstance_->setAnimation("Run", true);
+	HeroInstance_->scale(Vector3(0.01f, 0.01f, 0.01f));
 }
 bool adjustClientArea()
 {
@@ -168,6 +169,13 @@ LRESULT CALLBACK _wndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
 }
 bool play(const float delta)
 {
+	//拾取高度
+	Vector3 position_ = camera_.getCenter();
+	float h = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(position_.x, position_.z);
+	camera_.setTerrainHeight(h);
+	position_.y += h;
+	HeroInstance_->setPosition(position_);
+	HeroInstance_->rotateY(camera_.getAngleY() + MATH_PI);
 	//
 	if (g_bActive)
 	{
@@ -176,11 +184,6 @@ bool play(const float delta)
 	}
 	getSceneManager()->update(delta);
 	Hero_->update(delta);
-	//拾取高度
-	Vector3 position_ = camera_.getCenter();
-	position_.y = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(position_.x, position_.z);
-	HeroInstance_->setPosition(position_);
-	HeroInstance_->rotateY(camera_.getAngleY() + MATH_PI);
 	//
 	u32 clearFlags = D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER;
 	if ( getRenderContex()->isStencilAvailable() )
@@ -349,10 +352,10 @@ int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	getRenderContex()->setCamera(c);
 	getRenderContex()->updateProjectionMatrix();
 	FileSystem::setDataDirectory(FileSystem::guessDataDirectory());
-	getSceneManager()->open("\\scene\\bornland");
+	getSceneManager()->open("\\scene\\1");
 	setHero(TEXT("\\model\\Character_1015\\Character_1015.entity"));
 	//
-	camera_.setCenter(Vector3(30, 0.0, 35));
+	camera_.setCenter(Vector3(0, 0.0, 0));
 	// Message Structure
 	MSG msg;
 	::ZeroMemory(&msg, sizeof(msg));

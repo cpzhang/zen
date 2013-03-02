@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<chunk>
+    <layer texture="brush\db_427_003.dds"/>
+    <layer texture="brush\db_426_a001.dds"/>
+    <layer texture="brush\db_009_c003.dds"/>
+    <layer texture="brush\db_009_c001.dds"/>
+    <model file="model\dafangzi\dafangzi.entity" position="(31.652424, 0.000000, 36.049942)" scale="(0.010000, 0.010000, 0.010000)"/>
+    <model file="model\liaowangta\liaowangta.entity" position="(6.803685, 0.000000, 54.355637)" scale="(0.010000, 0.010000, 0.010000)"/>
+    <model file="model\liaowangta\liaowangta.entity" position="(3.042745, 0.000000, 3.857590)" scale="(0.010000, 0.010000, 0.010000)"/>
+    <model file="model\xiaofangzi\xiaofangzi.entity" position="(40.054436, 0.000000, 7.655613)" scale="(0.010000, 0.010000, 0.010000)"/>
+    <model file="model\dafangzi\dafangzi.entity" position="(87.326874, 0.000000, 47.313728)" scale="(0.010000, 0.010000, 0.010000)"/>
+    <model file="model\Character_1015\Character_1015.entity" position="(60.673393, 0.000000, 56.599480)" scale="(0.010000, 0.010000, 0.010000)"/>
+    <model file="model\Character_1015\Character_1015.entity" position="(23.790873, 0.000000, 15.530362)" scale="(0.010000, 0.010000, 0.010000)"/>
+</chunk>

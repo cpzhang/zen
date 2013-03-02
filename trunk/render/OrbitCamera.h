@@ -5,6 +5,7 @@
 #include "misc/stdHead.h"
 #include "misc/helper.h"
 #include "vector2.h"
+#include "KeyFrames.h"
 //
 class ApiRender_ OrbitCamera
 {
@@ -25,6 +26,7 @@ public:
 	float distance_;
 	Vector3 center_;
 	Vector3 u_, v_, w_;
+	float TerrainHeight_;
 private:
 	bool capture_;
 	bool dirty_;
@@ -49,6 +51,14 @@ public:
 	}
 	void setCenter(const Vector3& p);
 	void handleInput( float dTime );
+	void setTerrainHeight(float f)
+	{
+		if (!almostEqual(f, TerrainHeight_))
+		{
+			TerrainHeight_ = f;
+			setDirty(true);
+		}
+	}
 private:
 	void polarToViewImp_(float ch);
 	void setDirty(bool b);
@@ -62,15 +72,7 @@ public:
 class ApiRender_ HeroCamera
 {
 public:
-	HeroCamera()
-	{
-		camera_.setSpeed(0.005f);
-		Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
-		Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
-		camera_.limit_ =  BoundingBox( minBound, maxBound );
-		camera_.create(10, MATH_PI*0.75f, MATH_PI_Half*0.5f);
-		angleY_ = 0.0f;
-	}
+	HeroCamera();
 public:
 	void updateWSAD(float dTime)
 	{
@@ -99,7 +101,14 @@ public:
 		{
 			Vector3 v(sin(angleY_), 0.0f, cos(angleY_));
 			v = v * camera_.getSpeed() * dTime;
-			camera_.setCenter(camera_.getCenter() + v);
+			Kfs_._keyFrames[0].v = CenterController_.getValue();
+			Kfs_._keyFrames[1].v += v; 
+			CenterController_.begin();
+		}
+		if (moved || !CenterController_.End_)
+		{
+			CenterController_.update(dTime);
+			camera_.setCenter(CenterController_.getValue());
 		}
 	}
 	void update( float dTime, float ch)
@@ -139,7 +148,13 @@ public:
 	{
 		camera_.setSpeed(s);
 	}
+	void setTerrainHeight(float f)
+	{
+		camera_.setTerrainHeight(f);
+	}
 private:
 	OrbitCamera camera_;
 	float angleY_;
+	KeyFrameController<Vector3> CenterController_;
+	sKeyFrameSet<Vector3> Kfs_;
 };

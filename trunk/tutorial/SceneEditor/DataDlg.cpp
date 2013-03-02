@@ -50,18 +50,12 @@ LRESULT DataDlg::OnFileItemSelected( UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
 	
 	return TRUE;
 }
-LRESULT DataDlg::OnFileItemRightButtonUp( UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/ )
-{
-	LPCSTR FileName = (LPCSTR)wParam;
-	getGlobal()->addEntityInstance(FileName);
-	return TRUE;
-}
 
 void DataDlg::SelectFile( const tstring& s )
 {
 
 	//getLuaScript()->doFile(FileName);
-	//getGlobal()->onSelectFile(s);
+	getGlobal()->onSelectFile(s);
 	//
 	//IFileManager::getFile(s)->update(s, &properties_);
 }

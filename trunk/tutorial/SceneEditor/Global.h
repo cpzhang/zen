@@ -14,33 +14,33 @@ class EntityInstance;
 class Node;
 
 //
-class HeroController
-{
-public:
-	HeroController()
-	{
-		angleY_ = 0.0f;
-		position_ = Vector3::Zero;
-		speed_ = 1.0f;
-	}
-public:
-	void update(float delta);
-	void apply(IMovable* m);
-	void apply(OrbitCamera& m, float delta);
-	Vector3 getPosition()
-	{
-		return position_;
-	}
-	void setCameraAngleY(float a)
-	{
-		cameraAngleY = a;
-	}
-private:
-	float cameraAngleY;
-	float angleY_;
-	Vector3 position_;
-	float speed_;
-};
+// class HeroController
+// {
+// public:
+// 	HeroController()
+// 	{
+// 		angleY_ = 0.0f;
+// 		position_ = Vector3::Zero;
+// 		speed_ = 1.0f;
+// 	}
+// public:
+// 	void update(float delta);
+// 	void apply(IMovable* m);
+// 	void apply(OrbitCamera& m, float delta);
+// 	Vector3 getPosition()
+// 	{
+// 		return position_;
+// 	}
+// 	void setCameraAngleY(float a)
+// 	{
+// 		cameraAngleY = a;
+// 	}
+// private:
+// 	float cameraAngleY;
+// 	float angleY_;
+// 	Vector3 position_;
+// 	float speed_;
+// };
 // tolua_begin
 class Global : public Singleton<Global>
 {
@@ -80,13 +80,15 @@ public:
 	void setAnimation(const tstring& name);
 	//
 	void onMouseWheel(float d);
+	void onMouseMove();
+	void onKeyDown(WPARAM wParam);
 	void setPreviewWindowHandle(HWND h);
 	void renderPreviewWindow(const float delta);
 	//
 	PreviewWindow* getPreviewWindow();
 	void setPreviewWindow(PreviewWindow* pw);
 	void createPreviewer();
-	OrbitCamera* getCamera();
+//	OrbitCamera* getCamera();
 	//
 	void addEntityInstance(const std::string& resID);
 	std::string saveBackBuffer(const std::string resID);
@@ -105,8 +107,9 @@ private:
 	NameIdleHandlerMap nameHandlers_;
 	//
 	//tstring layer_;
-	HeroController heroController_;
-	OrbitCamera	camera_;
+	//HeroController heroController_;
+	//OrbitCamera	camera_;
+	HeroCamera camera_;
 	//
 	u32 renderTargetKey_;
 	HWND previewWindowHandle_;

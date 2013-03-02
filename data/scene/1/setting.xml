@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<scene name="1">
+    <terrain XChunkNumber="1" ZChunkNumber="1" Lod="5" ChunkSize="100.000000"/>
+    <material fx="shader\Terrain.fx"/>
+</scene>

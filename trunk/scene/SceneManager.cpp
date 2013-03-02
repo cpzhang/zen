@@ -444,6 +444,10 @@ void SceneManager::getChunks( ChunkVec& cs, QuadNode* n, RectangleT& rc )
 
 void SceneManager::save(const tstring& path)
 {
+	if (terrainCurrent_ == NULL)
+	{
+		return;
+	}
 	std::string resId(path);
 	name_ = FileSystem::removeParent(path);
 	//============================================================================
@@ -478,6 +482,17 @@ void SceneManager::save(const tstring& path)
 	doc.SaveFile(sf.c_str());
 	//
 	{
+		//·ÖÅäÎï¼ş
+		for (size_t i = 0; i != entityInstances_.size(); ++i)
+		{
+			Vector3 p = entityInstances_[i]->getPosition();
+			Chunk* c = terrainCurrent_->getChunkFromWorldSpacePostion(p.x, p.z);
+			if (c)
+			{
+				c->addEntityInstance(entityInstances_[i]);
+			}
+		}
+
 		terrainCurrent_->save(resId + "\\");
 	}
 }

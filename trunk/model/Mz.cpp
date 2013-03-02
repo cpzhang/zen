@@ -147,7 +147,7 @@ bool Mz::load( const std::string& fileName )
 		{
 			ss.str("");
 			ss.clear();
-			ss<<fn<<"/particle/"<<n<<"_"<<i<<".particle";
+			ss<<fn<<"\\particle\\"<<n<<"_"<<i<<".particle";
 			mParticleEmitter[i].save(ss.str());
 		}
 	}
@@ -190,7 +190,7 @@ void Mz::loadMzI( const std::string& fileName )
 		}
 		mAnimationNames.push_back(fbFileNames_[i].substr(p, q - p));
 		//
-		p = fileName.find_last_of('/');
+		p = fileName.find_last_of('\\');
 		if (p != std::string::npos)
 		{
 			std::string fn = fileName.substr(0, p) + "\\" + fbFileNames_[i];
@@ -1635,7 +1635,7 @@ void Mz::decodeParticle( std::ifstream& f, int s , char* b)
 	//初始化例子发射器
 	ParticleEmitter pe;
 	pe.mBoneName = b;
-	pe.mTextureFile = "particle/image/";
+	pe.mTextureFile = "particle\\image\\";
 	pe.mTextureFile += filename;
 	pe.mBlendMode = blendMode;
 	pe.mInitNumber = initialNum;

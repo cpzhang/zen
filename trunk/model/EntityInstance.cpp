@@ -228,7 +228,7 @@ void EntityInstance::destroy()
 	Particles_.clear();
 }
 
-void EntityInstance::setAnimation( const tstring& resourceId )
+void EntityInstance::setAnimation( const tstring& resourceId, bool loop)
 {
 	if (NULL == Skeleton_ || Skeleton_->isNullObject())
 	{
@@ -241,8 +241,12 @@ void EntityInstance::setAnimation( const tstring& resourceId )
 			SkinCurrent_->removeReference();
 		}
 		const tstring& res = Skeleton_->getSkin(resourceId, AnimationTime_);
-		SkinCurrent_ = ModelResManager::getInstance()->get<Skin>(res);
-		SkinCurrent_->addReference();
+		if (!res.empty())
+		{
+			AnimationTime_.loop = loop;
+			SkinCurrent_ = ModelResManager::getInstance()->get<Skin>(res);
+			SkinCurrent_->addReference();
+		}
 	}
 }
 
@@ -417,7 +421,7 @@ void EntityInstance::rotateY( float p )
 
 void EntityInstance::scale( const Vector3& p )
 {
-	Scale_ = Scale_ * p;
+	Scale_ = p;
 }
 
 EntityInstance* EntityInstance::clone() const
@@ -441,6 +445,16 @@ Skeleton* EntityInstance::getSkeleton()
 std::string EntityInstance::getResId() const
 {
 	return FileName_;
+}
+
+Vector3 EntityInstance::getPosition() const
+{
+	return Position_;
+}
+
+Vector3 EntityInstance::getScale() const
+{	
+	return Scale_;
 }
 
 Create_Singleton_Imp(EntityInstanceManager, ApiModel_)

@@ -30,7 +30,7 @@ public:
 	//Ð¡Ð´£¬ÎÞ'\'£¬½ö'/'
 	static tstring standardFilePath(const tstring& path);
 	//
-	static void createFolder(tstring& path);
+	static void createFolder(const tstring& path);
 	static tstring toWindowsFilePath(const tstring& p);
 private:
 	static const unsigned long Max_Path;

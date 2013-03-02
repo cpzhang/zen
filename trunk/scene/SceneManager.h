@@ -61,7 +61,6 @@ private:
 	DecalMap decals_;
 	QuadNode* terrainQuadTreeRoot_;
 	tstring name_;
-	typedef std::vector<EntityInstance*> EntityInstanceVec;
 	EntityInstanceVec entityInstances_;
 	Vector2 PickingPoint_;
 };

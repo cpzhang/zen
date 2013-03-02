@@ -41,15 +41,17 @@ public:
 	virtual void update(float delta);
 public:
 	virtual void setPosition(const Vector3& p);
+	Vector3 getPosition() const;
 	virtual void rotateY(float p);
 	virtual void scale(const Vector3& p);
+	Vector3 getScale() const;
 public:
 	bool create(const tstring& resourceId);
 	void destroy();
 	void release();
 	Entity* getEntity();
 	Skeleton* getSkeleton();
-	void setAnimation(const tstring& resourceId);
+	void setAnimation(const tstring& resourceId, bool loop = true);
 	void setSpeed(float s);
 	EntityInstance* clone() const;
 	std::string getResId() const;
@@ -99,5 +101,5 @@ private:
 	float AngleY_;
 	Vector3 Scale_;
 };
-
+typedef std::vector<EntityInstance*> EntityInstanceVec;
 Create_Singleton_Declaration(EntityInstanceManager, EntityInstance, ApiModel_)

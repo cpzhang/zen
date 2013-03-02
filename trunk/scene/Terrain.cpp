@@ -27,9 +27,9 @@ void Terrain::save(const tstring& path)
 		writeSequenceEx(cs, heights_);
 		cs.endChunk();
 		// 混合因子
-		cs.beginChunk("BLEN");
-		writeSequenceEx(cs, blends_);
-		cs.endChunk();
+		//cs.beginChunk("BLEN");
+		//writeSequenceEx(cs, blends_);
+		//cs.endChunk();
 		//============================================================================
 		// 保存文件，结束
 		cs.save(heightmapfile);
@@ -85,13 +85,13 @@ void Terrain::create( int xChunks, int zChunks )
 	totalNumberX_ = xChunks * n - (xChunks - 1);
 	totalNumberZ_ = zChunks * n - (zChunks - 1);
 	heights_.resize(totalNumberX_ * totalNumberZ_, 0.0f);
-	blends_.resize(totalNumberX_ * totalNumberZ_, Vector4::Zero);
+	//blends_.resize(totalNumberX_ * totalNumberZ_, Vector4::Zero);
 }
 
 void Terrain::destroyChunks_()
 {
 	heights_.clear();
-	blends_.clear();
+	//blends_.clear();
 	if (!chunks_.empty())
 	{
 		for (size_t i = 0; i != chunks_.size(); ++i)
@@ -397,34 +397,34 @@ void Terrain::clear_()
 	zChunkNumber_ = 0;
 	fx_ = NULL;
 	heights_.clear();
-	blends_.clear();
+	//blends_.clear();
 	mVersion = 1;
 }
 
-Vector4 Terrain::getBlendFromImage( int x, int z )
-{
-	int index = z * totalNumberX_ + x;
-	if (index < 0 || index >= blends_.size())
-	{
-		return Vector4::Zero;
-	}
-	return blends_[index];
-}
-
-void Terrain::setBlendFromImage( int x, int z, Vector4 b )
-{
-	int index = z * totalNumberX_ + x;
-	if (index < 0 || index >= blends_.size())
-	{
-		return;
-	}
-	Vector3 p(b.x, b.y, b.z);
-	p.normalise();
-	b.x = p.x;
-	b.y = p.y;
-	b.z = p.z;
-	blends_[index] = b;
-}
+// Vector4 Terrain::getBlendFromImage( int x, int z )
+// {
+// 	int index = z * totalNumberX_ + x;
+// 	if (index < 0 || index >= blends_.size())
+// 	{
+// 		return Vector4::Zero;
+// 	}
+// 	return blends_[index];
+// }
+// 
+// void Terrain::setBlendFromImage( int x, int z, Vector4 b )
+// {
+// 	int index = z * totalNumberX_ + x;
+// 	if (index < 0 || index >= blends_.size())
+// 	{
+// 		return;
+// 	}
+// 	Vector3 p(b.x, b.y, b.z);
+// 	p.normalise();
+// 	b.x = p.x;
+// 	b.y = p.y;
+// 	b.z = p.z;
+// 	blends_[index] = b;
+// }
 
 void Terrain::open( const tstring& path )
 {
@@ -471,11 +471,12 @@ void Terrain::open( const tstring& path )
 			case 'HEIG':
 				{
 					readSequenceEx<std::vector<float>, float>(f, heights_);
+					f.read((char*)&heights_[0], heights_.size() * sizeof(float));
 				}break;
-			case 'BLEN':
-				{
-					readSequenceEx<std::vector<Vector4>, Vector4>(f, blends_);
-				}break;
+// 			case 'BLEN':
+// 				{
+// 					readSequenceEx<std::vector<Vector4>, Vector4>(f, blends_);
+// 				}break;
 			default:
 				{
 					f.ignore(s);

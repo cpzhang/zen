@@ -15,6 +15,7 @@ OrbitCamera::OrbitCamera()
 	lastYaw_ = 0.0f;;
 	lastPitch_ = 0.0f;
 	center_ = Vector3::Zero;
+	TerrainHeight_ = 0.0f;
 	capture_ = false;
 	dirty_ = true;
 }
@@ -140,6 +141,7 @@ void OrbitCamera::polarToViewImp_(float ch)
 	Vector3 p3(x, y, z);
 	Vector3 w3=-p3.unitVector();
 	p3 += center_;
+	p3.y += TerrainHeight_;
 	lastPos_ = p3;
 	Vector4 p4(p3.x, p3.y, p3.z, 1.0f);
 	Vector3 u3;
@@ -309,3 +311,16 @@ void OrbitCamera::setCenter( const Vector3& p )
 }
 
 std::string OrbitCamera::tEvent_Dirty("OrbitCamera::tEvent_Dirty");
+
+HeroCamera::HeroCamera()
+{
+	camera_.setSpeed(0.005f);
+	Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
+	Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
+	camera_.limit_ =  BoundingBox( minBound, maxBound );
+	camera_.create(10, MATH_PI*0.75f, MATH_PI_Half*0.5f);
+	angleY_ = 0.0f;
+	Kfs_.addKeyFrame(sKeyFrame<Vector3>(0, Vector3::Zero));
+	Kfs_.addKeyFrame(sKeyFrame<Vector3>(600, Vector3::Zero));
+	CenterController_.init(&Kfs_, Vector3::Zero, false);
+}

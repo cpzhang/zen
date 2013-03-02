@@ -49,11 +49,6 @@ bool Global::create()
 	createTextureManager();
 	//
 	createSceneManager();
-	camera_.setSpeed(5.0f);
-	Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
-	Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
-	camera_.limit_ =  BoundingBox( minBound, maxBound );
-	camera_.create(10, MATH_PI, MATH_PI_Half);
 	//
 	Camera c = getRenderContex()->getCamera();
 	c.setFarPlane(10000.0f);
@@ -121,13 +116,17 @@ void Global::update(float delta)
 	//
 	getStateManager()->update();
 	//
-	heroController_.update(delta);
-	heroController_.apply(camera_, delta);
+	camera_.update(delta, 0);
+	getRenderContex()->setViewMatrix(camera_.getViewMatrix());
 	//
 	if (Hero_)
 	{
 		Hero_->update(delta);
-		heroController_.apply(Hero_->getEntityInstance());//调整主角位置和方向
+		//调整主角位置和方向
+		Vector3 position_ = camera_.getCenter();
+		position_.y = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(position_.x, position_.z);
+		HeroInstance_->setPosition(position_);
+		HeroInstance_->rotateY(camera_.getAngleY() + MATH_PI);
 	}
 }
 bool Global::isAbosoluteHeight()
@@ -317,21 +316,22 @@ void Global::setHero( const char* resID )
 void Global::onSelectFile( const tstring& name )
 {
 	std::string suffix = FileSystem::getFileExtension(name);
+	std::transform(suffix.begin(), suffix.end(), suffix.begin(), tolower);
 	EntityInstance* i = NULL;
 	std::string finalEntityName;
-	if(suffix == ".part")
+	if(suffix == "part")
 	{
 		finalEntityName = selectedFilePart(name);
 	}
-	else if(suffix == ".particle")
+	else if(suffix == "particle")
 	{
 		finalEntityName = selectedFileParticle(name);
 	}
-	else if(suffix == ".entity")
+	else if(suffix == "entity")
 	{
 		finalEntityName = name;
 	}
-	else if(suffix == ".mz")
+	else if(suffix == "mz")
 	{
 		finalEntityName = decode(name);
 	}
@@ -544,10 +544,10 @@ EntityInstance* Global::selectedFileEntity( const tstring& name )
 	return e;
 }
 
-OrbitCamera* Global::getCamera()
-{
-	return &camera_;
-}
+// OrbitCamera* Global::getCamera()
+// {
+// 	return &camera_;
+// }
 
 void Global::addEntityInstance( const std::string& resID )
 {
@@ -556,6 +556,32 @@ void Global::addEntityInstance( const std::string& resID )
 	{
 		Previewer_->setModel(finalEntityName);
 		getSceneManager()->addEntityInstance(finalEntityName);
+	}
+}
+
+void Global::onMouseMove()
+{
+	camera_.onMouseMove();
+}
+
+void Global::onKeyDown( WPARAM wParam )
+{
+	switch(wParam)
+	{
+	case VK_ADD:
+		{
+			//if (g_bActive)
+			{
+				camera_.setSpeed(camera_.getSpeed() * 1.2f);
+			}
+		}break;
+	case VK_SUBTRACT:
+		{
+			//if (g_bActive)
+			{
+				camera_.setSpeed(camera_.getSpeed() * 0.8f);
+			}
+		}break;
 	}
 }
 
@@ -576,69 +602,4 @@ void destroyGlobal()
 		Global::getInstancePtr()->destroy();
 		delete Global::getInstancePtr();
 	}
-}
-
-void HeroController::update(float delta)
-{
-	delta *= 0.001f;
-	bool moved = true;
-	if ( isKeyDown('W'))
-	{
-		angleY_ = cameraAngleY + MATH_PI; 
-	}
-	else if (isKeyDown('S') )
-	{
-		angleY_ = cameraAngleY;  	
-	}
-	else if (isKeyDown('A') )
-	{
-		angleY_ = cameraAngleY + MATH_PI_Half; 
-	}
-	else if ( isKeyDown('D') )
-	{
-		angleY_ = cameraAngleY - MATH_PI_Half; 
-	}
-	else
-	{
-		moved = false;
-	}
-	//
-	if (moved)
-	{
-		Vector3 v(sin(angleY_), 0.0f, cos(angleY_));
-		float s = speed_ * delta;
-		v = v * s;
-		position_ += v;
-	}
-	if (FontManager::getPointer()->getFont())
-	{
-		std::ostringstream ss;
-		ss<<"position = "<<position_.x<<", "<<position_.y<<", "<<position_.z<<std::endl;
-		FontManager::getPointer()->getFont()->render(Vector2(10, 30), Vector4(1, 0, 0, 1), ss.str());
-	}
-}
-void HeroController::apply( OrbitCamera& camera_, float delta)
-{
-	camera_.setCenter(getPosition() + Vector3(0, 2, 0));
-	float cameraHeight = 0.0f;
-	if (getSceneManager() && getSceneManager()->getTerrain())
-	{
-		cameraHeight = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(camera_.lastPos_.x, camera_.lastPos_.z);
-	}
-	camera_.update(delta, cameraHeight);
-	setCameraAngleY(camera_.angleXZ_);
-	getRenderContex()->setViewMatrix(camera_.view_);
-}
-
-
-void HeroController::apply( IMovable* m )
-{
-	if (NULL == m || NULL == getSceneManager() || NULL == getSceneManager()->getTerrain())
-	{
-		return;
-	}
-	//拾取高度
-	position_.y = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(position_.x, position_.z);
-	m->setPosition(position_);
-	m->rotateY(angleY_ + MATH_PI);
 }

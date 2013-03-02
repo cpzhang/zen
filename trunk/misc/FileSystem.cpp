@@ -117,10 +117,10 @@ tstring FileSystem::standardFilePath(const tstring& p)
 	}
 	return path;
 }
-void FileSystem::createFolder(tstring& path)
+void FileSystem::createFolder(const tstring& path)
 {
 	tstring folder = standardFilePath(path);
-	if (folder[folder.size() - 1] != '\\')
+	if (folder[folder.size() - 1] != '\\' && path.find('.', 0) == tstring::npos)
 	{
 		folder += '\\';
 	}

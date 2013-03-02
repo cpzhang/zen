@@ -288,6 +288,11 @@ public:
 		}
 		return false;
 	}
+	void begin()
+	{
+		AniTime_.current = AniTime_.start;
+		End_ = false;
+	}
 public:
 	AnimationTime		AniTime_;
 	sKeyFrameSet<T>*	KeyFrameSet_;

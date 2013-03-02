@@ -6,7 +6,9 @@
 #include "render/vector2.h"
 #include "render/Rectangle.h"
 #include "ConfigScene.h"
+#include "model/EntityInstance.h"
 class Texture;
+class EntityInstance;
 enum eTerrainLayer
 {
 	eTerrainLayer_0,
@@ -42,8 +44,8 @@ public:
 	void setLayer(eTerrainLayer e, const tstring & resourceID);
 	eTerrainLayer getNextLayer();
 	//
-	Vector4 getBlendFromTopology(int x, int z);
-	void setBlendFromTopology(int x, int z, Vector4 h);
+//	Vector4 getBlendFromTopology(int x, int z);
+//	void setBlendFromTopology(int x, int z, Vector4 h);
 	void refreshBlend();
 	//
 	void save(const tstring& path);
@@ -58,6 +60,8 @@ public:
 		return AlphaMapTexture_;
 	}
 	void openAlphaMap(const tstring& fn);
+	//
+	void addEntityInstance(EntityInstance* ei);
 private:
 	void clear_();
 	void calcMaxMinHeight_();
@@ -78,6 +82,7 @@ private:
 	Texture* AlphaMapTexture_;
 	std::vector<u32> AlphaMapCompressed_;
 	std::vector<u32> AlphaMapUnCompressed_;
+	EntityInstanceVec EntityInstances_;
 public:
 	static const size_t tAlphaMapCompressedSize = 64;
 	static const size_t tAlphaMapUnCompressedSize = 64;

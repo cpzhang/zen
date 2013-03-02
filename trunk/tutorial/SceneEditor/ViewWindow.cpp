@@ -32,6 +32,7 @@ void createAfterD3DDevice()
 }
 LRESULT ViewWindow::onKeyDown( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled )
 {
+	getGlobal()->onKeyDown(wParam);
 	return 0;
 }
 
@@ -70,7 +71,7 @@ LRESULT ViewWindow::onMouseMove( UINT, WPARAM, LPARAM lParam, BOOL& b )
 	b = FALSE;
 	//»ñµÃ½¹µã
 	SetFocus();
-	getGlobal()->getCamera()->onMouseMove();
+	getGlobal()->onMouseMove();
 	return 1;
 }
 
@@ -240,14 +241,14 @@ void ViewWindow::onRefreshLuaScript()
 
 LRESULT ViewWindow::onMouseLeftButtonDown( UINT, WPARAM, LPARAM lParam, BOOL& b )
 {
-	getGlobal()->getCamera()->setCapture(true);
+	//getGlobal()->getCamera()->setCapture(true);
 	SetCapture();
 	getStateManager()->getCurrentState()->onMouseLeftButtonDown();
 	return 1;
 }
 LRESULT ViewWindow::onMouseLeftButtonUp( UINT, WPARAM, LPARAM lParam, BOOL& b )
 {
-	getGlobal()->getCamera()->setCapture(false);
+	//getGlobal()->getCamera()->setCapture(false);
 	ReleaseCapture();
 	getStateManager()->getCurrentState()->onMouseLeftButtonUp();
 	return 1;
@@ -255,7 +256,7 @@ LRESULT ViewWindow::onMouseLeftButtonUp( UINT, WPARAM, LPARAM lParam, BOOL& b )
 LRESULT ViewWindow::onMouseRightButtonDown( UINT, WPARAM, LPARAM lParam, BOOL& b )
 {
 	SetCapture();
-	getGlobal()->getCamera()->setCapture(true);
+	//getGlobal()->getCamera()->setCapture(true);
 	getStateManager()->getCurrentState()->onMouseRightButtonDown();
 	return 1;
 }
@@ -263,7 +264,7 @@ LRESULT ViewWindow::onMouseRightButtonDown( UINT, WPARAM, LPARAM lParam, BOOL& b
 LRESULT ViewWindow::onMouseRightButtonUp( UINT, WPARAM, LPARAM lParam, BOOL& b )
 {
 	ReleaseCapture();
-	getGlobal()->getCamera()->setCapture(false);
+	//getGlobal()->getCamera()->setCapture(false);
 	getStateManager()->getCurrentState()->onMouseRightButtonUp();
 	return 1;
 }
