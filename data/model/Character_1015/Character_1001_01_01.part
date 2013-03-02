@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<part name="Character_1001_01_01">
+    <mesh file="Character_1001_01_01.mesh"/>
+    <material file="UnnamedShader1.material"/>
+</part>
