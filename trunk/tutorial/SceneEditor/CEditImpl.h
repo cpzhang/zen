@@ -1,6 +1,6 @@
 #pragma once
 #include "misc/stdHead.h"
-#include "misc/atlHead.h"
+#include "common/atlHead.h"
 class CEditImpl : public CWindowImpl<CEditImpl, CEdit>
 {
 public:

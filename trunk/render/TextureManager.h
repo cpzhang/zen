@@ -2,7 +2,7 @@
 #include "misc/Singleton.h"
 #include "Texture.h"
 #include "misc/stdHead.h"
-#include "misc/dxHead.h"
+#include "common/dxHead.h"
 #include "misc/helper.h"
 #include "ConfigRender.h"
 class ApiRender_ TextureManager : public Singleton<TextureManager>

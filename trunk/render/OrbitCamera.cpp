@@ -314,13 +314,13 @@ std::string OrbitCamera::tEvent_Dirty("OrbitCamera::tEvent_Dirty");
 
 HeroCamera::HeroCamera()
 {
-	camera_.setSpeed(0.005f);
+	camera_.setSpeed(0.002f);
 	Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
 	Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
 	camera_.limit_ =  BoundingBox( minBound, maxBound );
 	camera_.create(10, MATH_PI*0.75f, MATH_PI_Half*0.5f);
 	angleY_ = 0.0f;
 	Kfs_.addKeyFrame(sKeyFrame<Vector3>(0, Vector3::Zero));
-	Kfs_.addKeyFrame(sKeyFrame<Vector3>(600, Vector3::Zero));
+	Kfs_.addKeyFrame(sKeyFrame<Vector3>(300, Vector3::Zero));
 	CenterController_.init(&Kfs_, Vector3::Zero, false);
 }

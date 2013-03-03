@@ -1,7 +1,7 @@
 #pragma once
 #include "Texture.h"
 #include "misc/stdHead.h"
-#include "misc/dxHead.h"
+#include "common/dxHead.h"
 class ApiRender_ ManagedTexture: public Texture
 {
 public:

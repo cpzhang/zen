@@ -1,7 +1,7 @@
 #pragma once
 #include "render/Texture.h"
 #include "misc/stdHead.h"
-#include "misc/dxHead.h"
+#include "common/dxHead.h"
 class Chunk;
 class ID3DXEffect;
 class Fx;

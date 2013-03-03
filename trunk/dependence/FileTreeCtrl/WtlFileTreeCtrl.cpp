@@ -8,7 +8,7 @@ E-mail: isolnyshkin@yahoo.com
 All rights reserved.
 */
 
-#include "misc/atlHead.h"
+#include "common/atlHead.h"
 #include "WtlFileTreeCtrl.h"
 #include "FileFind.h"
 

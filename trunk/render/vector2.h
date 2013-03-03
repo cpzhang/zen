@@ -1,6 +1,6 @@
 #pragma once
 //
-#include "misc/dxHead.h"
+#include "common/dxHead.h"
 #include "misc/helper.h"
 #include "ConfigRender.h"
 class ApiRender_ Vector2 : public D3DXVECTOR2

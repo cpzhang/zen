@@ -25,6 +25,13 @@ else()
   # add_definitions(-ExportDynamicLib_)
 
 endif(StaticLibrary_)
+#
+
+IF(CMAKE_COMPILER_2005)
+  set(dxPath "${CMAKE_SOURCE_DIR}/dependence/directx2005")
+else()
+  set(dxPath "${CMAKE_SOURCE_DIR}/dependence/directx2010")
+ENDIF(CMAKE_COMPILER_2005)
 
 # project name
 project(Zen)

@@ -23,7 +23,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/dependence/freetype-2.4.4/include
 )
 link_directories(
-  ${CMAKE_SOURCE_DIR}/dependence/directx/lib/x86
+  ${dxPath}/lib/x86
 )
 add_executable(${ItemName} WIN32
   ${SRCS}
@@ -57,7 +57,7 @@ target_link_libraries(${ItemName}
   model
   tinyxml2
   font
-  FreeImaged.lib
+  ${CMAKE_SOURCE_DIR}/FreeImage/Dist/FreeImaged.lib
   )
 
 add_custom_command(

@@ -1,5 +1,5 @@
 #pragma once
-#include "misc/atlHead.h"
+#include "common/atlHead.h"
 #include "resource.h"
 #include "TrackBarCtrlWrapper.h"
 class TerrainTextureDlg :

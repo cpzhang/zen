@@ -17,12 +17,12 @@ SOURCE_GROUP(FX FILES ${FX})
 include_directories(
   ${CMAKE_SOURCE_DIR}
   # ${CMAKE_SOURCE_DIR}/external/freetype-2.4.4/Include
-  ${CMAKE_SOURCE_DIR}/dependence/directx/Include
+  ${dxPath}/Include
 )
 
 link_directories(
   # ${LIBRARY_OUTPUT_PATH}
-  ${CMAKE_SOURCE_DIR}/dependence/directx/lib/x86
+  ${dxPath}/lib/x86
   # ${CMAKE_SOURCE_DIR}/external/freetype-2.4.4/lib
   # ${CMAKE_SOURCE_DIR}/external/zlib/lib
   )

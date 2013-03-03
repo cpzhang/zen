@@ -1,5 +1,5 @@
 #include "ManagedTexture.h"
-#include "misc/dxHead.h"
+#include "common/dxHead.h"
 #include "rendercontext.h"
 #include "misc/FileSystem.h"
 ManagedTexture::ManagedTexture()

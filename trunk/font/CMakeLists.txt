@@ -8,8 +8,13 @@ FILE(GLOB HDRS
   *.h
 )
 
+include_directories(
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/dependence/freetype-2.4.4/include
+  ${dxPath}/Include
+)
 link_directories(
-  ${CMAKE_SOURCE_DIR}/dependence/directx/lib/x86
+  ${dxPath}/lib/x86
   )
 if (StaticLibrary_)
   add_library(${ItemName} STATIC
@@ -36,8 +41,3 @@ else()
 endif(StaticLibrary_)
 
 # Add dependent external Libraries
-
-include_directories(
-  ${CMAKE_SOURCE_DIR}
-  ${CMAKE_SOURCE_DIR}/dependence/freetype-2.4.4/include
-)

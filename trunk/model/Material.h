@@ -1,6 +1,6 @@
 #pragma once
 #include "misc/helper.h"
-#include "misc/dxHead.h"
+#include "common/dxHead.h"
 #include "ConfigModel.h"
 #include "misc/stdHead.h"
 #include "misc/NamedObjectManager.h"

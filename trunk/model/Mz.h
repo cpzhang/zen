@@ -1,7 +1,7 @@
 #pragma once
 #include "misc/helper.h"
 #include "misc/stdHead.h"
-#include "misc/dxHead.h"
+#include "common/dxHead.h"
 #include "misc/DataChunk.h"
 #include "render/KeyFrames.h"
 #include "render/vector3.h"

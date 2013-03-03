@@ -8,7 +8,7 @@ All rights reserved.
 */
 
 
-#include "misc/atlHead.h"
+#include "common/atlHead.h"
 #include "FileFind.h"
 
 ////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 #pragma once
-#include "misc/atlHead.h"
+#include "common/atlHead.h"
 #include "misc/stdHead.h"
 #include "IdleHandler.h"
 #include "render/orbitcamera.h"

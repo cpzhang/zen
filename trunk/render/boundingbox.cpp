@@ -1,5 +1,5 @@
 #include "boundingbox.h"
-#include "misc/dxHead.h"
+#include "common/dxHead.h"
 BoundingBox::BoundingBox() : min_( FLT_MAX, FLT_MAX, FLT_MAX ),
 max_( -FLT_MAX, -FLT_MAX, -FLT_MAX )
 {

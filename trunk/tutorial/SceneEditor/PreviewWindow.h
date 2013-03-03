@@ -1,6 +1,6 @@
 #pragma once
 #include "misc/stdHead.h"
-#include "misc/atlHead.h"
+#include "common/atlHead.h"
 #include "render/OrbitCamera.h"
 class EntityInstance;
 class Node;

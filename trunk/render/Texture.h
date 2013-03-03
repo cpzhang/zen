@@ -1,7 +1,7 @@
 #pragma once
 #include "misc/helper.h"
 #include "misc/stdHead.h"
-#include "misc/dxHead.h"
+#include "common/dxHead.h"
 #include "ConfigRender.h"
 
 class ApiRender_ Texture

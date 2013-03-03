@@ -1,5 +1,5 @@
 #pragma once
-#include "misc/dxHead.h"
+#include "common/dxHead.h"
 #include "misc/stdHead.h"
 #include "misc/helper.h"
 #include "ConfigRender.h"

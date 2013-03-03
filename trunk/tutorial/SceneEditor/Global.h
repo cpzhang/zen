@@ -1,7 +1,7 @@
 #pragma once
 #include "misc/Singleton.h"
 #include "misc/stdHead.h"
-//#include "misc/atlHead.h"
+//#include "common/atlHead.h"
 #include "render/MouseCamera.h"
 #include "render/OrbitCamera.h"
 //#include "ViewWindow.h"

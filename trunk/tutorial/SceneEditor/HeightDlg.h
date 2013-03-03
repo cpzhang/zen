@@ -1,5 +1,5 @@
 #pragma once
-#include "misc/atlHead.h"
+#include "common/atlHead.h"
 #include "CEditImpl.h"
 #include "resource.h"
 #include "IdleHandler.h"

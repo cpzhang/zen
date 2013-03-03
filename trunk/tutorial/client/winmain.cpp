@@ -378,7 +378,7 @@ int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		{
 			currentTick = GetTickCount();
 			delta = currentTick - lastTick;
-			if (delta >= 30.0f)
+			if (delta >= 1.0f)
 			{
 				if (!play(delta))
 				{

@@ -1,5 +1,5 @@
 #pragma once
-#include "misc/atlHead.h"
+#include "common/atlHead.h"
 #include "misc/EventManager.h"
 // arguments
 class TrackBarCtrlWrapperEventArgs : public EventArgs

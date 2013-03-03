@@ -1,5 +1,5 @@
 #pragma once
-#include "misc/atlHead.h"
+#include "common/atlHead.h"
 #include "dependence/GradientStatic/GradientStatic.h"
 #include "misc/FileSystem.h"
 #include "CEditImpl.h"
