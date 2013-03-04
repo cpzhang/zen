@@ -17,7 +17,7 @@ SOURCE_GROUP(FX FILES ${FX})
 include_directories(
   ${CMAKE_SOURCE_DIR}
   # ${CMAKE_SOURCE_DIR}/external/freetype-2.4.4/Include
-  ${dxPath}/Include
+  #${dxPath}/Include
 )
 
 link_directories(

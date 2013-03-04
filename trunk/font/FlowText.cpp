@@ -11,15 +11,15 @@ void FlowText::render()
 
 void FlowText::update( float delta )
 {
-	for (std::vector<sTextRow>::iterator i = Texts_.begin(); i != Texts_.end(); )
+	for (std::vector<sTextRow>::iterator i = Texts_.begin(); i != Texts_.end(); ++i)
 	{
 		if ((*i).update(delta))
 		{
-			++i;
+			//++i;
 		}
 		else
 		{
-			i = Texts_.erase(i);
+			//i = Texts_.erase(i);
 		}
 	}
 }
@@ -30,26 +30,38 @@ void FlowText::add( const tstring& t , const Vector4& color)
 	tr.Text_ = t;
 	tr.Color_ = color;
 	tr.Position_.x = 10;
-	tr.Position_.y = Texts_.size() * 30 + 100;
+	tr.Position_.y = Cursor_ * 30 + 10;
 	tr.AlphaController_.init(&Kfs_, 1.0f, false);
-	Texts_.push_back(tr);
+	Texts_[Cursor_++] = tr;
+	if (Cursor_ == scCapacity)
+	{
+		Cursor_ = 0;
+	}
 }
 
 FlowText::FlowText()
 {
 	Kfs_.addKeyFrame(sKeyFrame<float>(0, 1.0f));
 	Kfs_.addKeyFrame(sKeyFrame<float>(6000, 0.0f));
+	Texts_.resize(scCapacity);
+	Cursor_ = 0;
 }
 
 void FlowText::sTextRow::render()
 {
-	FontManager::getPointer()->getFont()->render(Position_, Color_, Text_);
+	if (isLive_())
+	{
+		FontManager::getPointer()->getFont()->render(Position_, Color_, Text_);
+	}
 }
 
 bool FlowText::sTextRow::update( float delta )
 {
-	AlphaController_.update(delta);
-	Color_.w = AlphaController_.getValue();
+	if (isLive_())
+	{
+		AlphaController_.update(delta);
+		Color_.w = AlphaController_.getValue();
+	}
 	return isLive_();
 }
 

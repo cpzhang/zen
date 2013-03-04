@@ -1,9 +1,10 @@
 #pragma once
+#include "ConfigFont.h"
 #include "misc/stdHead.h"
 #include "render/KeyFrames.h"
 #include "render/vector2.h"
 #include "render/vector4.h"
-class FlowText
+class ApiFont_ FlowText
 {
 public:
 	struct sTextRow
@@ -28,6 +29,8 @@ public:
 	void render();
 	void update(float delta);
 private:
+	static const int scCapacity = 30;
+	size_t Cursor_;
 	std::vector<sTextRow> Texts_;
 	sKeyFrameSet<float> Kfs_;
 };

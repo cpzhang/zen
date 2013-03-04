@@ -7,7 +7,7 @@
 #include "render/math.h"
 #include "render/Decal.h"
 #include "scene/QuadNode.h"
-#include "FlowText.h"
+#include "font/FlowText.h"
 #include "Global.h"
 
 void TerrainTextureState::update()

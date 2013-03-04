@@ -11,7 +11,7 @@
 #include "font/FontManager.h"
 #include "font/FreeType.h"
 #include "PreviewWindow.h"
-#include "FlowText.h"
+#include "font/FlowText.h"
 #include "StateManager.h"
 ViewWindow::ViewWindow()
 {

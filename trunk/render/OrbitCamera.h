@@ -97,18 +97,50 @@ public:
 		{
 			moved = false;
 		}
-		if (moved)
+		//Æ½»¬²åÖµ
+		if (1)
 		{
-			Vector3 v(sin(angleY_), 0.0f, cos(angleY_));
-			v = v * camera_.getSpeed() * dTime;
-			Kfs_._keyFrames[0].v = CenterController_.getValue();
-			Kfs_._keyFrames[1].v += v; 
-			CenterController_.begin();
-		}
-		if (moved || !CenterController_.End_)
+			static Vector3 vVelocity = Vector3::Zero;
+			static Vector3 vIdealPos = camera_.getCenter();
+			static Vector3 vPosition = camera_.getCenter();
+			if (moved)
+			{
+				Vector3 v(sin(angleY_), 0.0f, cos(angleY_));
+				vIdealPos = vPosition + v * camera_.getSpeed() * dTime;
+			}
+			Vector3 vDisplace = vPosition - vIdealPos;
+			float fd = vDisplace.lengthSquared();
+			if (fd >= 0.001f)
+			{
+				static float fDampingK = 6.0f;
+				{
+					Vector3 vSpringAccel = -((fDampingK*fDampingK/4.0f) * vDisplace) + (-fDampingK * vVelocity);
+					vVelocity += vSpringAccel * dTime*0.001f;
+					vPosition += vVelocity * dTime*0.001f;
+					camera_.setCenter(vPosition);
+				}
+			}
+			else
+			{
+				vPosition = camera_.getCenter();
+				vVelocity = Vector3::Zero;
+			}
+		} 
+		else
 		{
-			CenterController_.update(dTime);
-			camera_.setCenter(CenterController_.getValue());
+			if (moved)
+			{
+				Vector3 v(sin(angleY_), 0.0f, cos(angleY_));
+				v = v * camera_.getSpeed() * dTime;
+				Kfs_._keyFrames[0].v = CenterController_.getValue();
+				Kfs_._keyFrames[1].v += v; 
+				CenterController_.begin();
+			}
+			if (moved || !CenterController_.End_)
+			{
+				CenterController_.update(dTime);
+				camera_.setCenter(CenterController_.getValue());
+			}
 		}
 	}
 	void update( float dTime, float ch)

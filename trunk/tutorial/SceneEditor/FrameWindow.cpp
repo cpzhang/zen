@@ -5,7 +5,7 @@
 #include "Global.h"
 #include "PreviewWindow.h"
 #include "luaScript/LuaScript.h"
-#include "FlowText.h"
+#include "font/FlowText.h"
 FrameWindow::FrameWindow()
 {
 

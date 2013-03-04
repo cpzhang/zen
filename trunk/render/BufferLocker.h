@@ -29,11 +29,17 @@ public:
 	}
 	void fill( const void* buffer, u32 size )
 	{
-		memcpy( vertices_, buffer, size );
+		if (vertices_)
+		{
+			memcpy( vertices_, buffer, size );
+		}
 	}
 	void pull( void* buffer, u32 size ) const
 	{
-		memcpy( buffer, vertices_, size );
+		if (vertices_)
+		{
+			memcpy( buffer, vertices_, size );
+		}
 	}
 	VertexType& operator[]( int index )
 	{

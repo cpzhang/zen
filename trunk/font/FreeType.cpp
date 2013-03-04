@@ -31,8 +31,7 @@ bool FreeType::create( std::string& faceFile, unsigned int fontSize, eFontProper
 	err = FT_New_Face(_library, faceFile.c_str(), 0, &_face);
 	if (err != 0)
 	{
-		std::string data = FileSystem::getDataDirectory() + "\\";
-		data += faceFile;
+		std::string data = FileSystem::addDataDir(faceFile);
 		err = FT_New_Face(_library, data.c_str(), 0, &_face);
 		if (err != 0)
 		{
@@ -148,14 +147,15 @@ bool FreeType::render(const Vector2& basePoint, const Vector4& color, const std:
 
 void FreeType::render()
 {
-	if (_caches.empty())
+	if (_caches.empty() || NULL == _fx)
 	{
 		return;
 	}
 	//渲染缓存的字，根据纹理与颜色分类，渲染批次可减少很多
 	getRenderContex()->setVertexDeclaration(sVDT_PositionTTexture::getType());
 	u32 passes = 0;
-	_fx->getDxEffect()->Begin(&passes, 0);
+	//D3DXFX_DONOTSAVESTATE，没有此标志位时，窗口大小改变需要Reset设备时，报错“All user created stateblocks must be freed before Reset can succeed. Reset Fails”
+	_fx->getDxEffect()->Begin(&passes, D3DXFX_DONOTSAVESTATE);
 	for (u32 i = 0; i != passes; ++i)
 	{
 		_fx->getDxEffect()->BeginPass(i);

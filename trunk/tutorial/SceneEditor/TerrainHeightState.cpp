@@ -7,7 +7,7 @@
 #include "render/math.h"
 #include "scene/QuadNode.h"
 #include "Global.h"
-#include "FlowText.h"
+#include "font/FlowText.h"
 void TerrainHeightState::update()
 {
 	if (getSceneManager() && getSceneManager()->getTerrain() && SculptorDecal_)

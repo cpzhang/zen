@@ -16,6 +16,9 @@
 #include "scene/Terrain.h"
 #include "scene/SceneManager.h"
 //
+#include "font/FlowText.h"
+#include "font/FontManager.h"
+//
 #include "CrashRpt/CrashRpt.h"
 const LPCTSTR APP_NAME = TEXT("Game");
 const LPCTSTR APP_TITLE = TEXT("Game Client");
@@ -171,6 +174,18 @@ bool play(const float delta)
 {
 	//Ê°È¡¸ß¶È
 	Vector3 position_ = camera_.getCenter();
+	//
+	{
+		static Vector3 vp = position_;
+		Vector3 dp = vp - position_;
+		if (dp.lengthSquared() > 0.0001f)
+		{
+			std::ostringstream ss;
+			ss<<"delta == "<<dp.lengthSquared();
+			FlowText::getSingletonP()->add(ss.str(), Vector4::One);
+			vp = position_;
+		}
+	}
 	float h = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(position_.x, position_.z);
 	camera_.setTerrainHeight(h);
 	position_.y += h;
@@ -182,6 +197,7 @@ bool play(const float delta)
 		camera_.update(delta, 0);
 		getRenderContex()->setViewMatrix(camera_.getViewMatrix());
 	}
+	FlowText::getSingletonP()->update(delta);
 	getSceneManager()->update(delta);
 	Hero_->update(delta);
 	//
@@ -198,6 +214,8 @@ bool play(const float delta)
 		getSceneManager()->render();
 	}
 	Hero_->render();
+	FlowText::getSingletonP()->render();
+	FontManager::getPointer()->getFont()->render();
 	getRenderContex()->endScene();
 	getRenderContex()->present();
 
@@ -207,6 +225,9 @@ void postPlay()
 {
 	HeroInstance_->release();
 	Hero_->release();
+	getRenderContex()->releaseRenderTarget(getRenderContex()->getCurrentRenderTarget());
+	//delete FontManager::getPointer();
+	FontManager::getPointer()->destroy();
 	destroySceneManager();
 	destroyFxManager();
 	destroyTextureManager();
@@ -355,6 +376,8 @@ int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	getSceneManager()->open("\\scene\\1");
 	setHero(TEXT("\\model\\Character_1015\\Character_1015.entity"));
 	//
+	FontManager::getPointer()->createFont(std::string("freetype\\simkai.ttf"), 16, eFontProperty_Normal, "freeNormal");
+	//
 	camera_.setCenter(Vector3(0, 0.0, 0));
 	// Message Structure
 	MSG msg;
@@ -378,7 +401,7 @@ int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		{
 			currentTick = GetTickCount();
 			delta = currentTick - lastTick;
-			if (delta >= 1.0f)
+			if (delta >= 30.0f)
 			{
 				if (!play(delta))
 				{

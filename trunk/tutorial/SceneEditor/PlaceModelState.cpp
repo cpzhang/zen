@@ -12,7 +12,7 @@
 #include "scene/QuadNode.h"
 //
 #include "Global.h"
-#include "FlowText.h"
+#include "font/FlowText.h"
 void PlaceModelState::update()
 {
 	if (ModelShadow_)
