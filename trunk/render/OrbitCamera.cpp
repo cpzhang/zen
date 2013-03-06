@@ -290,7 +290,7 @@ void OrbitCamera::onMouseWheel( float d )
 	//根据距离调整移动速度，距离越远，速度越快；反之，越慢
 	float r = distance_ / 10.0f;
 	float a = r * MATH_PI_Half;
-	d = d * speed_ * sin(a) * 100;
+	d = d * speed_ * sin(a) * 300;
 	distance_ += d;
 	setDirty(true);
 }
@@ -306,8 +306,11 @@ float OrbitCamera::getAngleYZ( float ch )
 
 void OrbitCamera::setCenter( const Vector3& p )
 {
-	center_ = p;	
-	setDirty(true);
+	if (p.x >= 0.0f && p.z >= 0.0f)
+	{
+		center_ = p;	
+		setDirty(true);
+	}
 }
 
 std::string OrbitCamera::tEvent_Dirty("OrbitCamera::tEvent_Dirty");
@@ -318,10 +321,13 @@ HeroCamera::HeroCamera()
 	Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
 	Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
 	camera_.limit_ =  BoundingBox( minBound, maxBound );
-	camera_.create(10, MATH_PI*0.75f, MATH_PI_Half*0.5f);
+	camera_.create(30, MATH_PI*0.75f, MATH_PI_Half*0.5f);
 	angleY_ = 0.0f;
 	Kfs_.addKeyFrame(sKeyFrame<Vector3>(0, Vector3::Zero));
 	Kfs_.addKeyFrame(sKeyFrame<Vector3>(300, Vector3::Zero));
 	//Kfs_.setInterpolationType(eInterpolationType_Bezier_Quadratic);
 	CenterController_.init(&Kfs_, Vector3::Zero, false);
+	vIdealPos = camera_.getCenter();
+	vPosition = camera_.getCenter();
+	vVelocity = Vector3::Zero;
 }

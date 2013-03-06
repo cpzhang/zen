@@ -217,7 +217,7 @@ void Sample_SoloMesh::handleRender()
 	
 	DebugDrawGL dd;
 	
-	glEnable(GL_FOG);
+	//glEnable(GL_FOG);
 	glDepthMask(GL_TRUE);
 
 	const float texScale = 1.0f / (m_cellSize * 10.0f);
@@ -269,13 +269,13 @@ void Sample_SoloMesh::handleRender()
 		duDebugDrawCompactHeightfieldRegions(&dd, *m_chf);
 	if (m_solid && m_drawMode == DRAWMODE_VOXELS)
 	{
-		glEnable(GL_FOG);
+		//glEnable(GL_FOG);
 		duDebugDrawHeightfieldSolid(&dd, *m_solid);
 		glDisable(GL_FOG);
 	}
 	if (m_solid && m_drawMode == DRAWMODE_VOXELS_WALKABLE)
 	{
-		glEnable(GL_FOG);
+		//glEnable(GL_FOG);
 		duDebugDrawHeightfieldWalkable(&dd, *m_solid);
 		glDisable(GL_FOG);
 	}

@@ -32,7 +32,15 @@ public:
 	static const Vector3 AxisZ;
 	static const Vector3 One;
 };
+struct Vector3Int
+{
+	Vector3Int(int rX, int rY, int rZ)
+		:x(rX), y(rY), z(rZ)
+	{
 
+	}
+	int x, y, z;
+};
 ApiRender_ Vector3 operator +( const Vector3& v1, const Vector3& v2 );
 ApiRender_ Vector3 operator -( const Vector3& v1, const Vector3& v2 );
 ApiRender_ bool operator   ==( const Vector3& v1, const Vector3& v2 );

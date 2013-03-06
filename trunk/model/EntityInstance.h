@@ -55,6 +55,8 @@ public:
 	void setSpeed(float s);
 	EntityInstance* clone() const;
 	std::string getResId() const;
+public:
+	void nmAddObj(std::vector<Vector3>& vertices, std::vector<Vector3Int>& indices);
 private:
 	void updateMaterial_( float delta );
 	void renderImpT0();

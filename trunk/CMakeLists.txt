@@ -36,7 +36,7 @@ MESSAGE( STATUS "CMAKE_COMPILER_2005: " ${CMAKE_COMPILER_2005} )
 #IF(CMAKE_COMPILER_2005)
   set(dxPath "${CMAKE_SOURCE_DIR}/dependence/directx2005")
 #else()
-#  set(dxPath "${CMAKE_SOURCE_DIR}/dependence/directx2010")
+  #set(dxPath "${CMAKE_SOURCE_DIR}/dependence/directx2010")
 #ENDIF(CMAKE_COMPILER_2005)
 
 # project name
@@ -68,3 +68,7 @@ add_subdirectory("font")
 #add_subdirectory(3dmax2012)
 
 add_subdirectory(tutorial)
+
+ADD_SUBDIRECTORY(recast/Detour)
+#ADD_SUBDIRECTORY(DetourTileCache)
+ADD_SUBDIRECTORY(recast/Recast)

@@ -130,7 +130,7 @@ int main(int /*argc*/, char** /*argv*/)
 	float rx = 45;
 	float ry = -45;
 	float moveW = 0, moveS = 0, moveA = 0, moveD = 0;
-	float camx = 0, camy = 0, camz = 0, camr = 1000;
+	float camx = 0, camy = 0, camz = 0, camr = 100000;
 	float origrx = 0, origry = 0;
 	int origx = 0, origy = 0;
 	float scrollZoom = 0;
@@ -166,10 +166,10 @@ int main(int /*argc*/, char** /*argv*/)
 
 	BuildContext ctx;
 	
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	
 	float fogCol[4] = { 0.32f, 0.31f, 0.30f, 1.0f };
-	glEnable(GL_FOG);
+	//glEnable(GL_FOG);
 	glFogi(GL_FOG_MODE, GL_LINEAR);
 	glFogf(GL_FOG_START, camr*0.1f);
 	glFogf(GL_FOG_END, camr*1.25f);
@@ -446,7 +446,7 @@ int main(int /*argc*/, char** /*argv*/)
 		glEnable(GL_DEPTH_TEST);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		gluPerspective(50.0f, (float)width/(float)height, 1.0f, camr);
+		gluPerspective(50.0f, (float)width/(float)height, 1.0f, camr*10);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		glRotatef(rx,1,0,0);
@@ -491,7 +491,7 @@ int main(int /*argc*/, char** /*argv*/)
 		camy += movey * (float)model[6];
 		camz += movey * (float)model[10];
 
-		glEnable(GL_FOG);
+		//glEnable(GL_FOG);
 
 		if (sample)
 			sample->handleRender();

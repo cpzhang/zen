@@ -48,6 +48,8 @@ public:
 	void saveMaterial(const std::string& fileName);
 	void loadBoneMapping(const tstring& fileName);
 	BoundingBox* getAABB();
+public:
+	void nmAddObj(std::vector<Vector3>& vertices, std::vector<Vector3Int>& indices, const Matrix& m);
 private:
 	bool initBuffer_();
 	void _initAABB();

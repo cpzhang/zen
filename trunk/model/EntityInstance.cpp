@@ -457,4 +457,18 @@ Vector3 EntityInstance::getScale() const
 	return Scale_;
 }
 
+void EntityInstance::nmAddObj( std::vector<Vector3>& vertices, std::vector<Vector3Int>& indices )
+{
+	Matrix m = Matrix::Identity;
+	m.make(Position_, Scale_, AngleY_);
+	for (size_t i = 0; i != Parts_.size(); ++i)
+	{
+		Mesh* ms = Meshes_[i];
+		if(ms)
+		{
+			ms->nmAddObj(vertices, indices, m);
+		}
+	}
+}
+
 Create_Singleton_Imp(EntityInstanceManager, ApiModel_)

@@ -524,4 +524,22 @@ tstring Mesh::getFilePath()
 	return filePath_;
 }
 
+void Mesh::nmAddObj( std::vector<Vector3>& vs, std::vector<Vector3Int>& is, const Matrix& m)
+{
+	int base = vs.size();
+	for (int i = 0; i != _faces.size(); ++i)
+	{
+		sFace& f = _faces[i];
+		int a = f.index[0] + base;
+		int b = f.index[1] + base;
+		int c = f.index[2] + base;
+		is.push_back(Vector3Int(a, b, c));
+	}
+	for (int i = 0; i != _vertices.size(); ++i)
+	{
+		sVDT_PositionTextureBoneWeightColorNormal& p = _vertices[i];
+		vs.push_back(m.applyVector(p.position_));
+	}
+}
+
 //Create_Singleton_Imp(MeshManager, ApiModel_)

@@ -25,7 +25,7 @@ D3DXHANDLE Fx::getCurrentTechnique() const
 
 bool Fx::create( const tstring& effectResource )
 {
-	if (SUCCEEDED(D3DXCreateEffectFromFile(getRenderContex()->getDxDevice(), effectResource.c_str(), NULL, NULL, /*D3DXSHADER_DEBUG|*/D3DXSHADER_SKIPOPTIMIZATION, NULL, &pEffect_, NULL)))
+	if (SUCCEEDED(D3DXCreateEffectFromFile(getRenderContex()->getDxDevice(), effectResource.c_str(), NULL, NULL, /*D3DXSHADER_DEBUG|*//*D3DXSHADER_SKIPOPTIMIZATION*/0, NULL, &pEffect_, NULL)))
 	{
 		resourceID_ = effectResource;
 	}
@@ -33,7 +33,7 @@ bool Fx::create( const tstring& effectResource )
 	{
 		tstring ts = FileSystem::addDataDir(effectResource);
 		HRESULT r;
-		if (SUCCEEDED(r = D3DXCreateEffectFromFile(getRenderContex()->getDxDevice(), ts.c_str(), NULL, NULL, /*D3DXSHADER_DEBUG|*/D3DXSHADER_SKIPOPTIMIZATION, NULL, &pEffect_, NULL)))
+		if (SUCCEEDED(r = D3DXCreateEffectFromFile(getRenderContex()->getDxDevice(), ts.c_str(), NULL, NULL, /*D3DXSHADER_DEBUG|*//*D3DXSHADER_SKIPOPTIMIZATION*/0, NULL, &pEffect_, NULL)))
 		{
 			resourceID_ = effectResource;
 		}

@@ -260,6 +260,10 @@ public:
 	}
 	void update(float delta)
 	{
+		if (End_)
+		{
+			return;
+		}
 		if (!AniTime_.update(delta))
 		{
 			End_ = true;

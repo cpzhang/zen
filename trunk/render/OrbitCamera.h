@@ -98,15 +98,13 @@ public:
 			moved = false;
 		}
 		//平滑插值
-		if (1)
+		//if (1)
 		{
-			static Vector3 vVelocity = Vector3::Zero;
-			static Vector3 vIdealPos = camera_.getCenter();
-			static Vector3 vPosition = camera_.getCenter();
 			if (moved)
 			{
 				Vector3 v(sin(angleY_), 0.0f, cos(angleY_));
 				vIdealPos = vPosition + v * camera_.getSpeed() * dTime;
+				Rt_ = eWalkType_WSAD;
 			}
 			Vector3 vDisplace = vPosition - vIdealPos;
 			float fd = vDisplace.lengthSquared();
@@ -126,27 +124,79 @@ public:
 				vVelocity = Vector3::Zero;
 			}
 		} 
+	}
+	bool getDst(float dTime, Vector3& dst)
+	{
+		bool moved = true;
+		if (isKeyDown('W'))
+		{
+			angleY_ = camera_.angleXZ_ + MATH_PI;
+		} 
+		else if(isKeyDown('S'))
+		{
+			angleY_ = camera_.angleXZ_; 
+		}
+		else if(isKeyDown('A'))
+		{
+			angleY_ = camera_.angleXZ_ + MATH_PI_Half;
+		}
+		else if(isKeyDown('D'))
+		{
+			angleY_ = camera_.angleXZ_ - MATH_PI_Half;
+		}
 		else
 		{
-			if (moved)
-			{
-				Vector3 v(sin(angleY_), 0.0f, cos(angleY_));
-				v = v * camera_.getSpeed() * dTime;
-				Kfs_._keyFrames[0].v = CenterController_.getValue();
-				Kfs_._keyFrames[1].v += v; 
-				CenterController_.begin();
-			}
-			if (moved || !CenterController_.End_)
-			{
-				CenterController_.update(dTime);
-				camera_.setCenter(CenterController_.getValue());
-			}
+			moved = false;
 		}
+		//平滑插值
+		if (moved)
+		{
+			Vector3 v(sin(angleY_), 0.0f, cos(angleY_));
+			dst = vPosition + v * camera_.getSpeed() * dTime;
+			//Rt_ = eWalkType_WSAD;
+		}
+		return moved;
 	}
 	void update( float dTime, float ch)
 	{
 		camera_.update(dTime, ch);
-		updateWSAD(dTime);
+		if (isKeyDown('W') || isKeyDown('S') || isKeyDown('A') || isKeyDown('D'))
+		{
+			//Rt_ = eWalkType_WSAD;
+		}
+		if (Rt_ == eWalkType_Mouse)
+		{
+			if (Kfs_.numKeyFrames() > 0)
+			{
+				if (!CenterController_.End_)
+				{
+					CenterController_.update(dTime);
+					Vector3 oc = camera_.getCenter();
+					Vector3 nc = CenterController_.getValue();
+					Vector3 dp = nc - oc;
+					dp.y = 0.0f;
+					dp.normalise();
+					float ag = atan(dp.x / dp.z);
+					if (dp.z > 0.001f)
+					{
+						angleY_ = ag;
+					}
+					else if (dp.z < -0.001f)
+					{
+
+						angleY_ = MATH_PI + ag;
+					}
+					camera_.setCenter(nc);
+					vPosition = nc;
+					vVelocity = Vector3::Zero;
+				}
+			}
+		}
+		
+		if(Rt_ == eWalkType_WSAD)
+		{
+			//updateWSAD(dTime);
+		}
 	}
 	Matrix getViewMatrix()
 	{
@@ -184,9 +234,41 @@ public:
 	{
 		camera_.setTerrainHeight(f);
 	}
+	void resetPath()
+	{
+		Kfs_.clear();
+	}
+	void addPath(const Vector3& p)
+	{
+		if (Kfs_.numKeyFrames() == 0)
+		{
+			Kfs_.addKeyFrame(sKeyFrame<Vector3>(0, p));
+		}
+		else
+		{
+			Vector3 lp = Kfs_.getKeyFrame(Kfs_.numKeyFrames() - 1)->v;
+			float t = 10*(p - lp).length() / camera_.getSpeed() + Kfs_.getKeyFrame(Kfs_.numKeyFrames() - 1)->time;
+			Kfs_.addKeyFrame(sKeyFrame<Vector3>(t, p));
+		}
+	}
+	void beginPath()
+	{
+		CenterController_.init(&Kfs_, camera_.getCenter(), false);
+		CenterController_.begin();
+		Rt_ = eWalkType_Mouse;
+	}
 private:
 	OrbitCamera camera_;
 	float angleY_;
 	KeyFrameController<Vector3> CenterController_;
 	sKeyFrameSet<Vector3> Kfs_;
+	enum eWalkType
+	{
+		eWalkType_WSAD,
+		eWalkType_Mouse,
+	};
+	eWalkType Rt_;
+	Vector3 vIdealPos;
+	Vector3 vPosition;
+	Vector3 vVelocity;
 };
