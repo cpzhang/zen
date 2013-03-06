@@ -11,4 +11,15 @@
     <model file="model\dafangzi\dafangzi.entity" position="(87.326874, 0.000000, 47.313728)" scale="(0.010000, 0.010000, 0.010000)"/>
     <model file="model\Character_1015\Character_1015.entity" position="(60.673393, 0.000000, 56.599480)" scale="(0.010000, 0.010000, 0.010000)"/>
     <model file="model\Character_1015\Character_1015.entity" position="(23.790873, 0.000000, 15.530362)" scale="(0.010000, 0.010000, 0.010000)"/>
+    <model file="model\box\box.entity" position="(14.133566, 0.000000, 12.590631)" scale="(10.000000, 10.000000, 10.000000)"/>
+    <model file="model\box\box.entity" position="(45.002251, 0.000000, 24.154869)" scale="(10.000000, 10.000000, 10.000000)"/>
+    <model file="model\box\box.entity" position="(22.264442, 0.000000, 54.263515)" scale="(10.000000, 10.000000, 10.000000)"/>
+    <model file="model\box\box.entity" position="(45.948494, 0.000000, 50.425625)" scale="(10.000000, 10.000000, 10.000000)"/>
+    <model file="model\box\box.entity" position="(73.582588, 0.000000, 78.657150)" scale="(10.000000, 10.000000, 10.000000)"/>
+    <model file="model\box\box.entity" position="(43.440331, 0.000000, 73.581863)" scale="(10.000000, 10.000000, 10.000000)"/>
+    <model file="model\box\box.entity" position="(65.793274, 0.000000, 43.912956)" scale="(10.000000, 10.000000, 10.000000)"/>
+    <model file="model\box\box.entity" position="(73.455872, 0.000000, 22.962973)" scale="(10.000000, 10.000000, 10.000000)"/>
+    <model file="model\box\box.entity" position="(8.707638, 0.000000, 82.159393)" scale="(10.000000, 10.000000, 10.000000)"/>
+    <model file="model\box\box.entity" position="(6.428589, 0.000000, 30.289408)" scale="(10.000000, 10.000000, 10.000000)"/>
+    <model file="model\box\box.entity" position="(63.967278, 0.000000, 4.492074)" scale="(10.000000, 10.000000, 10.000000)"/>
 </chunk>
