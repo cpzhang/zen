@@ -22,7 +22,8 @@ void LOD::create()
 	//
 	indexBuffers_.create(nPrimitiveNumberOneChunk_ * 3* 2, D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED);
 	//
-	std::vector<short> gIndices;
+	//std::vector<short> gIndices;
+	gIndices.clear();
 	for (int j = 0; j < m  - 1;j += level)
 	for (int i = 0; i < m  - 1;i += level)
 	{
@@ -91,4 +92,17 @@ int LOD::getN()
 void LOD::setN( int n )
 {
 	n_ = n;
+}
+
+void LOD::nmCreateObjFile( std::vector<Vector3>& vertices, std::vector<Vector3Int>& indices)
+{
+	int base = vertices.size();
+	for (int i = 0; i != gIndices.size(); )
+	{
+		int a = base + gIndices[i];
+		int b = base + gIndices[i+1];
+		int c = base + gIndices[i+2];
+		indices.push_back(Vector3Int(a, b, c));
+		i = i + 3;
+	}
 }

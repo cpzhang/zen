@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "scene/SceneManager.h"
 #include "render/Decal.h"
-#include "render/rendercontext.h"
 #include "render/FxManager.h"
 #include "render/TextureManager.h"
 #include "render/Ray.h"
@@ -24,6 +23,7 @@
 #include "font/FontManager.h"
 #include "PreviewWindow.h"
 #include "scene/Node.h"
+#include "scene/navigation.h"
 extern int tolua_LuaAPI_open (lua_State* tolua_S);
 Global::Global()
 {
@@ -55,11 +55,19 @@ bool Global::create()
 	getRenderContex()->setCamera(c);
 
 	new NodeManager;
+	//
+	//Navigation_ = NAVIGATION_init("GameNavGirl");
+	//
 	return true;
 }
 
 void Global::destroy()
 {
+// 	if (Navigation_)
+// 	{
+// 		NAVIGATION_free( Navigation_ );
+// 		Navigation_ = NULL;
+// 	}
 	if (Hero_)
 	{
 		Hero_->release();
@@ -76,6 +84,7 @@ void Global::destroy()
 		Previewer_->destroy();//stack变量，不能delete
 		Previewer_ = NULL;
 	}
+	getRenderContex()->releaseRenderTarget(0);
 	getRenderContex()->releaseRenderTarget(renderTargetKey_);
 	FontManager::getPointer()->destroy();
 	//
@@ -109,6 +118,8 @@ void Global::clear_()
 	Previewer_ = NULL;
 	Hero_ = NULL;
 	HeroInstance_ = NULL;
+	//
+//	Navigation_ = NULL;
 }
 
 void Global::update(float delta)
@@ -583,6 +594,34 @@ void Global::onKeyDown( WPARAM wParam )
 			}
 		}break;
 	}
+}
+
+// NAVIGATION* Global::getRecastNav()
+// {
+// 	return Navigation_;
+// }
+
+void Global::renderPath()
+{
+	if (!Path_.empty())
+	{
+		//光照默认打开
+		getRenderContex()->getDxDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
+		getRenderContex()->SetTransform(D3DTS_WORLD, &Matrix::Identity);
+		getRenderContex()->applyViewMatrix();
+		getRenderContex()->applyProjectionMatrix();
+		getRenderContex()->setVertexDeclaration(sVDT_PositionColor::getType());
+		getRenderContex()->drawPrimitiveUP(D3DPT_LINESTRIP, Path_.size() - 1, &Path_[0], sVDT_PositionColor::getSize());
+	}
+}
+
+void Global::addPath( const Vector3& p )
+{
+	sVDT_PositionColor pc;
+	pc.position_ = p;
+	pc.position_.y = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(p.x, p.z) + 2;
+	pc.color_ = 0xffffffff;
+	Path_.push_back(pc);
 }
 
 void createGlobal()

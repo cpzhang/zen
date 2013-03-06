@@ -377,3 +377,20 @@ void Chunk::addEntityInstance( EntityInstance* ei )
 {
 	EntityInstances_.push_back(ei);
 }
+
+void Chunk::nmAddObj(std::vector<Vector3>& vertices, std::vector<Vector3Int>& indices)
+{
+	getSceneManager()->getLOD()->nmCreateObjFile(vertices, indices);
+	int vn = getSceneManager()->getLOD()->getVerticesNumberOneSide();
+	float s = getSceneManager()->getLOD()->getScale();
+	float fv = 1.0f/(float)(vn-1);
+	for (size_t z = 0; z != vn; z++)
+	for (size_t x = 0; x != vn; x++)
+	{
+		Vector3 p;
+		p.x = x*s;
+		p.z = z*s;
+		p.y = getHeightFromTopology(x, z);
+		vertices.push_back(p);
+	}
+}

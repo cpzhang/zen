@@ -4,6 +4,7 @@
 //#include "common/atlHead.h"
 #include "render/MouseCamera.h"
 #include "render/OrbitCamera.h"
+#include "render/rendercontext.h"
 //#include "ViewWindow.h"
 class Decal;
 class IdleHandler;
@@ -12,35 +13,8 @@ class IMovable;
 class PreviewWindow;
 class EntityInstance;
 class Node;
-
+struct NAVIGATION;
 //
-// class HeroController
-// {
-// public:
-// 	HeroController()
-// 	{
-// 		angleY_ = 0.0f;
-// 		position_ = Vector3::Zero;
-// 		speed_ = 1.0f;
-// 	}
-// public:
-// 	void update(float delta);
-// 	void apply(IMovable* m);
-// 	void apply(OrbitCamera& m, float delta);
-// 	Vector3 getPosition()
-// 	{
-// 		return position_;
-// 	}
-// 	void setCameraAngleY(float a)
-// 	{
-// 		cameraAngleY = a;
-// 	}
-// private:
-// 	float cameraAngleY;
-// 	float angleY_;
-// 	Vector3 position_;
-// 	float speed_;
-// };
 // tolua_begin
 class Global : public Singleton<Global>
 {
@@ -92,6 +66,14 @@ public:
 	//
 	void addEntityInstance(const std::string& resID);
 	std::string saveBackBuffer(const std::string resID);
+	//
+	//NAVIGATION* getRecastNav();
+	void resetPath()
+	{
+		Path_.clear();
+	}
+	void addPath(const Vector3& p);
+	void renderPath();
 private:
 	void clear_();
 	std::string selectedFilePart(const tstring& name);
@@ -116,6 +98,8 @@ private:
 	PreviewWindow* Previewer_;
 	Node* Hero_;
 	EntityInstance* HeroInstance_;
+	//NAVIGATION *Navigation_;
+	std::vector<sVDT_PositionColor> Path_;
 	// tolua_begin
 };
 	// tolua_end

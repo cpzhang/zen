@@ -2,6 +2,7 @@
 #include "TerrainHeightState.h"
 #include "TerrainTextureState.h"
 #include "PlaceModelState.h"
+#include "NavState.h"
 void StateManager::create()
 {
 	for (size_t i = 0; i != eState_Size; ++i)
@@ -40,6 +41,9 @@ IState* StateManager::createState_( eState e )
 		break;
 	case eState_PlaceModel:
 		s = new PlaceModelState;
+		break;
+	case eState_Nav:
+		s = new NavState;
 		break;
 	}
 	return s;

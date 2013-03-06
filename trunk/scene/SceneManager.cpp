@@ -5,6 +5,10 @@
 #include "tinyXML2/tinyxml2.h"
 #include "misc/FileSystem.h"
 #include "model/EntityInstance.h"
+#include "navigation.h"
+//#include "font/FontManager.h"
+#include "font/FlowText.h"
+#include "render/Colour.h"
 SceneManager::SceneManager()
 {
 	clear_();
@@ -31,6 +35,7 @@ void SceneManager::createTerrain( int xChunks, int zChunks, int n, float unit)
 
 void SceneManager::clear_()
 {
+	Nav_ = NULL;
 	terrainQuadTreeRoot_ = NULL;
 	allChunksVisible_ = true;
 	runType_ = eRunType_Game;
@@ -46,6 +51,10 @@ Terrain* SceneManager::getTerrain()
 
 void SceneManager::destroy()
 {
+	if (Nav_)
+	{
+		NAVIGATION_free(Nav_);
+	}
 	destroyEntityInstances_();
 	//
 	lod_.destroy();
@@ -75,6 +84,8 @@ void SceneManager::render()
 	{
 		entityInstances_[i]->render();
 	}
+	//3.nav
+	renderNav();
 }
 
 LOD* SceneManager::getLOD()
@@ -567,6 +578,13 @@ void SceneManager::open( const tstring& dir )
 			}
 		}
 	}
+	//
+	if (Nav_ == NULL)
+	{
+		Nav_ = NAVIGATION_init(FileSystem::removeParent(dir).c_str());
+	}
+	tstring nbfn(dir + "\\nav.bin");
+	NAVIGATION_build(Nav_, nbfn.c_str());
 }
 
 EntityInstance* SceneManager::createEntityInstance( const std::string& resID )
@@ -699,6 +717,154 @@ void SceneManager::updatePickingPoint_()
 			PickingPoint_.y = p.z;
 		}
 	}
+}
+
+void SceneManager::nmCreateObjFile(const std::string& fn, std::vector<Vector3>& vertices, std::vector<Vector3Int>& indices)
+{
+	if (NULL == terrainCurrent_)
+	{
+		return;
+	}
+	//
+	std::ofstream o(fn.c_str());
+	//1.地表
+	for (int x = 0; x != terrainCurrent_->getXChunkNumber(); ++x)
+	{
+		for (int z = 0; z != terrainCurrent_->getZChunkNumber(); ++z)
+		{
+			Chunk* c = terrainCurrent_->getChunkFromTopology(x, z);
+			if (c)
+			{
+				c->nmAddObj(vertices, indices);
+			}
+		}
+	}
+	//2.装饰
+	for (size_t i = 0; i != entityInstances_.size(); ++i)
+	{
+		entityInstances_[i]->nmAddObj(vertices, indices);
+		
+	}
+	for (size_t i = 0; i != vertices.size(); ++i)
+	{
+		Vector3& p = vertices[i];
+		o<<"v "<<p.x<<" "<<p.y<<" "<<p.z<<std::endl;
+	}
+	for (size_t i = 0; i != indices.size(); ++i)
+	{
+		Vector3Int& p = indices[i];
+		o<<"f "<<p.x + 1<<" "<<p.y + 1<<" "<<p.z + 1<<std::endl;
+	}
+	o.close();	
+}
+
+void SceneManager::getPath( const Vector3& b, const Vector3& e, std::vector<Vector3>& ps )
+{
+	if (Nav_)
+	{
+		NAVIGATIONPATH p;
+		p.start_location = b;
+		p.end_location = e;
+		NAVIGATIONPATHDATA d;
+		if (NAVIGATION_get_path( Nav_, &p, &d) >= 0)
+		{
+			for (int i = 0; i != d.path_point_count; ++i)
+			{
+				ps.push_back(d.path_point_array[i]);
+			}
+		}
+		else
+		{
+			FlowText::getSingletonP()->add("无效区域，无法到达", Vector4::One);
+		}
+	}
+}
+
+void SceneManager::renderNav() const
+{
+	if (NULL == Nav_)
+	{
+		return;
+	}
+	//光照默认打开
+	getRenderContex()->getDxDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
+	getRenderContex()->SetTransform(D3DTS_WORLD, &Matrix::Identity);
+	getRenderContex()->applyViewMatrix();
+	getRenderContex()->applyProjectionMatrix();
+	getRenderContex()->setVertexDeclaration(sVDT_PositionColor::getType());
+	getRenderContex()->getDxDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	unsigned int j = 0;
+	while( j != Nav_->dtnavmesh->getMaxTiles() )
+	{
+		const dtMeshTile *_dtMeshTile = Nav_->dtnavmesh->getTile( j );
+
+		if( !_dtMeshTile->header )
+		{
+			continue; 
+		}
+
+		unsigned int k = 0;
+
+		while( k != _dtMeshTile->header->polyCount )
+		{
+			dtPoly *_dtPoly = &_dtMeshTile->polys[ k ];
+
+			if( _dtPoly->getType() == DT_POLYTYPE_OFFMESH_CONNECTION )
+			{ 
+				continue;
+			}
+			else
+			{
+				dtPolyDetail* pd = &_dtMeshTile->detailMeshes[ k ];
+
+				unsigned int l = 0;
+
+				while( l != pd->triCount )
+				{
+					Vector3 v[ 3 ];
+
+					const unsigned char *t = &_dtMeshTile->detailTris[ ( pd->triBase + l ) << 2 ];
+
+					int m = 2;
+					while( m != -1 )
+					{
+						if( t[ m ] < _dtPoly->vertCount )
+						{
+							memcpy( &v[ m ],
+								&_dtMeshTile->verts[ _dtPoly->verts[ t[ m ] ] * 3 ],
+								sizeof( Vector3 ) );
+						}
+						else
+						{
+							memcpy( &v[ m ],
+								&_dtMeshTile->detailVerts[ ( pd->vertBase + t[ m ] - _dtPoly->vertCount ) * 3 ],
+								sizeof( Vector3 ) );
+						}
+
+						--m;
+					}
+					//draw
+					sVDT_PositionColor ps[3];
+					ps[0].position_ = v[0];
+					ps[1].position_ = v[1];
+					ps[2].position_ = v[2];
+					ps[0].color_ = ps[1].color_ = ps[2].color_ = Colour::getUint32(10*j, 10*k, 10*l, 10*(j + k + l));
+					getRenderContex()->drawPrimitiveUP(D3DPT_TRIANGLELIST, 1, &ps[0], sVDT_PositionColor::getSize());
+					++l;
+				}
+			}
+
+			++k;
+		}
+
+		++j;
+	}
+	getRenderContex()->getDxDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+}
+
+void SceneManager::setShowNav( bool b )
+{
+	ShowNav_ = b;
 }
 
 ApiScene_ SceneManager* createSceneManager()

@@ -56,7 +56,7 @@ void PlaceModelState::setModelFile( const tstring& mf )
 	ss<<"·ÅÖÃÎï¼þ£º"<<ModelFile_;
 	FlowText::getSingletonP()->add(ss.str(), Vector4(1, 1, 1, 1));
 	ModelShadow_ = getSceneManager()->addEntityInstance(ModelFile_);
-	//ModelShadow_->scale(Vector3(0.1f, 0.1f, 0.1f));
+	ModelShadow_->scale(Vector3(10.f, 10.f, 10.f));
 }
 
 tstring PlaceModelState::getModelFile()

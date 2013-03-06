@@ -9,6 +9,7 @@ class Hero;
 class Decal;
 class QuadNode;
 class EntityInstance;
+struct NAVIGATION;
 enum eRunType
 {
 	eRunType_Editor,
@@ -45,6 +46,11 @@ public:
 	void save(const tstring& path);
 	void open(const tstring& path);
 	void constructTerrainQuadTree(int xChunks, int zChunks );
+public:
+	void nmCreateObjFile(const std::string& fn, std::vector<Vector3>& vertices, std::vector<Vector3Int>& indices);
+	void getPath(const Vector3& b, const Vector3& e, std::vector<Vector3>& ps);
+	void renderNav() const;
+	void setShowNav(bool b);
 private:
 	void clear_();
 	void destroyTerrain_();
@@ -63,6 +69,8 @@ private:
 	tstring name_;
 	EntityInstanceVec entityInstances_;
 	Vector2 PickingPoint_;
+	NAVIGATION * Nav_;
+	bool ShowNav_;
 };
 ApiScene_ SceneManager* createSceneManager();
 ApiScene_ void destroySceneManager();

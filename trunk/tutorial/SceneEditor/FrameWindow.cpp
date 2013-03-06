@@ -6,6 +6,7 @@
 #include "PreviewWindow.h"
 #include "luaScript/LuaScript.h"
 #include "font/FlowText.h"
+#include "scene/navigation.h"
 FrameWindow::FrameWindow()
 {
 
@@ -164,10 +165,16 @@ LRESULT FrameWindow::OnOpenscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWnd
 
 LRESULT FrameWindow::OnTest( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
-	scenePath_ = TEXT("\\scene\\bornland");
+	scenePath_ = TEXT("\\scene\\1");
 	getSceneManager()->open(scenePath_);
-	std::string resId(TEXT("\\model\\Character_1015\\Character_1015.entity"));
-	getGlobal()->setHero(resId.c_str());
+	//getSceneManager()->nmCreateObjFile("d:\\work\\recastBin\\debug\\Meshes\\zen.obj");
+	//std::string resId(TEXT("\\model\\Character_1015\\Character_1015.entity"));
+	//getGlobal()->setHero(resId.c_str());
+// 	NAVIGATION* n = getGlobal()->getRecastNav();
+// 	if (n)
+// 	{
+// 		NAVIGATION_build( n, "c:\\nav.obj");
+// 	}
 	return 0;
 }
 
@@ -182,5 +189,12 @@ LRESULT FrameWindow::OnPlaceModel( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hW
 	getStateManager()->gotoState(eState_PlaceModel);
 	FlowText::getSingletonP()->add("切换至放置物件模式", Vector4(1, 1, 1, 1));
 	UISetCheck(ID_BUTTON_PlaceModel, true);
+	return 1;
+}
+
+LRESULT FrameWindow::OnNavigationMesh( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
+{
+	getStateManager()->gotoState(eState_Nav);
+	FlowText::getSingletonP()->add("切换至放置导航模式", Vector4(1, 1, 1, 1));
 	return 1;
 }

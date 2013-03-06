@@ -7,6 +7,7 @@ enum eState
 	eState_Data,
 	eState_TerrainTexture,
 	eState_PlaceModel,
+	eState_Nav,
 	eState_Size,
 };
 class IState

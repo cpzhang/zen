@@ -218,6 +218,8 @@ void ViewWindow::onIdle(const float delta)
 		getSceneManager()->render();
 		//»­ÈË
 		getGlobal()->render();
+		//Ñ°Â·µã
+		getGlobal()->renderPath();
 	}
 	FlowText::getSingletonP()->update(delta);
 	FlowText::getSingletonP()->render();

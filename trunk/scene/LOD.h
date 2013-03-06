@@ -3,6 +3,7 @@
 #include "misc/stdHead.h"
 #include "misc/helper.h"
 #include "ConfigScene.h"
+#include "render/vector3.h"
 class ApiScene_ LOD
 {
 public:
@@ -33,6 +34,9 @@ public:
 	float getLengthOneSide();
 	int getN();
 	void setN(int n);
+	//
+public:
+	void nmCreateObjFile(std::vector<Vector3>& vertices, std::vector<Vector3Int>& indices);
 private:
 	void clear_();
 private:
@@ -43,4 +47,5 @@ private:
 	int nVerticesNumberOneSide_;
 	int nPrimitiveNumberOneChunk_;
 	IndexBuffer indexBuffers_;
+	std::vector<short> gIndices;
 };

@@ -62,6 +62,8 @@ public:
 	void openAlphaMap(const tstring& fn);
 	//
 	void addEntityInstance(EntityInstance* ei);
+	//
+	void nmAddObj(std::vector<Vector3>& vertices, std::vector<Vector3Int>& indices);
 private:
 	void clear_();
 	void calcMaxMinHeight_();

@@ -26,6 +26,7 @@ public:
 		COMMAND_ID_HANDLER(ID_BUTTON_Test, OnTest)
 		COMMAND_ID_HANDLER(ID_BUTTON_Hero, OnHero)
 		COMMAND_ID_HANDLER(ID_BUTTON_PlaceModel, OnPlaceModel)
+		COMMAND_ID_HANDLER(ID_BUTTON_NavigationMesh, OnNavigationMesh)
 		COMMAND_ID_HANDLER(ID_SaveScene, OnSavescene)
 		COMMAND_ID_HANDLER(ID_OpenScene, OnOpenscene)
 		CHAIN_MSG_MAP(CFrameWindowImpl<FrameWindow>)
@@ -56,6 +57,7 @@ private:
 	LRESULT OnTest(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnHero(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnPlaceModel(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnNavigationMesh(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	//
 	void tabSwitch(WORD id);
 private:

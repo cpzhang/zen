@@ -13,6 +13,7 @@ include_directories(
 )
 link_directories(
   ${dxPath}/lib/x86
+  ${EXECUTABLE_OUTPUT_PATH}
   )
 if (StaticLibrary_)
   add_library(${ItemName} STATIC
@@ -31,6 +32,8 @@ else()
     render
     tinyxml2
     model
+    recast
+	detour
     )
   set_target_properties(${ItemName} PROPERTIES 
   # DEFINE_SYMBOL "${ItemName}_EXPORTS"

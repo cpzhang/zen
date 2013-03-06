@@ -35,7 +35,7 @@ void setHero( const char* resID )
 	Hero_ = NodeManager::getInstancePtr()->createNode("Hero");
 	Hero_->attach(HeroInstance_);
 	HeroInstance_->setAnimation("Run", true);
-	HeroInstance_->scale(Vector3(0.01f, 0.01f, 0.01f));
+	HeroInstance_->scale(Vector3(0.02f, 0.02f, 0.02f));
 }
 bool adjustClientArea()
 {
@@ -87,6 +87,27 @@ LRESULT CALLBACK _wndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
 			}
 		}
 		break;
+	case WM_LBUTTONDOWN:
+		{
+			if (g_bActive)
+			{
+				std::vector<Vector3> ps;
+				Vector2 pp = getSceneManager()->getPickingPoint();
+				if (camera_.getCenter().x >= 0.0f && camera_.getCenter().z >= 0.0f )
+				{
+					getSceneManager()->getPath(camera_.getCenter(), Vector3(pp.x, 0.0f, pp.y), ps);
+					if (!ps.empty())
+					{
+						camera_.resetPath();
+						for (int i = 0; i != ps.size(); ++i)
+						{
+							camera_.addPath(ps[i]);
+						}
+						camera_.beginPath();
+					}
+				}
+			}
+		}break;
 	case WM_MOUSEWHEEL:
 		{
 			if (g_bActive)
@@ -151,6 +172,11 @@ LRESULT CALLBACK _wndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
 						camera_.setSpeed(camera_.getSpeed() * 0.8f);
 					}
 				}break;
+			case VK_LBUTTON:
+				{
+					
+				}
+				break;
 			case 'W':
 			case 'S':
 			case 'A':
@@ -172,10 +198,28 @@ LRESULT CALLBACK _wndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
 }
 bool play(const float delta)
 {
+	//
+	Vector3 dst;
+	if (camera_.getDst(delta, dst))
+	{
+		std::vector<Vector3> ps;
+		if (camera_.getCenter().x >= 0.0f && camera_.getCenter().z >= 0.0f )
+		{
+			getSceneManager()->getPath(camera_.getCenter(), Vector3(dst.x, 0.0f, dst.z), ps);
+			if (!ps.empty())
+			{
+				camera_.resetPath();
+				for (int i = 0; i != ps.size(); ++i)
+				{
+					camera_.addPath(ps[i]);
+				}
+				camera_.beginPath();
+			}
+		}
+	}
 	//Ê°È¡¸ß¶È
 	Vector3 position_ = camera_.getCenter();
-	//
-	{
+	if(0){
 		static Vector3 vp = position_;
 		Vector3 dp = vp - position_;
 		if (dp.lengthSquared() > 0.0001f)
@@ -379,6 +423,7 @@ int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	FontManager::getPointer()->createFont(std::string("freetype\\simkai.ttf"), 16, eFontProperty_Normal, "freeNormal");
 	//
 	camera_.setCenter(Vector3(0, 0.0, 0));
+	camera_.setSpeed(0.2f);
 	// Message Structure
 	MSG msg;
 	::ZeroMemory(&msg, sizeof(msg));
@@ -401,7 +446,7 @@ int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		{
 			currentTick = GetTickCount();
 			delta = currentTick - lastTick;
-			if (delta >= 30.0f)
+			if (delta >= 1.0f)
 			{
 				if (!play(delta))
 				{
