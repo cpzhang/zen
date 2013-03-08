@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<scene name="bornland">
-    <terrain XChunkNumber="6" ZChunkNumber="6" Lod="5" ChunkSize="100.000000"/>
-    <material fx="shader\Terrain.fx"/>
-</scene>
