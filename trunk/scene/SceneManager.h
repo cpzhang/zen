@@ -42,6 +42,7 @@ public:
 	EntityInstance* createEntityInstance(const std::string& resID);
 	EntityInstance* addEntityInstance(const std::string& resID);
 	void removeEntityInstance(EntityInstance* ei);
+	EntityInstance* getPickingEntityInstance();
 public:
 	void save(const tstring& path);
 	void open(const tstring& path);
@@ -71,6 +72,7 @@ private:
 	Vector2 PickingPoint_;
 	NAVIGATION * Nav_;
 	bool ShowNav_;
+	EntityInstance* PickingEntity_;
 };
 ApiScene_ SceneManager* createSceneManager();
 ApiScene_ void destroySceneManager();

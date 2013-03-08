@@ -1,5 +1,6 @@
 #pragma once
 #include "vector3.h"
+#include "matrix.h"
 #include "Ray.h"
 #include "misc/helper.h"
 class ApiRender_ BoundingBox
@@ -10,7 +11,7 @@ public:
 	const Vector3 & minBounds() const;
 	const Vector3 & maxBounds() const;
 	bool intersectsRay( const Ray & r) const;
-	void render();
+	void render(const Matrix& wm, u32 color);
 	void addBounds( const Vector3 & v )
 	{
 		if (min_[0] > v[0])

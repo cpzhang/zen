@@ -51,7 +51,7 @@ void PreviewWindow::setModel( const std::string resID )
 		EntityInstance_ = getSceneManager()->createEntityInstance(resID);
 	}
 	EntityInstance_->setAnimation("Stand");
-	EntityInstance_->scale(Vector3(10, 10, 10));
+	EntityInstance_->setScale(Vector3(10, 10, 10));
 	Hero_->attach(EntityInstance_);
 }
 

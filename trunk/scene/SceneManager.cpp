@@ -42,6 +42,7 @@ void SceneManager::clear_()
 	hero_ = NULL;
 	terrainCurrent_ = NULL;
 	PickingPoint_ = Vector2::Zero;
+	PickingEntity_ = NULL;
 }
 
 Terrain* SceneManager::getTerrain()
@@ -86,6 +87,18 @@ void SceneManager::render()
 	}
 	//3.nav
 	renderNav();
+	//4.aabb
+	for (size_t i = 0; i != entityInstances_.size(); ++i)
+	{
+		if (entityInstances_[i] == PickingEntity_)
+		{
+			entityInstances_[i]->renderAABB(Colour::Red);
+		}
+		else
+		{
+			entityInstances_[i]->renderAABB(Colour::Green);
+		}
+	}
 }
 
 LOD* SceneManager::getLOD()
@@ -692,6 +705,19 @@ Vector2 SceneManager::getPickingPoint()
 	return PickingPoint_;
 }
 
+EntityInstance* SceneManager::getPickingEntityInstance()
+{
+	PickingEntity_ = NULL;
+	Ray r = getRenderContex()->getPickingRay();	
+	for (size_t i = 0; i != entityInstances_.size(); ++i)
+	{
+		if (entityInstances_[i]->isPicking(r))
+		{
+			PickingEntity_ = entityInstances_[i];
+		}
+	}
+	return PickingEntity_;
+}
 void SceneManager::updatePickingPoint_()
 {
 	Ray r = getRenderContex()->getPickingRay();

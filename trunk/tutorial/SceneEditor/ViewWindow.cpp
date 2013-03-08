@@ -243,9 +243,11 @@ void ViewWindow::onRefreshLuaScript()
 
 LRESULT ViewWindow::onMouseLeftButtonDown( UINT, WPARAM, LPARAM lParam, BOOL& b )
 {
-	//getGlobal()->getCamera()->setCapture(true);
+	getGlobal()->onMouseLeftButtonDown();
 	SetCapture();
 	getStateManager()->getCurrentState()->onMouseLeftButtonDown();
+	//
+	
 	return 1;
 }
 LRESULT ViewWindow::onMouseLeftButtonUp( UINT, WPARAM, LPARAM lParam, BOOL& b )

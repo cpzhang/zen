@@ -116,30 +116,6 @@ HBITMAP generateHBitMapFromModel(const std::string& fileName, int width, int hei
 	tstring fn = getGlobal()->saveBackBuffer(FileSystem::getParent(fileName));
 	return generateHBitMap(fn, width, height, false);
 }
-void findEntityFiles(const std::string PathSelected_, std::vector<std::string>& FilePaths, const std::string& pre)
-{
-	CFileFind find;
-	std::string sFile(PathSelected_ + _T("\\*.entity"));
-	std::string sNewPath;
-
-	BOOL bFind = find.FindFile( sFile.c_str() );  
-	while( bFind )
-	{
-		bFind = find.FindNextFile();
-		if( find.IsDirectory() )
-		{
-			
-		}
-		else 
-		{
-			if( !find.IsHidden())
-			{
-				sNewPath = find.GetFilePath();
-				FilePaths.push_back( pre + "\\" + sNewPath );
-			}  
-		}
-	}
-}
 void DataDlg::refreshModelIcons()
 {
 	// Find all the directories and files underneath sPath
@@ -352,18 +328,6 @@ LRESULT DataDlg::OnNMDblclkListIcons(int /*idCtrl*/, LPNMHDR pNMHDR, BOOL& /*bHa
 	// single-selection only
 	CString n;
 	Icons_.GetItemText(Icons_.GetSelectedIndex(), 0, n);
-// 	if (getStateManager()->getCurrentStateEnum() == eState_PlaceModel)
-// 	{
-// 		tstring ef("model\\");
-// 		ef += n.GetBuffer(0);
-// 		getStateManager()->getPlaceModelState()->setModelFile(ef);
-// 	}
-// 	else if (getStateManager()->getCurrentStateEnum() == eState_TerrainTexture)
-// 	{
-// 		tstring ef("brush\\");
-// 		ef += n.GetBuffer(0);
-// 		getStateManager()->getTerrainTextureState()->setBrushTextureFile(ef);
-// 	}
 	getStateManager()->getCurrentState()->setModelFile(n.GetBuffer(0));
 	return 0;
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "misc/stdHead.h"
+#include "render/vector3.h"
 enum eState
 {
 	eState_None,
@@ -72,6 +73,9 @@ public:\
 	  virtual void onMouseLeftButtonDown(){} ;
 	  virtual void onMouseRightButtonDown(){};
 	  virtual void onMouseRightButtonUp(){};
+	  virtual void setPosition(const Vector3& p){}
+	  virtual void setScale(const Vector3& p){}
+	  virtual void setRotation(const Vector3& p){}
 protected:
 	eState type_;
 	

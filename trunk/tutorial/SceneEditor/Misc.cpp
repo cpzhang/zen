@@ -1,4 +1,5 @@
 #include "Misc.h"
+#include "dependence/FileTreeCtrl/FileFind.h"
 HBITMAP generateHBitMap(const std::string& fileName, int width, int height, bool selected)
 {
 	HBITMAP h = 0;
@@ -50,4 +51,29 @@ HBITMAP generateHBitMap(const std::string& fileName, int width, int height, bool
 		FreeImage_Unload(dib);
 	}
 	return h;
+}
+
+void findEntityFiles( const std::string PathSelected_, std::vector<std::string>& FilePaths, const std::string& pre )
+{
+	CFileFind find;
+	std::string sFile(PathSelected_ + _T("\\*.entity"));
+	std::string sNewPath;
+
+	BOOL bFind = find.FindFile( sFile.c_str() );  
+	while( bFind )
+	{
+		bFind = find.FindNextFile();
+		if( find.IsDirectory() )
+		{
+
+		}
+		else 
+		{
+			if( !find.IsHidden())
+			{
+				sNewPath = find.GetFilePath();
+				FilePaths.push_back( pre + "\\" + sNewPath );
+			}  
+		}
+	}
 }

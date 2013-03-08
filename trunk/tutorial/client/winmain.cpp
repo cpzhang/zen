@@ -35,7 +35,7 @@ void setHero( const char* resID )
 	Hero_ = NodeManager::getInstancePtr()->createNode("Hero");
 	Hero_->attach(HeroInstance_);
 	HeroInstance_->setAnimation("Run", true);
-	HeroInstance_->scale(Vector3(0.02f, 0.02f, 0.02f));
+	HeroInstance_->setScale(Vector3(0.02f, 0.02f, 0.02f));
 }
 bool adjustClientArea()
 {
@@ -230,11 +230,14 @@ bool play(const float delta)
 			vp = position_;
 		}
 	}
-	float h = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(position_.x, position_.z);
-	camera_.setTerrainHeight(h);
-	position_.y += h;
-	HeroInstance_->setPosition(position_);
-	HeroInstance_->rotateY(camera_.getAngleY() + MATH_PI);
+	if (getSceneManager()->getTerrain())
+	{
+		float h = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(position_.x, position_.z);
+		camera_.setTerrainHeight(h);
+		position_.y += h;
+		HeroInstance_->setPosition(position_);
+		HeroInstance_->rotateY(camera_.getAngleY() + MATH_PI);
+	}
 	//
 	if (g_bActive)
 	{

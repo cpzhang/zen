@@ -74,6 +74,7 @@ public:
 	}
 	void addPath(const Vector3& p);
 	void renderPath();
+	void onMouseLeftButtonDown();
 private:
 	void clear_();
 	std::string selectedFilePart(const tstring& name);

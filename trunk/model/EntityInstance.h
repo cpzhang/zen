@@ -17,7 +17,7 @@ public:
 	virtual ~IMovable(){}
 	virtual void setPosition(const Vector3& p) = 0;
 	virtual void rotateY(float p) = 0;
-	virtual void scale(const Vector3& p) = 0;
+	virtual void setScale(const Vector3& p) = 0;
 };
 class ApiModel_ EntityInstance : public IRender, public IMovable
 {
@@ -34,16 +34,17 @@ public:
 		Position_ = Vector3::Zero;
 		AngleY_ = 0.0f;
 		Scale_ = Vector3::One;
-		Scale_ *= 0.1f;
+		//Scale_ *= 0.1f;
 	}
 public:
 	virtual void render();
+	void renderAABB(u32 color);
 	virtual void update(float delta);
 public:
 	virtual void setPosition(const Vector3& p);
 	Vector3 getPosition() const;
 	virtual void rotateY(float p);
-	virtual void scale(const Vector3& p);
+	virtual void setScale(const Vector3& p);
 	Vector3 getScale() const;
 public:
 	bool create(const tstring& resourceId);
@@ -55,12 +56,14 @@ public:
 	void setSpeed(float s);
 	EntityInstance* clone() const;
 	std::string getResId() const;
+	bool isPicking(const Ray& r) const;
 public:
 	void nmAddObj(std::vector<Vector3>& vertices, std::vector<Vector3Int>& indices);
 private:
 	void updateMaterial_( float delta );
 	void renderImpT0();
 	void renderImpT2();
+	void updateBoundingBox_();
 public:
 	static EntityInstance* getNullObject()
 	{
@@ -102,6 +105,8 @@ private:
 	Vector3 Position_;
 	float AngleY_;
 	Vector3 Scale_;
+	BoundingBox BBox_;
+	BoundingBox BBoxOrigional_;
 };
 typedef std::vector<EntityInstance*> EntityInstanceVec;
 Create_Singleton_Declaration(EntityInstanceManager, EntityInstance, ApiModel_)

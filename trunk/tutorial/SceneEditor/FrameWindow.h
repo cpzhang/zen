@@ -8,6 +8,8 @@
 #include "AnimationDlg.h"
 #include "SceneNewDlg.h"
 #include "TerrainTextureDlg.h"
+#include "PlaceModelDlg.h"
+#include "NavDlg.h"
 class FrameWindow : 
 	public CFrameWindowImpl<FrameWindow>
 	,public CUpdateUI<FrameWindow>
@@ -70,6 +72,8 @@ private:
 	OptionsDlg dlgOptions_;
 	AnimationDlg dlgAnimation_;
 	SceneNewDlg dlgSceneNew;
+	PlaceModelDlg dlgPlaceModel;
+	NavDlg dlgNav;
 	tstring scenePath_;
 	LRESULT OnSavescene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnOpenscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);

@@ -74,6 +74,12 @@ Matrix& Chunk::getWorldMatrix()
 void Chunk::destroy()
 {
 	vertexBuffer_.destroy();
+	if (AlphaMapTexture_)
+	{
+		AlphaMapTexture_->destroy();
+		delete AlphaMapTexture_;
+		AlphaMapTexture_ = NULL;
+	}
 }
 
 float Chunk::getHeightFromTopology( int x, int z )
@@ -281,7 +287,7 @@ void Chunk::save( const tstring& path )
 			//tn = FileSystem::cutDataPath(tn);
 			e->SetAttribute("file", tn.c_str());
 			e->SetAttribute("position", ei->getPosition());
-			e->SetAttribute("scale", ei->getScale());
+			e->SetAttribute("setScale", ei->getScale());
 			ele->LinkEndChild(e);		
 		}
 	}
@@ -331,8 +337,8 @@ void Chunk::open( const tstring& path )
 				//
 				{
 					Vector3 pos = Vector3::One;
-					tex->QueryVector3Attribute("scale", &pos);
-					i->scale(pos);
+					tex->QueryVector3Attribute("setScale", &pos);
+					i->setScale(pos);
 				}
 				//
 				{

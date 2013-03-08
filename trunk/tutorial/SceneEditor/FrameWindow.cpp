@@ -41,11 +41,17 @@ LRESULT FrameWindow::onCreate( UINT, WPARAM, LPARAM, BOOL& )
 	dlgChangeHeight_.Create(tabs_);
 	tabs_.AddPage(dlgChangeHeight_, TEXT("高度"));
 	//
+	dlgPlaceModel.Create(tabs_);
+	tabs_.AddPage(dlgPlaceModel, TEXT("物件"));
+	//
 	dlgOptions_.Create(tabs_);
 	tabs_.AddPage(dlgOptions_, TEXT("选项"));
 	//
 	dlgAnimation_.Create(tabs_);
 	tabs_.AddPage(dlgAnimation_, TEXT("动画"));
+	//
+	dlgNav.Create(tabs_);
+	tabs_.AddPage(dlgNav, TEXT("导航"));
 	//
 	UpdateLayout();
 
@@ -78,6 +84,7 @@ void FrameWindow::onIdle(const float delta)
 	UIUpdateToolBar(FALSE);
 	canvas_.onIdle(delta);
 	dlgData_.onIdle(delta);
+	dlgPlaceModel.onIdle(delta);
 }
 
 void FrameWindow::onRefreshLuaScript()
@@ -116,7 +123,7 @@ LRESULT FrameWindow::OnToobarOptions( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /
 {
 	//getStateManager()->gotoState(eState_Data);
 	tabSwitch(ID_BUTTON_Options);
-	tabs_.SetActivePage(3);
+	tabs_.SetActivePage(4);
 	return 0;
 }
 
@@ -166,15 +173,10 @@ LRESULT FrameWindow::OnOpenscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWnd
 LRESULT FrameWindow::OnTest( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
 	scenePath_ = TEXT("\\scene\\1");
+	scenePath_ = FileSystem::addDataDir(scenePath_);
 	getSceneManager()->open(scenePath_);
-	//getSceneManager()->nmCreateObjFile("d:\\work\\recastBin\\debug\\Meshes\\zen.obj");
-	//std::string resId(TEXT("\\model\\Character_1015\\Character_1015.entity"));
-	//getGlobal()->setHero(resId.c_str());
-// 	NAVIGATION* n = getGlobal()->getRecastNav();
-// 	if (n)
-// 	{
-// 		NAVIGATION_build( n, "c:\\nav.obj");
-// 	}
+	std::string resId(TEXT("\\model\\Character_1015\\Character_1015.entity"));
+	getGlobal()->setHero(resId.c_str());
 	return 0;
 }
 
@@ -189,12 +191,16 @@ LRESULT FrameWindow::OnPlaceModel( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hW
 	getStateManager()->gotoState(eState_PlaceModel);
 	FlowText::getSingletonP()->add("切换至放置物件模式", Vector4(1, 1, 1, 1));
 	UISetCheck(ID_BUTTON_PlaceModel, true);
+	tabSwitch(ID_BUTTON_PlaceModel);
+	tabs_.SetActivePage(3);
 	return 1;
 }
 
 LRESULT FrameWindow::OnNavigationMesh( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
 	getStateManager()->gotoState(eState_Nav);
-	FlowText::getSingletonP()->add("切换至放置导航模式", Vector4(1, 1, 1, 1));
+	UISetCheck(ID_BUTTON_NavigationMesh, true);
+	FlowText::getSingletonP()->add("切换至导航模式", Vector4(1, 1, 1, 1));
+	tabs_.SetActivePage(6);
 	return 1;
 }

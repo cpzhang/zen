@@ -129,6 +129,10 @@ bool EntityInstance::create( const tstring& resourceId )
 		m->addReference();
 		Meshes_.push_back(m);
 		//
+		BoundingBox* bb = m->getAABB();
+		BBoxOrigional_.addBounds(bb->min_);
+		BBoxOrigional_.addBounds(bb->max_);
+		//
 		Material* t = ModelResManager::getInstance()->get<Material>(p->getMaterial());
 		t->addReference();
 		Materials_.push_back(t);
@@ -412,16 +416,19 @@ void EntityInstance::renderImpT2()
 void EntityInstance::setPosition( const Vector3& p )
 {
 	Position_ = p;
+	updateBoundingBox_();
 }
 
 void EntityInstance::rotateY( float p )
 {
 	AngleY_ = p;
+	updateBoundingBox_();
 }
 
-void EntityInstance::scale( const Vector3& p )
+void EntityInstance::setScale( const Vector3& p )
 {
 	Scale_ = p;
+	updateBoundingBox_();
 }
 
 EntityInstance* EntityInstance::clone() const
@@ -469,6 +476,32 @@ void EntityInstance::nmAddObj( std::vector<Vector3>& vertices, std::vector<Vecto
 			ms->nmAddObj(vertices, indices, m);
 		}
 	}
+}
+
+bool EntityInstance::isPicking(const Ray& r) const
+{
+	//´ÖÂÔÅÐ¶Ï£¬AABB
+	if (!BBox_.intersectsRay(r))
+	{
+		return false;
+	}
+	//¾«×¼ÅÐ¶Ï,ÖðÈý½ÇÐÎ
+	return true;
+}
+
+void EntityInstance::updateBoundingBox_()
+{
+	Matrix m = Matrix::Identity;
+	m.make(Position_, Scale_, AngleY_);
+	BBox_.min_ = m.applyVector(BBoxOrigional_.min_);
+	BBox_.max_ = m.applyVector(BBoxOrigional_.max_);
+}
+
+void EntityInstance::renderAABB(u32 color)
+{
+	Matrix m = Matrix::Identity;
+	m.make(Position_, Scale_, AngleY_);
+	BBoxOrigional_.render(m, color);
 }
 
 Create_Singleton_Imp(EntityInstanceManager, ApiModel_)

@@ -127,6 +127,25 @@ void Global::update(float delta)
 	//
 	getStateManager()->update();
 	//
+	//
+	Vector3 dst;
+	if (camera_.getDst(delta, dst))
+	{
+		std::vector<Vector3> ps;
+		if (camera_.getCenter().x >= 0.0f && camera_.getCenter().z >= 0.0f )
+		{
+			getSceneManager()->getPath(camera_.getCenter(), Vector3(dst.x, 0.0f, dst.z), ps);
+			if (!ps.empty())
+			{
+				camera_.resetPath();
+				for (int i = 0; i != ps.size(); ++i)
+				{
+					camera_.addPath(ps[i]);
+				}
+				camera_.beginPath();
+			}
+		}
+	}
 	camera_.update(delta, 0);
 	getRenderContex()->setViewMatrix(camera_.getViewMatrix());
 	//
@@ -323,6 +342,7 @@ void Global::setHero( const char* resID )
 	}
 	Hero_->attach(HeroInstance_);
 	HeroInstance_->setAnimation("Run");
+	HeroInstance_->setScale(Vector3(0.02f, 0.02f, 0.02f));
 }
 void Global::onSelectFile( const tstring& name )
 {
@@ -622,6 +642,25 @@ void Global::addPath( const Vector3& p )
 	pc.position_.y = getSceneManager()->getTerrain()->getHeightFromeWorldSpacePosition(p.x, p.z) + 2;
 	pc.color_ = 0xffffffff;
 	Path_.push_back(pc);
+}
+
+void Global::onMouseLeftButtonDown()
+{
+	std::vector<Vector3> ps;
+	Vector2 pp = getSceneManager()->getPickingPoint();
+	if (camera_.getCenter().x >= 0.0f && camera_.getCenter().z >= 0.0f )
+	{
+		getSceneManager()->getPath(camera_.getCenter(), Vector3(pp.x, 0.0f, pp.y), ps);
+		if (!ps.empty())
+		{
+			camera_.resetPath();
+			for (int i = 0; i != ps.size(); ++i)
+			{
+				camera_.addPath(ps[i]);
+			}
+			camera_.beginPath();
+		}
+	}
 }
 
 void createGlobal()
