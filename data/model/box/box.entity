@@ -1,4 +1,0 @@
-<?xml version="1.0"?>
-<entity name="box">
-    <part file="pCube1.part"/>
-</entity>

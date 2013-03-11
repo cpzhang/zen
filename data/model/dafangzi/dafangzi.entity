@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<entity name="dafangzi">
-    <part file="fangzi_ding.part"/>
-    <part file="fangzi_qiang.part"/>
-</entity>

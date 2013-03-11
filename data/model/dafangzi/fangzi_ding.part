@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<part name="fangzi_ding">
-    <mesh file="fangzi_ding.mesh"/>
-    <material file="UnnamedShader1.material"/>
-</part>

@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<part name="liaota_di">
-    <mesh file="liaota_di.mesh"/>
-    <material file="UnnamedShader6.material"/>
-</part>
