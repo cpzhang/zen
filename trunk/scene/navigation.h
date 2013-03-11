@@ -10,7 +10,7 @@
 #define NAVIGATION_MAX_PATH_POLY	256
 
 
-typedef struct
+struct NAVIGATIONCONFIGURATION
 {
 	float cell_size;
 
@@ -38,10 +38,10 @@ typedef struct
 
 	float detail_sample_max_error;
 
-} NAVIGATIONCONFIGURATION;
+};
 
 
-typedef struct
+struct NAVIGATIONPATH
 {
 	Vector3			start_location;
 	
@@ -57,10 +57,10 @@ typedef struct
 	
 	dtPolyRef		poly_array[ NAVIGATION_MAX_POLY ];
 
-} NAVIGATIONPATH;
+};
 
 
-typedef struct
+struct NAVIGATIONPATHDATA
 {
 	int	path_point_count;
 
@@ -70,7 +70,7 @@ typedef struct
 	
 	dtPolyRef		path_poly_array[ NAVIGATION_MAX_PATH_POLY ];
 
-} NAVIGATIONPATHDATA;
+};
 
 
 struct NAVIGATION

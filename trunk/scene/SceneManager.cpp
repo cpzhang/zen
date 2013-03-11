@@ -591,13 +591,6 @@ void SceneManager::open( const tstring& dir )
 			}
 		}
 	}
-	//
-	if (Nav_ == NULL)
-	{
-		Nav_ = NAVIGATION_init(FileSystem::removeParent(dir).c_str());
-	}
-	tstring nbfn(dir + "\\nav.bin");
-	NAVIGATION_build(Nav_, nbfn.c_str());
 }
 
 EntityInstance* SceneManager::createEntityInstance( const std::string& resID )
@@ -751,8 +744,6 @@ void SceneManager::nmCreateObjFile(const std::string& fn, std::vector<Vector3>& 
 	{
 		return;
 	}
-	//
-	std::ofstream o(fn.c_str());
 	//1.µØ±í
 	for (int x = 0; x != terrainCurrent_->getXChunkNumber(); ++x)
 	{
@@ -771,6 +762,9 @@ void SceneManager::nmCreateObjFile(const std::string& fn, std::vector<Vector3>& 
 		entityInstances_[i]->nmAddObj(vertices, indices);
 		
 	}
+	return;
+	//
+	std::ofstream o(fn.c_str());
 	for (size_t i = 0; i != vertices.size(); ++i)
 	{
 		Vector3& p = vertices[i];
@@ -808,7 +802,7 @@ void SceneManager::getPath( const Vector3& b, const Vector3& e, std::vector<Vect
 
 void SceneManager::renderNav() const
 {
-	if (NULL == Nav_)
+	if (NULL == Nav_ || NULL == Nav_->dtnavmesh)
 	{
 		return;
 	}
@@ -891,6 +885,35 @@ void SceneManager::renderNav() const
 void SceneManager::setShowNav( bool b )
 {
 	ShowNav_ = b;
+}
+
+NAVIGATIONCONFIGURATION* SceneManager::getNavConfig()
+{
+	NAVIGATIONCONFIGURATION* c = NULL;
+	if (Nav_ == NULL)
+	{
+		Nav_ = NAVIGATION_init(FileSystem::removeParent(name_).c_str());
+	}
+	if (NULL != Nav_)
+	{
+		c = &Nav_->navigationconfiguration;
+	}
+	return c;
+}
+
+bool SceneManager::buildNav()
+{
+	//
+	if (Nav_ == NULL)
+	{
+		Nav_ = NAVIGATION_init(FileSystem::removeParent(name_).c_str());
+	}
+	tstring nbfn(name_ + "\\nav.bin");
+	if (0 == NAVIGATION_build(Nav_, nbfn.c_str()))
+	{
+		return false;
+	}
+	return true;
 }
 
 ApiScene_ SceneManager* createSceneManager()

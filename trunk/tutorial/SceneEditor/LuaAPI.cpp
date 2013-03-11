@@ -36,8 +36,8 @@ static int tolua_collect_tstring (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"Global");
  tolua_usertype(tolua_S,"tstring");
+ tolua_usertype(tolua_S,"Global");
 }
 
 /* method: getDataRootDirectory of class  Global */

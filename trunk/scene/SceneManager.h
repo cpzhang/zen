@@ -10,6 +10,7 @@ class Decal;
 class QuadNode;
 class EntityInstance;
 struct NAVIGATION;
+struct NAVIGATIONCONFIGURATION;
 enum eRunType
 {
 	eRunType_Editor,
@@ -52,6 +53,8 @@ public:
 	void getPath(const Vector3& b, const Vector3& e, std::vector<Vector3>& ps);
 	void renderNav() const;
 	void setShowNav(bool b);
+	NAVIGATIONCONFIGURATION* getNavConfig();
+	bool buildNav();
 private:
 	void clear_();
 	void destroyTerrain_();

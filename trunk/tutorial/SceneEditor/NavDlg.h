@@ -15,6 +15,7 @@ public:
 	BEGIN_MSG_MAP(NavDlg)
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroyDialog)
+		COMMAND_HANDLER(IDC_BUTTON_ConstructNavMesh, BN_CLICKED, OnBnClickedButtonConstructnavmesh)
 		REFLECT_NOTIFICATIONS()
 	END_MSG_MAP()
 
@@ -43,7 +44,7 @@ public:
 private:
 	LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnDestroyDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	
+	LRESULT OnBnClickedButtonConstructnavmesh(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 private:
 	int CellRadius_;
 	int CellHeight_;
