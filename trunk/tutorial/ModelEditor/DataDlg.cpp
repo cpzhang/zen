@@ -8,7 +8,8 @@
 #include "model/Entity.h"
 #include "model/Skeleton.h"
 #include "model/Part.h"
-#include "EventManager.h"
+#include "misc/EventManager.h"
+#include "EventArgs.h"
 LRESULT DataDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled )
 {
 	bHandled = TRUE;
@@ -42,9 +43,8 @@ LRESULT DataDlg::OnFileItemSelected( UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
 
 void DataDlg::SelectFile( const tstring& s )
 {
-	//getLuaScript()->doFile(FileName);
-	getGlobal()->setCurrentLayer(s);
 	//
+	getGlobal()->setHero(s.c_str());
 	IFileManager::getFile(s)->update(s, &properties_);
 }
 
@@ -54,7 +54,7 @@ void DataDlg::onIdle(const float delta)
 
 void DataDlg::onRefreshLuaScript()
 {
-	fileTree_.SetRootFolder(getGlobal()->getDataRootDirectory());
+	fileTree_.SetRootFolder(FileSystem::getDataDirectory());
 }
 
 LRESULT DataDlg::OnDestroyDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/ )
@@ -224,7 +224,7 @@ IFile* IFileManager::getFile( const std::string& fn )
 		args.FilePath_ = fn;
 	}
 	//
-	EventManager::GetInstance().fireEvent(eEvent_SelectModel, args);
+	EventManager::GetInstance().fireEvent(SelectModelEventArgs::tEventName, args);
 	return getFile(f);
 }
 

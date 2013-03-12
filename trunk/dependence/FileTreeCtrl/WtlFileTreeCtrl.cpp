@@ -160,7 +160,16 @@ std::string CWtlFileTreeCtrl::ItemToPath( HTREEITEM hItem )
 
 	// Add the root folder if there is one
 	if( m_sRootFolder.size() )
-		sPath = m_sRootFolder + _T('\\') + sPath;
+	{
+		if (m_sRootFolder[m_sRootFolder.size() - 1] == '\\')
+		{
+			sPath = m_sRootFolder + sPath;
+		}
+		else
+		{
+			sPath = m_sRootFolder + _T('\\') + sPath;
+		}
+	}
 
 	return sPath;
 }

@@ -29,6 +29,24 @@ void createAfterD3DDevice()
 }
 LRESULT ViewWindow::onKeyDown( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled )
 {
+	switch(wParam)
+	{
+	case VK_ADD:
+		{
+			//if (g_bActive)
+			{
+				camera_.setSpeed(camera_.getSpeed() * 1.2f);
+			}
+		}break;
+	case VK_SUBTRACT:
+		{
+			//if (g_bActive)
+			{
+				camera_.setSpeed(camera_.getSpeed() * 0.8f);
+			}
+		}break;
+	}
+
 	return 0;
 }
 
@@ -55,18 +73,18 @@ LRESULT ViewWindow::onDestroy( UINT, WPARAM, LPARAM, BOOL& )
 
 LRESULT ViewWindow::onMouseWheel( UINT, WPARAM wParam, LPARAM, BOOL& b )
 {
+	//
+	float delta = ( short )HIWORD( wParam );
+	delta /= 120.0f;
+	camera_.onMouseWheel(delta);
 	return 1;
 }
 
 LRESULT ViewWindow::onMouseMove( UINT, WPARAM, LPARAM lParam, BOOL& b )
 {
 	//»ñµÃ½¹µã
-	SetFocus(); 
-	return 1;
-}
-
-LRESULT ViewWindow::onMouseLeftButtonUp( UINT, WPARAM, LPARAM lParam, BOOL& b )
-{
+	SetFocus();
+	camera_.onMouseMove();
 	return 1;
 }
 
@@ -165,7 +183,6 @@ void ViewWindow::onIdle(const float delta)
 		return;
 	}
 	//
-//	MessageBox("t");
 	if (!getRenderContex()->isInitialized())
 	{
 		getRenderContex()->setWaitForVBL(false);
@@ -203,7 +220,7 @@ void ViewWindow::onIdle(const float delta)
 	}
 	//
 	camera_.update(delta, 0.0f);
-	getSceneManager()->update();
+	getSceneManager()->update(delta);
 	{
 		getGlobal()->update(delta);
 	}

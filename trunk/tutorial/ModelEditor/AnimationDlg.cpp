@@ -1,6 +1,6 @@
 #include "AnimationDlg.h"
 #include "Global.h"
-#include "EventManager.h"
+#include "eventargs.h"
 #include "model/Entity.h"
 #include "model/Skeleton.h"
 LRESULT AnimationDlg::OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled )
@@ -26,8 +26,7 @@ LRESULT AnimationDlg::OnDestroyDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
 AnimationDlg::AnimationDlg()
 {
-	EventManager::GetInstance().subscribeEvent(eEvent_SelectModel, SubscriberSlot(&AnimationDlg::onModelChanged, this));
-//	Entity_ = NULL;
+	EventManager::GetInstance().subscribeEvent(SelectModelEventArgs::tEventName, SubscriberSlot(&AnimationDlg::onModelChanged, this));
 }
 
 AnimationDlg::~AnimationDlg()

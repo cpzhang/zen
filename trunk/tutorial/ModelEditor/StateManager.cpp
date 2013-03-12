@@ -1,6 +1,4 @@
 #include "StateManager.h"
-#include "TerrainHeightState.h"
-#include "TerrainTextureState.h"
 void StateManager::create()
 {
 	for (size_t i = 0; i != eState_Size; ++i)
@@ -30,12 +28,6 @@ IState* StateManager::createState_( eState e )
 	{
 	case eState_None:
 		s = new IState;
-		break;
-	case eState_TerrainHeight:
-		s = new TerrainHeightState;
-		break;
-	case eState_TerrainTexture:
-		s = new TerrainTextureState;
 		break;
 	}
 	return s;

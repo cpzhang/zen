@@ -1,10 +1,10 @@
 #pragma once
-#include "misc/atlHead.h"
+#include "common/atlHead.h"
 #include "misc/FileSystem.h"
 #include "CEditImpl.h"
 #include "IdleHandler.h"
 #include "resource.h"
-#include "EventManager.h"
+#include "misc/EventManager.h"
 class Entity;
 class AnimationDlg :
 	public CDialogImpl<AnimationDlg>

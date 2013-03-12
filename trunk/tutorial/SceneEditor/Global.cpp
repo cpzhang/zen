@@ -56,18 +56,11 @@ bool Global::create()
 
 	new NodeManager;
 	//
-	//Navigation_ = NAVIGATION_init("GameNavGirl");
-	//
 	return true;
 }
 
 void Global::destroy()
 {
-// 	if (Navigation_)
-// 	{
-// 		NAVIGATION_free( Navigation_ );
-// 		Navigation_ = NULL;
-// 	}
 	if (Hero_)
 	{
 		Hero_->release();
@@ -119,7 +112,6 @@ void Global::clear_()
 	Hero_ = NULL;
 	HeroInstance_ = NULL;
 	//
-//	Navigation_ = NULL;
 }
 
 void Global::update(float delta)

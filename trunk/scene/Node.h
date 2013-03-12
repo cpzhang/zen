@@ -3,6 +3,7 @@
 #include "misc/stdHead.h"
 #include "misc/Singleton.h"
 class EntityInstance;
+//存在的理由：树状关系，子节点继承父节点的位置选择缩放信息
 class ApiScene_ Node
 {
 public:

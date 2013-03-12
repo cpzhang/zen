@@ -37,7 +37,7 @@ public:
 		DDX_INT_RANGE(IDC_EDIT_AgentMaxClimb, AgentMaxClimb_, 1, 200)//
 		//
 		DDX_CONTROL(IDC_EDIT_AgentMaxSlope, AgentMaxSlopeEdit_)
-		DDX_INT_RANGE(IDC_EDIT_AgentMaxSlope, AgentMaxSlope_, 1, 200)//
+		DDX_INT_RANGE(IDC_EDIT_AgentMaxSlope, AgentMaxSlope_, 1, 90)//
  	END_DDX_MAP()
 
 	IdleHandler_Derived

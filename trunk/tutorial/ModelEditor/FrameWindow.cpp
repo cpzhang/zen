@@ -1,5 +1,4 @@
 #include "FrameWindow.h"
-#include "SceneNewDlg.h"
 #include "StateManager.h"
 FrameWindow::FrameWindow()
 {
@@ -28,12 +27,6 @@ LRESULT FrameWindow::onCreate( UINT, WPARAM, LPARAM, BOOL& )
 	//
 	dlgData_.Create(tabs_);
 	tabs_.AddPage(dlgData_, TEXT("资源"));
-	//
-	dlgTerrainTexture_.Create(tabs_);
-	tabs_.AddPage(dlgTerrainTexture_, TEXT("纹理"));
-	//
-	dlgChangeHeight_.Create(tabs_);
-	tabs_.AddPage(dlgChangeHeight_, TEXT("高度"));
 	//
 	dlgOptions_.Create(tabs_);
 	tabs_.AddPage(dlgOptions_, TEXT("选项"));

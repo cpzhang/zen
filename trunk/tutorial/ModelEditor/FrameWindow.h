@@ -1,9 +1,8 @@
 #pragma once
-#include "misc/atlHead.h"
+#include "common/atlHead.h"
 #include "resource.h"
 #include "ViewWindow.h"
 #include "IdleHandler.h"
-#include "HeightDlg.h"
 #include "DataDlg.h"
 #include "AnimationDlg.h"
 
@@ -55,9 +54,7 @@ private:
 	CSplitterWindow verticalSplitter_;
 	ViewWindow canvas_;
 	CTabView	tabs_;
-	HeightDlg	dlgChangeHeight_;
 	DataDlg		dlgData_;
-	TerrainTextureDlg dlgTerrainTexture_;
 	OptionsDlg dlgOptions_;
 	AnimationDlg dlgAnimation_;
 };

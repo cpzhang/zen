@@ -947,6 +947,10 @@ std::string Mz::getSubMeshName( size_t sub )
 void Mz::decodeVersion( std::ifstream& f, int s )
 {
 	f.read(&mVersion, s);
+	if (mVersion >= 30)
+	{
+		breakable;
+	}
 }
 
 void Mz::decodeSubMesh( std::ifstream& f, int s )

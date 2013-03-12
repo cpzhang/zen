@@ -1,5 +1,5 @@
 #pragma once
-#include "misc/atlHead.h"
+#include "common/atlHead.h"
 #include "misc/stdHead.h"
 #include "IdleHandler.h"
 #include "render/MouseCamera.h"
@@ -21,7 +21,7 @@ public:
 		MESSAGE_HANDLER(WM_SIZE, onSize)
 		MESSAGE_HANDLER(WM_MOUSEWHEEL, onMouseWheel)
 		MESSAGE_HANDLER(WM_MOUSEMOVE, onMouseMove)
-		MESSAGE_HANDLER(WM_LBUTTONUP, onMouseLeftButtonUp)
+		//MESSAGE_HANDLER(WM_LBUTTONUP, onMouseLeftButtonUp)
 		MESSAGE_HANDLER(WM_KEYDOWN, onKeyDown)
 	END_MSG_MAP()
 
@@ -35,7 +35,7 @@ public:
 //	LRESULT onPaint(UINT, WPARAM, LPARAM, BOOL& b) ;
 	LRESULT onMouseWheel(UINT, WPARAM wParam, LPARAM, BOOL& b);
 	LRESULT onMouseMove(UINT, WPARAM, LPARAM lParam, BOOL& b) ;
-	LRESULT onMouseLeftButtonUp(UINT, WPARAM, LPARAM lParam, BOOL& b) ;
+	//LRESULT onMouseLeftButtonUp(UINT, WPARAM, LPARAM lParam, BOOL& b) ;
 	LRESULT onSize(UINT, WPARAM, LPARAM lParam, BOOL& b) ;
 	LRESULT onDestroy(UINT, WPARAM, LPARAM, BOOL&) ;
 	//
