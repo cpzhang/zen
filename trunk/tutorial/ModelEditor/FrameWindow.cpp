@@ -34,6 +34,9 @@ LRESULT FrameWindow::onCreate( UINT, WPARAM, LPARAM, BOOL& )
 	dlgAnimation_.Create(tabs_);
 	tabs_.AddPage(dlgAnimation_, TEXT("¶¯»­"));
 	//
+	dlgBones_.Create(tabs_);
+	tabs_.AddPage(dlgBones_, TEXT("¹Ç÷À"));
+	//
 	UpdateLayout();
 
 	/*
@@ -66,23 +69,6 @@ void FrameWindow::onRefreshLuaScript()
 	canvas_.onRefreshLuaScript();
 }
 
-LRESULT FrameWindow::OnToobarChangeHeight( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
-{
-	getStateManager()->gotoState(eState_TerrainHeight);
-	tabSwitch(ID_BUTTON_ChangeHeight);
-	tabs_.SetActivePage(2);
-	return 0;
-}
-
-LRESULT FrameWindow::OnToobarChangeTexture( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
-{
-	getStateManager()->gotoState(eState_TerrainTexture);
-	UISetCheck(ID_BUTTON_PaintTerrain, true);
-
-	tabs_.SetActivePage(1);
-	return 0;
-}
-
 LRESULT FrameWindow::OnToobarData( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
 	//getStateManager()->gotoState(eState_Data);
@@ -95,7 +81,7 @@ LRESULT FrameWindow::OnToobarOptions( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /
 {
 	//getStateManager()->gotoState(eState_Data);
 	tabSwitch(ID_BUTTON_Options);
-	tabs_.SetActivePage(3);
+	tabs_.SetActivePage(1);
 	return 0;
 }
 
@@ -103,8 +89,6 @@ void FrameWindow::tabSwitch(WORD id)
 {
 	UISetCheck(ID_BUTTON_Options, false);
 	UISetCheck(ID_BUTTON_Data, false);
-	UISetCheck(ID_BUTTON_ChangeHeight, false);
-	UISetCheck(ID_BUTTON_PaintTerrain, false);
 	//
 	UISetCheck(id, true);
 }
@@ -112,4 +96,16 @@ LRESULT FrameWindow::OnGo( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/,
 {
 	dlgData_.SelectFile(TEXT("f:\\zen\\data\\model\\Character_1015\\Character_1015.entity"));
 	return 0;
+}
+
+LRESULT FrameWindow::OnToobarAnimation( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
+{
+	tabSwitch(ID_BUTTON_Animation);
+	tabs_.SetActivePage(2);
+	return 0;
+}
+
+void FrameWindow::setFPS( float fps )
+{
+	canvas_.setFPS(fps);
 }

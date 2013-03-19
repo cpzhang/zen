@@ -106,7 +106,7 @@ void Quaternion::slerp( const Quaternion &qStart, const Quaternion &qEnd,
 	D3DXQuaternionSlerp( this, &qStart, &qEnd, t );
 }
 
-
+//Angle of rotation, in radians
 void Quaternion::fromAngleAxis( float angle, const Vector3 &axis )
 {
 	D3DXQuaternionRotationAxis( this, &axis, angle );

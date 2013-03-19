@@ -47,6 +47,16 @@ public:
 	IdleHandler_Derived
 public:
 	FrameWindow();
+	enum ePanel
+	{
+		ePanel_Data,
+		ePanel_TerrainHeight,
+		ePanel_TerrainTexture,
+		ePanel_PlaceModel,
+		ePanel_Nav,
+		ePanel_Option,
+		ePanel_Size,
+	};
 private:
 	LRESULT onCreate(UINT, WPARAM, LPARAM, BOOL&);
 private:
@@ -60,6 +70,8 @@ private:
 	LRESULT OnHero(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnPlaceModel(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnNavigationMesh(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnSavescene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnOpenscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	//
 	void tabSwitch(WORD id);
 private:
@@ -70,11 +82,11 @@ private:
 	DataDlg		dlgData_;
 	TerrainTextureDlg dlgTerrainTexture_;
 	OptionsDlg dlgOptions_;
-	AnimationDlg dlgAnimation_;
+	//AnimationDlg dlgAnimation_;
 	SceneNewDlg dlgSceneNew;
 	PlaceModelDlg dlgPlaceModel;
 	NavDlg dlgNav;
 	tstring scenePath_;
-	LRESULT OnSavescene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-	LRESULT OnOpenscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	IdleHandler* idleHandlers[ePanel_Size];
+	ePanel panelCurrent_;
 };

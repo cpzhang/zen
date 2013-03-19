@@ -125,38 +125,7 @@ public:
 			}
 		} 
 	}
-	bool getDst(float dTime, Vector3& dst)
-	{
-		bool moved = true;
-		if (isKeyDown('W'))
-		{
-			angleY_ = camera_.angleXZ_ + MATH_PI;
-		} 
-		else if(isKeyDown('S'))
-		{
-			angleY_ = camera_.angleXZ_; 
-		}
-		else if(isKeyDown('A'))
-		{
-			angleY_ = camera_.angleXZ_ + MATH_PI_Half;
-		}
-		else if(isKeyDown('D'))
-		{
-			angleY_ = camera_.angleXZ_ - MATH_PI_Half;
-		}
-		else
-		{
-			moved = false;
-		}
-		//Æ½»¬²åÖµ
-		if (moved)
-		{
-			Vector3 v(sin(angleY_), 0.0f, cos(angleY_));
-			dst = vPosition + v * camera_.getSpeed() * dTime;
-			//Rt_ = eWalkType_WSAD;
-		}
-		return moved;
-	}
+	bool getDst(float dTime, Vector3& dst);
 	void update( float dTime, float ch)
 	{
 		camera_.update(dTime, ch);
@@ -247,7 +216,7 @@ public:
 		else
 		{
 			Vector3 lp = Kfs_.getKeyFrame(Kfs_.numKeyFrames() - 1)->v;
-			float t = 10*(p - lp).length() / camera_.getSpeed() + Kfs_.getKeyFrame(Kfs_.numKeyFrames() - 1)->time;
+			float t = (p - lp).length() / camera_.getSpeed() + Kfs_.getKeyFrame(Kfs_.numKeyFrames() - 1)->time;
 			Kfs_.addKeyFrame(sKeyFrame<Vector3>(t, p));
 		}
 	}

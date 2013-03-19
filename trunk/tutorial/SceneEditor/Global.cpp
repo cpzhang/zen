@@ -136,6 +136,10 @@ void Global::update(float delta)
 				}
 				camera_.beginPath();
 			}
+			else
+			{
+				camera_.setCenter(dst);
+			}
 		}
 	}
 	camera_.update(delta, 0);

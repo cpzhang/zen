@@ -51,11 +51,6 @@ public:
 	{
 		ResID_ = resID;
 	}
-//public:
-//	static eModelResType getType()
-//	{
-//		return eModelResType_None;
-//	}
 private:
 	void onNoReference_();
 protected:

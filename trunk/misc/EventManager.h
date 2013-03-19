@@ -52,6 +52,14 @@ public:
 	{
 
 	}
+	void release()
+	{
+		if (d_functor_impl)
+		{
+			delete d_functor_impl;
+			d_functor_impl = NULL;
+		}
+	}
 	bool operator()(const EventArgs& args) const
 	{
 		if (d_functor_impl)

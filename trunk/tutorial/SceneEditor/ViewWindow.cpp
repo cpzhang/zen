@@ -172,7 +172,7 @@ void ViewWindow::onIdle(const float delta)
 	//
 	if (!getRenderContex()->isInitialized())
 	{
-		getRenderContex()->setWaitForVBL(false);
+		//getRenderContex()->setWaitForVBL(false);
 		int index = 0;
 		bool pf = false;
 		for (int i = 0; i != getRenderContex()->getDevicesNumber(); ++i)
@@ -226,14 +226,14 @@ void ViewWindow::onIdle(const float delta)
 	//ÆÁÄ»×Ö£¬×îºó»­
 	{
 		std::ostringstream ss;
-		ss<<"FPS = "<<_fps<<" Delta = "<<delta;
+		ss<<"FPS = "<<delta;
 		font_->render(Vector2(10, 10), Vector4(1, 0, 0, 1), ss.str());
 	}
 	font_->render();
 	getRenderContex()->endScene();
 	getRenderContex()->present();
 	//
-	getGlobal()->renderPreviewWindow(delta);
+	//getGlobal()->renderPreviewWindow(delta);
 }
 
 void ViewWindow::onRefreshLuaScript()

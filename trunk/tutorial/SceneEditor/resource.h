@@ -69,7 +69,6 @@
 #define IDC_EDIT_CellHeight             1035
 #define IDC_SPIN_ScaleZ                 1036
 #define IDC_EDIT_AgentRadius            1036
-#define IDC_SPIN_RotationZ2             1037
 #define IDC_SPIN_AgentMaxSlope          1037
 #define IDC_EDIT_AgentHeight            1038
 #define IDC_EDIT_AgentMaxClimb          1039
@@ -78,6 +77,7 @@
 #define IDC_SPIN_AgentRadius            1042
 #define IDC_SPIN_AgentHeight            1043
 #define IDC_SPIN_AgentMaxClimb          1044
+#define IDC_LIST_TerrainTexture         1045
 #define ID_40001                        40001
 #define ID_40002                        40002
 #define ID_40003                        40003
@@ -109,7 +109,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        118
 #define _APS_NEXT_COMMAND_VALUE         40022
-#define _APS_NEXT_CONTROL_VALUE         1045
+#define _APS_NEXT_CONTROL_VALUE         1046
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

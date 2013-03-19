@@ -10,7 +10,9 @@
 #define IDD_DIALOG_Data                 116
 #define IDD_DIALOG_TerrainTexture       117
 #define IDD_DIALOG_Options              118
+#define IDR_MENU_BoneListRightMouse     118
 #define IDD_DIALOG_Animation            119
+#define IDD_DIALOG_Bones                120
 #define IDC_SceneName                   1000
 #define IDC_ScenePath                   1001
 #define IDC_BUTTON_ScenePath            1002
@@ -35,6 +37,9 @@
 #define IDC_LIST1                       1018
 #define IDC_LIST_DataProperty           1018
 #define IDC_LIST_Animation              1019
+#define IDC_SLIDER_AnimationSpeed       1020
+#define IDC_LIST_Bones                  1021
+#define IDC_LIST_BoneNodes              1022
 #define ID_40001                        40001
 #define ID_40002                        40002
 #define ID_40003                        40003
@@ -55,14 +60,17 @@
 #define ID_BUTTON40016                  40016
 #define ID_BUTTON_Options               40017
 #define ID_BUTTON_Go                    40018
+#define ID_BUTTON_Animation             40021
+#define ID_40022                        40022
+#define ID_AddChildNode                 40023
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        118
-#define _APS_NEXT_COMMAND_VALUE         40018
-#define _APS_NEXT_CONTROL_VALUE         1020
+#define _APS_NEXT_RESOURCE_VALUE        119
+#define _APS_NEXT_COMMAND_VALUE         40024
+#define _APS_NEXT_CONTROL_VALUE         1022
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

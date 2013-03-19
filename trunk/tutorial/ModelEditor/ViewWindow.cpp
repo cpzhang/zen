@@ -75,7 +75,7 @@ LRESULT ViewWindow::onMouseWheel( UINT, WPARAM wParam, LPARAM, BOOL& b )
 {
 	//
 	float delta = ( short )HIWORD( wParam );
-	delta /= 120.0f;
+	delta /= 1200.0f;
 	camera_.onMouseWheel(delta);
 	return 1;
 }
@@ -100,26 +100,26 @@ LRESULT ViewWindow::onSize( UINT, WPARAM, LPARAM lParam, BOOL& b )
 void ViewWindow::run()
 {
 }
-void renderAxis(u32 scColor, Vector3 axis)
+void renderAxis(u32 scColor, const Vector3& axis)
 {
 	//axis
 	{
-		static const float scLength = 10.0f;
+		static const float scLength = 100.0f;
 		//x
 		{
 			sVDT_PositionColor ps[2];
 			ps[0].color_ = scColor;
-			ps[0].position_ = Vector3::Zero;//-scLength * axis;
+			ps[0].position_ = -scLength * axis;
 			ps[1].color_ = scColor;
 			ps[1].position_ = scLength * axis;
 			getRenderContex()->drawPrimitiveUP(D3DPT_LINELIST, 1, ps, sVDT_PositionColor::getSize());
 		}
 	}
 	//arrow
-	if(0){
-		static const float scRadius = 500.0f;
-		static const float scLength = 50.0f;
-		static const float scDistance = 10.0f;
+	{
+		static const float scRadius = 10.0f;
+		static const float scLength = 100.0f;
+		static const float scDistance = 2.0f;
 		//x
 		{
 			sVDT_PositionColor ps[5];
@@ -129,35 +129,61 @@ void renderAxis(u32 scColor, Vector3 axis)
 			ps[1].color_ = scColor;
 			//
 			{
-				ps[1].position_ = ps[0].position_ + Vector3(scRadius, scDistance, scDistance);
-				getRenderContex()->drawPrimitiveUP(D3DPT_LINELIST, 2, ps, sVDT_PositionColor::getSize());
+				ps[1].position_ = scLength * axis + Vector3(0, scDistance, scDistance);
+				getRenderContex()->drawPrimitiveUP(D3DPT_LINELIST, 1, ps, sVDT_PositionColor::getSize());
 			}
 			//
 			{
-				ps[1].position_ = Vector3(scRadius, -scDistance, scDistance);
-				getRenderContex()->drawPrimitiveUP(D3DPT_LINELIST, 2, ps, sVDT_PositionColor::getSize());
+				ps[1].position_ = scLength * axis + Vector3(0, -scDistance, scDistance);
+				getRenderContex()->drawPrimitiveUP(D3DPT_LINELIST, 1, ps, sVDT_PositionColor::getSize());
 			}
 			//
 			{
-				ps[1].position_ = Vector3(scRadius, scDistance, -scDistance);
-				getRenderContex()->drawPrimitiveUP(D3DPT_LINELIST, 2, ps, sVDT_PositionColor::getSize());
+				ps[1].position_ = scLength * axis + Vector3(0, -scDistance, -scDistance);
+				getRenderContex()->drawPrimitiveUP(D3DPT_LINELIST, 1, ps, sVDT_PositionColor::getSize());
 			}
 			//
 			{
-				ps[1].position_ = Vector3(scRadius, -scDistance, -scDistance);
-				getRenderContex()->drawPrimitiveUP(D3DPT_LINELIST, 2, ps, sVDT_PositionColor::getSize());
+				ps[1].position_ = scLength * axis + Vector3(0, scDistance, -scDistance);
+				getRenderContex()->drawPrimitiveUP(D3DPT_LINELIST, 1, ps, sVDT_PositionColor::getSize());
 			}
 			//
 			{
 				ps[4].color_ = ps[3].color_ = ps[2].color_ = ps[1].color_;
-				ps[0].position_ = Vector3(scRadius, scDistance, scDistance);
-				ps[1].position_ = Vector3(scRadius, scDistance, -scDistance);
-				ps[2].position_ = Vector3(scRadius, -scDistance, -scDistance);
-				ps[3].position_ = Vector3(scRadius, -scDistance, scDistance);
-				ps[4].position_ = Vector3(scRadius, scDistance, scDistance);
-				getRenderContex()->drawPrimitiveUP(D3DPT_LINELIST, 5, ps, sVDT_PositionColor::getSize());
+				ps[0].position_ = scLength * axis + Vector3(0, scDistance, scDistance);
+				ps[1].position_ = scLength * axis + Vector3(0, scDistance, -scDistance);
+				ps[2].position_ = scLength * axis + Vector3(0, -scDistance, -scDistance);
+				ps[3].position_ = scLength * axis + Vector3(0, -scDistance, scDistance);
+				ps[4].position_ = scLength * axis + Vector3(0, scDistance, scDistance);
+				getRenderContex()->drawPrimitiveUP(D3DPT_LINESTRIP, 4, ps, sVDT_PositionColor::getSize());
 			}
 		}
+	}
+}
+void renderPlane()
+{
+	getRenderContex()->SetTransform(D3DTS_WORLD, &Matrix::Identity);
+	static const float scRadius = 300.0f;
+	static const float scStep = 10.0f;
+	static const Vector4 scColor(60.0f/255.0f, 80.0f/255.0f, 100.0f/255.0f, 1.0);
+	getRenderContex()->setVertexDeclaration(sVDT_PositionColor::getType());
+	for (float z = -scRadius; z <= scRadius; z += scStep)
+	{
+		sVDT_PositionColor ps[2];
+		ps[0].color_ = scColor.getARGB();
+		ps[0].position_ = Vector3(-scRadius, 0.0f, z);
+		ps[1].color_ = scColor.getARGB();
+		ps[1].position_ = Vector3(scRadius, 0.0f, z);
+		getRenderContex()->drawPrimitiveUP(D3DPT_LINELIST,  1, ps, sVDT_PositionColor::getSize());
+	}
+	for (float x = -scRadius; x <= scRadius; x += scStep)
+	{
+		sVDT_PositionColor ps[2];
+		ps[0].color_ = scColor.getARGB();
+		ps[0].position_ = Vector3(x, 0.0f, -scRadius);
+		ps[1].color_ = scColor.getARGB();
+		ps[1].position_ = Vector3(x, 0.0f, scRadius);
+		getRenderContex()->drawPrimitiveUP(D3DPT_LINELIST,  1, ps, sVDT_PositionColor::getSize());
 	}
 }
 void renderAxisXYZ()
@@ -171,9 +197,19 @@ void renderAxisXYZ()
 	//x
 	renderAxis(Colour::Red, Vector3::AxisX);
 	//y
-	renderAxis(Colour::Green, Vector3::AxisY);
+	Matrix m;
+	Quaternion q;
+	q.fromAngleAxis(HalfPI, Vector3::AxisZ);
+	m.make(Vector3::Zero, Vector3::One, q);
+	getRenderContex()->SetTransform(D3DTS_WORLD, &m);
+	renderAxis(Colour::Green, Vector3::AxisX);
 	//z
-	renderAxis(Colour::Blue, Vector3::AxisZ);
+	q.fromAngleAxis(-HalfPI, Vector3::AxisY);
+	m.make(Vector3::Zero, Vector3::One, q);
+	getRenderContex()->SetTransform(D3DTS_WORLD, &m);
+	renderAxis(Colour::Blue, Vector3::AxisX);
+	//
+	getRenderContex()->SetTransform(D3DTS_WORLD, &Matrix::Identity);
 }
 
 void ViewWindow::onIdle(const float delta)
@@ -205,7 +241,7 @@ void ViewWindow::onIdle(const float delta)
 		Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
 		Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
 		camera_.limit_ =  BoundingBox( minBound, maxBound );
-		camera_.create(10, MATH_PI, MATH_PI_Half);
+		camera_.create(30, MATH_PI*0.75f, MATH_PI_Half*0.5f);
 		//
 		Camera c = getRenderContex()->getCamera();
 		c.setFarPlane(10000.0f);
@@ -230,9 +266,12 @@ void ViewWindow::onIdle(const float delta)
 	u32 clearFlags = D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER;
 	if ( getRenderContex()->isStencilAvailable() )
 		clearFlags |= D3DCLEAR_STENCIL;
-	static Vector4 scc(0.223f,0.427f,0.647f, 0.0f);
+	static Vector4 scc(0.5f,0.5f,0.5f, 0.5f);
 	getRenderContex()->getDxDevice()->Clear( 0, NULL, clearFlags, scc.getARGB(), 1, 0 );
 	getRenderContex()->beginScene();
+	//plane
+	renderPlane();
+	//axis
 	renderAxisXYZ();
 	//
 	if (getSceneManager())
@@ -254,4 +293,9 @@ void ViewWindow::onIdle(const float delta)
 void ViewWindow::onRefreshLuaScript()
 {
 
+}
+
+void ViewWindow::setFPS( float fps )
+{
+	_fps = fps;
 }

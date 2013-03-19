@@ -1,5 +1,5 @@
 #include "OrbitCamera.h"
-
+//#include "font/FlowText.h"
 OrbitCamera::OrbitCamera()
 {
 	/*keyDown_.insert( std::make_pair( 'W', false ) );
@@ -289,8 +289,7 @@ void OrbitCamera::onMouseWheel( float d )
 {
 	//根据距离调整移动速度，距离越远，速度越快；反之，越慢
 	float r = distance_ / 10.0f;
-	float a = r * MATH_PI_Half;
-	d = d * speed_ * sin(a) * 300;
+	d = d * speed_ * r;
 	distance_ += d;
 	setDirty(true);
 }
@@ -317,11 +316,11 @@ std::string OrbitCamera::tEvent_Dirty("OrbitCamera::tEvent_Dirty");
 
 HeroCamera::HeroCamera()
 {
-	camera_.setSpeed(0.04f);
+	camera_.setSpeed(0.01f);
 	Vector3 minBound = -Vector3( 100.5f, 0.f, 100.5f );
 	Vector3 maxBound = Vector3(10000, 5000.0f, 10000.0f);
 	camera_.limit_ =  BoundingBox( minBound, maxBound );
-	camera_.create(30, MATH_PI*0.75f, MATH_PI_Half*0.5f);
+	camera_.create(20, MATH_PI*0.75f, MATH_PI_Half*0.5f);
 	angleY_ = 0.0f;
 	Kfs_.addKeyFrame(sKeyFrame<Vector3>(0, Vector3::Zero));
 	Kfs_.addKeyFrame(sKeyFrame<Vector3>(300, Vector3::Zero));
@@ -330,4 +329,37 @@ HeroCamera::HeroCamera()
 	vIdealPos = camera_.getCenter();
 	vPosition = camera_.getCenter();
 	vVelocity = Vector3::Zero;
+}
+
+bool HeroCamera::getDst( float dTime, Vector3& dst )
+{
+	bool moved = true;
+	if (isKeyDown('W'))
+	{
+		angleY_ = camera_.angleXZ_ + MATH_PI;
+	} 
+	else if(isKeyDown('S'))
+	{
+		angleY_ = camera_.angleXZ_; 
+	}
+	else if(isKeyDown('A'))
+	{
+		angleY_ = camera_.angleXZ_ + MATH_PI_Half;
+	}
+	else if(isKeyDown('D'))
+	{
+		angleY_ = camera_.angleXZ_ - MATH_PI_Half;
+	}
+	else
+	{
+		moved = false;
+	}
+	//平滑插值
+	if (moved)
+	{
+		Vector3 v(sin(angleY_), 0.0f, cos(angleY_));
+		dst = v * camera_.getSpeed() * dTime;
+		dst += getCenter();
+	}
+	return moved;
 }

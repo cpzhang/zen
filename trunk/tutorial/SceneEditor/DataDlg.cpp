@@ -331,3 +331,10 @@ LRESULT DataDlg::OnNMDblclkListIcons(int /*idCtrl*/, LPNMHDR pNMHDR, BOOL& /*bHa
 	getStateManager()->getCurrentState()->setModelFile(n.GetBuffer(0));
 	return 0;
 }
+void OptionsDlg::onIdle(const float delta)
+{
+}
+
+void OptionsDlg::onRefreshLuaScript()
+{
+}

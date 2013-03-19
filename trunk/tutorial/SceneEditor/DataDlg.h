@@ -110,6 +110,7 @@ private:
 
 class OptionsDlg :
 	public CDialogImpl<OptionsDlg>
+			,public IdleHandler
 {
 public:
 	enum { IDD = IDD_DIALOG_Options};
@@ -118,6 +119,8 @@ public:
 		NOTIFY_HANDLER(IDC_LIST_Options, PIN_ITEMCHANGED, OnItemChanged)
 		REFLECT_NOTIFICATIONS()
 	END_MSG_MAP()
+
+	IdleHandler_Derived
 public:
 	LRESULT OnInitDialog( UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled )
 	{

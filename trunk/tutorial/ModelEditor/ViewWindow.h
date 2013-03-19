@@ -40,6 +40,7 @@ public:
 	LRESULT onDestroy(UINT, WPARAM, LPARAM, BOOL&) ;
 	//
 	void run();
+	void setFPS(float fps);
 public:
 	Decal* getBrushDecal();
 	//

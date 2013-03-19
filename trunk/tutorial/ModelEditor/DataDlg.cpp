@@ -44,7 +44,7 @@ LRESULT DataDlg::OnFileItemSelected( UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
 void DataDlg::SelectFile( const tstring& s )
 {
 	//
-	getGlobal()->setHero(s.c_str());
+	getGlobal()->onSelectFile(s);
 	IFileManager::getFile(s)->update(s, &properties_);
 }
 

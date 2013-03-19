@@ -82,8 +82,19 @@ bool FreeType::destroy()
 		}
 	}
 	_textures.clear();
+	CodeTexMap::iterator it = _codeTex.begin();
+	for (; it != _codeTex.end(); ++it)
+	{
+		FTex* t = it->second;
+		if (t)
+		{
+			delete t;
+			t = NULL;
+		}
+	}
 	_codeTex.clear();
-	
+	FT_Done_Face(_face);
+	FT_Done_FreeType(_library);
 	return true;
 }	
 

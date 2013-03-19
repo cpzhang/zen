@@ -271,7 +271,7 @@ public:
 	}
 	T getValue()
 	{
-		if (KeyFrameSet_)
+		if (KeyFrameSet_ && !KeyFrameSet_->empty())
 		{
 			if (End_)
 			{

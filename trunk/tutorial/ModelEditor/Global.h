@@ -44,8 +44,10 @@ public:
 	void refreshDataRoot();
 	//
 	void setAnimation(const tstring& name);
+	EntityInstance* getHero();
 private:
 	void clear_();
+	std::string selectedFilePart(const tstring& name);
 	std::string selectedFileParticle( const tstring& name );
 	EntityInstance* selectedFileEntity( const tstring& name );
 private:

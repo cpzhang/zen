@@ -41,32 +41,39 @@ bool Mesh::createFromMZ(size_t sub, Mz* mz)
 		memcpy(&_vertices[i].texcoord_[0], mz->mVertices[i+ vStart].texcoords, sizeof(mz->mVertices[i].texcoords));
 		memcpy(&c.x, mz->mVertices[i+ vStart].color, sizeof(mz->mVertices[i].color));
 		_vertices[i].color_ARGB_ = c.getARGB();
-		for(size_t k = 0; k != 4; ++k)
+		if (!mz->mBones.empty())
 		{
-			u8 id = mz->mVertices[i+ vStart].bones[k];
-			if (id < 255)
+			for(size_t k = 0; k != 4; ++k)
 			{
-				++_bones[id];
+				u8 id = mz->mVertices[i+ vStart].bones[k];
+				if (id < 255)
+				{
+					++_bones[id];
+				}
+				//_vertices[i].bones_[k] = id;
 			}
-			//_vertices[i].bones_[k] = id;
 		}
 		memcpy(&_vertices[i].weights_[0], mz->mVertices[i+ vStart].weights, sizeof(mz->mVertices[i].weights));
 	}
-	//骨骼重现分配
-	for (size_t i = 0; i != _vertices.size(); ++i)
+	if (!mz->mBones.empty())
 	{
-		for(size_t k = 0; k != 4; ++k)
+		//骨骼重现分配
+		for (size_t i = 0; i != _vertices.size(); ++i)
 		{
-			u8 id = mz->mVertices[i+ vStart].bones[k];
-			//
-			if (_bones.find(id) == _bones.end())
+			for(size_t k = 0; k != 4; ++k)
 			{
-				break;
+				u8 id = mz->mVertices[i+ vStart].bones[k];
+				//
+				if (_bones.find(id) == _bones.end())
+				{
+					break;
+				}
+				size_t d = std::distance(_bones.begin(), _bones.find(id));
+				_vertices[i].bones_[k] = d;
 			}
-			size_t d = std::distance(_bones.begin(), _bones.find(id));
-			_vertices[i].bones_[k] = d;
 		}
 	}
+	
 	//
 	_faces.resize(mz->mSubmeshes[sub].icount/3);
 	size_t iStart = mz->mSubmeshes[sub].istart / 3;
@@ -173,6 +180,10 @@ int Mesh::getVertexNumber()
 
 bool Mesh::save( const std::string& path )
 {
+	if (_vertices.empty() || _faces.empty())
+	{
+		return true;
+	}
 	//============================================================================
 	// 开始写入数据
 	ChunkSet cs;

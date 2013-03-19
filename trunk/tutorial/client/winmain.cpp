@@ -215,6 +215,10 @@ bool play(const float delta)
 				}
 				camera_.beginPath();
 			}
+			else
+			{
+				camera_.setCenter(dst);
+			}
 		}
 	}
 	//拾取高度
@@ -293,6 +297,7 @@ BOOL WINAPI CrashCallback(LPVOID /*lpvState*/)
 }
 int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
+	std::locale loc = std::locale::global(std::locale("")); //要打开的文件路径含中文，设置全局locale为本地环境
 	// Fill out the WNDCLASS structure
 	WNDCLASS wc;
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -420,46 +425,69 @@ int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	getRenderContex()->setCamera(c);
 	getRenderContex()->updateProjectionMatrix();
 	FileSystem::setDataDirectory(FileSystem::guessDataDirectory());
-	getSceneManager()->open("\\scene\\1");
+	getSceneManager()->open(FileSystem::addDataDir("\\scene\\1"));
 	setHero(TEXT("\\model\\Character_1015\\Character_1015.entity"));
 	//
 	FontManager::getPointer()->createFont(std::string("freetype\\simkai.ttf"), 16, eFontProperty_Normal, "freeNormal");
 	//
 	camera_.setCenter(Vector3(0, 0.0, 0));
-	camera_.setSpeed(0.2f);
+	camera_.setSpeed(0.01f);
 	// Message Structure
-	MSG msg;
-	::ZeroMemory(&msg, sizeof(msg));
+	MSG m;
+	::ZeroMemory(&m, sizeof(m));
 	// Loop until getting a WM_QUIT message
-	float lastTick = GetTickCount();
-	float currentTick = 0.0f;
-	float delta = 0.0f;
-	while(true)
+	float life = 0.0f;
+	float frame = 0.0f;
+	float fps = 0.0f;
+	const size_t tDuration = 1000;
+	const size_t tInterval = 1000/60;
+	float inter = tInterval;
+	for (;;)
 	{
-		if (::PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+		::ZeroMemory(&m, sizeof(m));
+		if (::PeekMessage(&m, NULL, 0, 0, PM_NOREMOVE))
 		{
-			if (msg.message == WM_QUIT)
+			::GetMessage(&m, NULL, 0, 0);
+			if (m.message == WM_QUIT)
 			{
 				break;
 			}
-			::TranslateMessage(&msg);
-			::DispatchMessage(&msg);
+			::TranslateMessage(&m);
+			::DispatchMessage(&m);
 		}
 		else
 		{
-			currentTick = GetTickCount();
-			delta = currentTick - lastTick;
-			if (delta >= 1.0f)
+			// GetTickCount only has a guaranteed resolution of 1/18th of a second, which is pretty horrible for game timing
+			//Retrieves the number of milliseconds that have elapsed since the system was started, up to 49.7 days.
+			float beforeRun = ::timeGetTime();
+			play(inter);
+			float afterRun = ::timeGetTime();
+			float timeRun = afterRun - beforeRun;
+			//一次赶上来，会造成动画不连续，可考虑均匀分布，平滑
+			if (timeRun > tInterval)
 			{
-				if (!play(delta))
-				{
-					break;
-				}
-				lastTick = currentTick;
+				inter = timeRun;
 			}
-			else
+			//else
+			{
+				inter = tInterval;
+			}
+			++frame;
+			float timeSleep = tInterval - timeRun;
+			//计算FPS
+			life += inter;
+			if (life >= tDuration)
+			{
+				fps = 1000.0f * frame / life;
+				//				mw.setFPS(fps);
+				life = 0.0f;
+				frame = 0.0f;
+			}
+			//限帧
+			while(timeSleep >= 1.0f)
 			{
 				Sleep(1);
+				--timeSleep;
 			}
 		}
 	}
@@ -471,5 +499,6 @@ int PASCAL WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		// Unset exception handlers before exiting the main function
 		crUninstall();
 	}
+	std::locale::global(loc);//恢复全局locale 
 	Error("==end");
 }

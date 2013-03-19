@@ -5,7 +5,7 @@
 #include "IdleHandler.h"
 #include "DataDlg.h"
 #include "AnimationDlg.h"
-
+#include "BoneDlg.h"
 class FrameWindow : 
 	public CFrameWindowImpl<FrameWindow>
 	,public CUpdateUI<FrameWindow>
@@ -17,10 +17,9 @@ public:
 	BEGIN_MSG_MAP(FrameWindow)
 		MESSAGE_HANDLER(WM_CREATE, onCreate)
 		COMMAND_ID_HANDLER(ID_NewScene, OnNewscene)
-		COMMAND_ID_HANDLER(ID_BUTTON_ChangeHeight, OnToobarChangeHeight)
-		COMMAND_ID_HANDLER(ID_BUTTON_PaintTerrain, OnToobarChangeTexture)
 		COMMAND_ID_HANDLER(ID_BUTTON_Data, OnToobarData)
 		COMMAND_ID_HANDLER(ID_BUTTON_Options, OnToobarOptions)
+		COMMAND_ID_HANDLER(ID_BUTTON_Animation, OnToobarAnimation)
 		COMMAND_ID_HANDLER(ID_BUTTON_Go, OnGo)
 		CHAIN_MSG_MAP(CFrameWindowImpl<FrameWindow>)
 		CHAIN_MSG_MAP(CUpdateUI<FrameWindow>)
@@ -38,15 +37,15 @@ public:
 	IdleHandler_Derived
 public:
 	FrameWindow();
+	void setFPS(float fps);
 private:
 	LRESULT onCreate(UINT, WPARAM, LPARAM, BOOL&);
 private:
 	//
 	LRESULT OnNewscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-	LRESULT OnToobarChangeHeight(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnToobarData(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-	LRESULT OnToobarChangeTexture(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnToobarOptions(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnToobarAnimation(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnGo(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	//
 	void tabSwitch(WORD id);
@@ -57,4 +56,5 @@ private:
 	DataDlg		dlgData_;
 	OptionsDlg dlgOptions_;
 	AnimationDlg dlgAnimation_;
+	BoneDlg dlgBones_;
 };

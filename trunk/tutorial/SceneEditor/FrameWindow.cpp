@@ -34,24 +34,31 @@ LRESULT FrameWindow::onCreate( UINT, WPARAM, LPARAM, BOOL& )
 	//
 	dlgData_.Create(tabs_);
 	tabs_.AddPage(dlgData_, TEXT("资源"));
-	//
-	dlgTerrainTexture_.Create(tabs_);
-	tabs_.AddPage(dlgTerrainTexture_, TEXT("纹理"));
+	idleHandlers[ePanel_Data] = &dlgData_;
 	//
 	dlgChangeHeight_.Create(tabs_);
 	tabs_.AddPage(dlgChangeHeight_, TEXT("高度"));
+	idleHandlers[ePanel_TerrainHeight] = &dlgChangeHeight_;
+	//
+	dlgTerrainTexture_.Create(tabs_);
+	tabs_.AddPage(dlgTerrainTexture_, TEXT("纹理"));
+	idleHandlers[ePanel_TerrainTexture] = &dlgTerrainTexture_;
 	//
 	dlgPlaceModel.Create(tabs_);
 	tabs_.AddPage(dlgPlaceModel, TEXT("物件"));
-	//
-	dlgOptions_.Create(tabs_);
-	tabs_.AddPage(dlgOptions_, TEXT("选项"));
-	//
-	dlgAnimation_.Create(tabs_);
-	tabs_.AddPage(dlgAnimation_, TEXT("动画"));
+	idleHandlers[ePanel_PlaceModel] = &dlgPlaceModel;
 	//
 	dlgNav.Create(tabs_);
 	tabs_.AddPage(dlgNav, TEXT("导航"));
+	idleHandlers[ePanel_Nav] = &dlgNav;
+	//
+	dlgOptions_.Create(tabs_);
+	tabs_.AddPage(dlgOptions_, TEXT("选项"));
+	idleHandlers[ePanel_Option] = &dlgOptions_;
+	//
+	panelCurrent_ = ePanel_Data;
+	//dlgAnimation_.Create(tabs_);
+	//tabs_.AddPage(dlgAnimation_, TEXT("动画"));
 	//
 	UpdateLayout();
 
@@ -83,8 +90,7 @@ void FrameWindow::onIdle(const float delta)
 {
 	UIUpdateToolBar(FALSE);
 	canvas_.onIdle(delta);
-	dlgData_.onIdle(delta);
-	dlgPlaceModel.onIdle(delta);
+	idleHandlers[panelCurrent_]->onIdle(delta);
 }
 
 void FrameWindow::onRefreshLuaScript()
@@ -94,20 +100,30 @@ void FrameWindow::onRefreshLuaScript()
 
 LRESULT FrameWindow::OnToobarChangeHeight( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
+	if (getSceneManager() == NULL || getSceneManager()->getTerrain() == NULL)
+	{
+		FlowText::getSingletonP()->add("没有场景可供编辑，请新建或打开已有的场景", Vector4(1, 1, 1, 1));
+		return 0;
+	}
 	FlowText::getSingletonP()->add("切换至地表拉高度图模式", Vector4(1, 1, 1, 1));
 	getStateManager()->gotoState(eState_TerrainHeight);
 	tabSwitch(ID_BUTTON_ChangeHeight);
-	tabs_.SetActivePage(2);
+	tabs_.SetActivePage(ePanel_TerrainHeight);
 	return 0;
 }
 
 LRESULT FrameWindow::OnToobarChangeTexture( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
+	if (getSceneManager() == NULL || getSceneManager()->getTerrain() == NULL)
+	{
+		FlowText::getSingletonP()->add("没有场景可供编辑，请新建或打开已有的场景", Vector4(1, 1, 1, 1));
+		return 0;
+	}
 	FlowText::getSingletonP()->add("切换至地表刷纹理模式", Vector4(1, 1, 1, 1));
 	getStateManager()->gotoState(eState_TerrainTexture);
 	UISetCheck(ID_BUTTON_PaintTerrain, true);
 
-	tabs_.SetActivePage(1);
+	tabs_.SetActivePage(ePanel_TerrainTexture);
 	return 0;
 }
 
@@ -115,7 +131,7 @@ LRESULT FrameWindow::OnToobarData( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hW
 {
 	//getStateManager()->gotoState(eState_Data);
 	tabSwitch(ID_BUTTON_Data);
-	tabs_.SetActivePage(0);
+	tabs_.SetActivePage(ePanel_Data);
 	return 0;
 }
 
@@ -129,10 +145,12 @@ LRESULT FrameWindow::OnToobarOptions( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /
 
 void FrameWindow::tabSwitch(WORD id)
 {
-	UISetCheck(ID_BUTTON_Options, false);
 	UISetCheck(ID_BUTTON_Data, false);
 	UISetCheck(ID_BUTTON_ChangeHeight, false);
 	UISetCheck(ID_BUTTON_PaintTerrain, false);
+	UISetCheck(ID_BUTTON_PlaceModel, false);
+	UISetCheck(ID_BUTTON_NavigationMesh, false);
+	UISetCheck(ID_BUTTON_Options, false);
 	//
 	UISetCheck(id, true);
 }
@@ -160,9 +178,9 @@ LRESULT FrameWindow::OnSavescene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWnd
 LRESULT FrameWindow::OnOpenscene(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	// TODO: 在此添加命令处理程序代码
-	CFolderDialog d;
-	d.SetInitialFolder(TEXT("d:\\work\\zen\\data\\scene"));
-	if (d.DoModal())
+	CFolderDialog d(*this, "场景文件");
+	//d.SetInitialFolder(TEXT("d:\\work\\zen\\data\\scene"));
+	if (d.DoModal(*this))
 	{
 		scenePath_ = d.m_szFolderPath;
 		getSceneManager()->open(d.m_szFolderPath);
@@ -182,25 +200,40 @@ LRESULT FrameWindow::OnTest( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*
 
 LRESULT FrameWindow::OnHero( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
+	if (getSceneManager() == NULL || getSceneManager()->getTerrain() == NULL)
+	{
+		FlowText::getSingletonP()->add("没有场景可供编辑，请新建或打开已有的场景", Vector4(1, 1, 1, 1));
+		return 0;
+	}
 	getLuaScript()->doFile("lua/HeroButton.lua");
 	return 0;
 }
 
 LRESULT FrameWindow::OnPlaceModel( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
+	if (getSceneManager() == NULL || getSceneManager()->getTerrain() == NULL)
+	{
+		FlowText::getSingletonP()->add("没有场景可供编辑，请新建或打开已有的场景", Vector4(1, 1, 1, 1));
+		return 0;
+	}
 	getStateManager()->gotoState(eState_PlaceModel);
 	FlowText::getSingletonP()->add("切换至放置物件模式", Vector4(1, 1, 1, 1));
 	UISetCheck(ID_BUTTON_PlaceModel, true);
 	tabSwitch(ID_BUTTON_PlaceModel);
-	tabs_.SetActivePage(3);
+	tabs_.SetActivePage(ePanel_PlaceModel);
 	return 1;
 }
 
 LRESULT FrameWindow::OnNavigationMesh( WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/ )
 {
+	if (getSceneManager() == NULL || getSceneManager()->getTerrain() == NULL)
+	{
+		FlowText::getSingletonP()->add("没有场景可供编辑，请新建或打开已有的场景", Vector4(1, 1, 1, 1));
+		return 0;
+	}
 	getStateManager()->gotoState(eState_Nav);
 	UISetCheck(ID_BUTTON_NavigationMesh, true);
 	FlowText::getSingletonP()->add("切换至导航模式", Vector4(1, 1, 1, 1));
-	tabs_.SetActivePage(6);
+	tabs_.SetActivePage(ePanel_Nav);
 	return 1;
 }
